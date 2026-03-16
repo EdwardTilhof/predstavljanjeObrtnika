@@ -1,4 +1,4 @@
-export const BRAND_NAME = "Your Brand name";
+export const COMPANY_NAME = "Your Company name";
 export const COMPANY_PHONE = "+385 xx xxx xxx";
 export const COMPANY_EMAIL = "somethig@yourdomain.com";
 export const COMPANY_ADDRESS = "Your company address, city, country";

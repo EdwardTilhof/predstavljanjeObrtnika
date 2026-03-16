@@ -6,7 +6,7 @@ import { Routes, Route } from 'react-router-dom'
 import NavBar from "./pages/components/NavBar"
 import Home from "./pages/Home"
 import {
-  BRAND_NAME, ROUTES,
+  COMPANY_NAME, ROUTES,
   COMPANY_PHONE,
   COMPANY_EMAIL,
   COMPANY_ADDRESS,
@@ -33,7 +33,7 @@ function App() {
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-start">
           
           <div className="footer-left">
-            <h5>{BRAND_NAME}</h5>
+            <h5>{COMPANY_NAME}</h5>
             <p className="mb-1">{COMPANY_ADDRESS}</p>
             <p className="text-muted">Working time: {COMPANY_WORKING_HOURS}</p>
           </div>
@@ -49,7 +49,7 @@ function App() {
         {/* Full width copyright at the bottom */}
         <div className="text-center mt-4 border-top pt-3">
           <small className="text-secondary">
-            &copy; {CURRENT_YEAR} {BRAND_NAME}. All rights reserved.
+            &copy; {CURRENT_YEAR} {COMPANY_NAME}. All rights reserved.
           </small>
         </div>
       </footer>
