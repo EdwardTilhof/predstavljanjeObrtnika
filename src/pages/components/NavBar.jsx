@@ -1,6 +1,6 @@
 import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { BRAND_NAME, ROUTES } from "../../constants";
+import { COMPANY_NAME, ROUTES } from "../../constants";
 
 export default function NavBar() {
   return (
@@ -8,7 +8,7 @@ export default function NavBar() {
       <Container>
         {/* Brand Name acting as a Home Link */}
         <Navbar.Brand as={Link} to={ROUTES.home} style={{ cursor: "pointer" }}>
-          {BRAND_NAME}
+          {COMPANY_NAME}
         </Navbar.Brand>
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
