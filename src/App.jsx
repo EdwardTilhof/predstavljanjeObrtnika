@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
 import { Container } from 'react-bootstrap'
@@ -14,11 +15,25 @@ import {
   CURRENT_YEAR
 } from "./constants";
 import ServicesMain from "./pages/components/Services/Services-Main"
+import LightOrDarkTheme from "./pages/components/colorSchemes/SiteColors";
 
 function App() {
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("theme") || "light";
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-bs-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
+
+
   return (
     <Container className='MainContainer'>
-      <NavBar />
+      <NavBar theme={theme} toggleTheme={toggleTheme} />
 
       <main>
         <Routes>

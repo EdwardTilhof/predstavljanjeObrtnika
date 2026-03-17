@@ -1,8 +1,11 @@
+// company information
 export const COMPANY_NAME = "Your Company name";
 export const COMPANY_PHONE = "+385 xx xxx xxx";
 export const COMPANY_EMAIL = "somethig@yourdomain.com";
 export const COMPANY_ADDRESS = "Your company address, city, country";
 export const COMPANY_WORKING_HOURS = "Monday - Friday: 9:00 AM - 5:00 PM";
+
+// date and time formats
 export const CURRENT_YEAR = new Date().getFullYear();
 
 export const ROUTES = {
