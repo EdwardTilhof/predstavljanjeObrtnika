@@ -7,6 +7,7 @@ export const servicesData = [
     cost: "2500 €",
     duration: "4-8 weeks",
     contact: "contact@techflow.com",
+    actions: ["Consultation", "Development", "Maintenance"],
     description: "Custom web applications built with modern technologies."
   },
   {
@@ -17,6 +18,7 @@ export const servicesData = [
     cost: "1200 €",
     duration: "2 weeks",
     contact: "design@pixelperfect.io",
+    actions: ["Consultation", "Design", "Feedback"],
     description: "Beautiful and intuitive user interfaces designed for optimal user experience."
   },
   {
@@ -27,6 +29,7 @@ export const servicesData = [
     cost: "5000 €",
     duration: "Ongoing",
     contact: "support@skyhigh.com",
+    actions: ["Consultation", "Implementation", "Support"],
     description: "Scalable and secure cloud infrastructure setup using AWS, Azure, or Google Cloud."
   },
   {
@@ -37,6 +40,7 @@ export const servicesData = [
     cost: "800 € / month",
     duration: "Monthly",
     contact: "hello@rankboosters.net",
+    actions: ["Consultation", "Optimization", "Reporting"],
     description: "Strategic search engine optimization to increase your organic search visibility."
   },
   {
@@ -47,6 +51,7 @@ export const servicesData = [
     cost: "10000 €",
     duration: "3-6 months",
     contact: "dev@chainlinkers.com",
+    actions: ["Consultation", "Development", "Maintenance"],
     description: "Secure decentralized applications and smart contract implementation."
   },
   {
@@ -57,6 +62,7 @@ export const servicesData = [
     cost: "1500 €",
     duration: "1 month",
     contact: "info@dataguardians.com",
+    actions: ["Consultation", "Management", "Support"],
     description: "Optimizing SQL and NoSQL databases for speed, reliability, and security."
   }
   // ... You can follow this pattern for the remaining IDs

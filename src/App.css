@@ -205,3 +205,17 @@
 main {
   flex: 1;
 }
+
+.services-container table {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.services-container th,
+.services-container td {
+  text-align: left;
+}
+
+.services-container table td {
+  vertical-align: middle;
+}

@@ -26,6 +26,7 @@ const ServicesMain = ({ selectedCategory }) => {
             <th>Investment</th>
             <th>Duration</th>
             <th>Contact</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -47,11 +48,18 @@ const ServicesMain = ({ selectedCategory }) => {
                 <td>{service.cost}</td>
                 <td>{service.duration}</td>
                 <td>{service.contact}</td>
+                <td>{service.actions.map((action, index)=> (
+                  <span key ={index}>
+                    {action}
+                    {/* Add a separator if it's not the last action */}
+                    {index < service.actions.length - 1 && ", "}
+                  </span>
+                ))}</td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="6" className="text-center py-4 text-muted">
+              <td colSpan="7" className="text-center py-4 text-muted">
                 No services found for the selected category.
               </td>
             </tr>
