@@ -22,7 +22,7 @@ const ServicesMain = ({ selectedCategory }) => {
             <th>Provider</th>
             <th>Investment</th>
             <th>Duration</th>
-            <th>Actions</th>
+            <th>Contact</th>
           </tr>
         </thead>
         <tbody>
@@ -43,6 +43,7 @@ const ServicesMain = ({ selectedCategory }) => {
                 <td>{service.company}</td>
                 <td>{service.cost}</td>
                 <td>{service.duration}</td>
+                <td>{service.contact}</td>
               </tr>
             ))
           ) : (
@@ -56,7 +57,7 @@ const ServicesMain = ({ selectedCategory }) => {
       </Table>
       
       <div className="text-muted small mt-2">
-        * Prices and durations are estimates based on standard project scopes.
+        * Prices and durations are estimates based on standard project scopes. It may change based on specific requirements and negotiations with providers. Please contact the service provider directly for a detailed quote and project timeline.
       </div>
     </div>
   );
