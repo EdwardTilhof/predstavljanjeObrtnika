@@ -1,9 +1,15 @@
 import { servicesData } from "./ServicesData";
+import { mainCategories } from "./ServicesMainCategoriesData";
 
-async function get(){
-  return {data: servicesData}
+async function getServices() {
+    return { data: servicesData };
 }
 
-export default{
-    get
+async function getCategories() {
+    return { data: mainCategories };
 }
+
+export default {
+    getServices,
+    getCategories
+};
