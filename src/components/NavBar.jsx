@@ -1,6 +1,6 @@
 import { Container, Navbar, Nav, NavDropdown, Button } from "react-bootstrap"; 
 import { Link } from "react-router-dom";
-import { COMPANY_NAME, ROUTES } from "../../constants";
+import { COMPANY_NAME, ROUTES } from "../constants";
 
 export default function NavBar({ theme, toggleTheme }) {
   return (

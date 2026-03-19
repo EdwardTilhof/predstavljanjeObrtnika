@@ -1,5 +1,5 @@
 import { Table, Badge, Button } from "react-bootstrap";
-import { servicesData } from './ServicesData';
+import { servicesData } from '../components/Services/ServicesData';
 
 const ServicesMain = ({ selectedCategory }) => {
   
