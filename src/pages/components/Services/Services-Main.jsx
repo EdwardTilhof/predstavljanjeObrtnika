@@ -3,10 +3,13 @@ import { servicesData } from './ServicesData';
 
 const ServicesMain = ({ selectedCategory }) => {
   
-  // Filter logic: Show specific category or everything if "All" is selected
   const filteredServices = selectedCategory && selectedCategory !== "All"
     ? servicesData.filter(service => service.category === selectedCategory)
     : servicesData;
+
+    const sortedServices = [...filteredServices].sort((a, b) => 
+    a.category.localeCompare(b.category)
+  );
 
   return (
     <div className="services-container mt-4">
@@ -26,8 +29,8 @@ const ServicesMain = ({ selectedCategory }) => {
           </tr>
         </thead>
         <tbody>
-          {filteredServices.length > 0 ? (
-            filteredServices.map((service) => (
+          {sortedServices.length > 0 ? (
+            sortedServices.map((service) => (
               <tr key={service.id}>
                 <td className="fw-bold">
                   {service.title}
