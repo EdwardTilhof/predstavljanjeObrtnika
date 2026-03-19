@@ -14,7 +14,7 @@ const ServicesMain = ({ selectedCategory }) => {
   return (
     <div className="services-container mt-4">
       <h2 className="mb-4">
-        {selectedCategory ? `${selectedCategory} Services` : "All Available Services"}
+        {selectedCategory ? `${selectedCategory} Services` : "All Available Services trough our Cooperating Partners"}
       </h2>
       
       <Table striped bordered hover responsive className="shadow-sm">

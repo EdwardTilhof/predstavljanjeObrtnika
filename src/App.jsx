@@ -4,7 +4,7 @@ import './App.css'
 import { Container } from 'react-bootstrap'
 import { Routes, Route } from 'react-router-dom'
 
-import NavBar from "./pages/components/NavBar"
+import NavBar from "./components/NavBar"
 import Home from "./pages/Home"
 import {
   COMPANY_NAME, ROUTES,
@@ -14,8 +14,7 @@ import {
   COMPANY_WORKING_HOURS,
   CURRENT_YEAR
 } from "./constants";
-import ServicesMain from "./pages/components/Services/Services-Main"
-import LightOrDarkTheme from "./pages/components/colorSchemes/SiteColors";
+import ServicesMain from "./pages/Services-Main";
 
 function App() {
   const [theme, setTheme] = useState(() => {
