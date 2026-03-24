@@ -15,6 +15,7 @@ import {
   CURRENT_YEAR
 } from "./constants";
 import ServicesMain from "./pages/Services-Main";
+import { NewService } from './components/Services/NewService';
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -38,6 +39,7 @@ function App() {
         <Routes>
           <Route path={ROUTES.home} element={<Home />} />
           <Route path={ROUTES.services} element={<ServicesMain />} />
+          <Route path={ROUTES.newService} element={<NewService />} />
         </Routes>
       </main>
 
