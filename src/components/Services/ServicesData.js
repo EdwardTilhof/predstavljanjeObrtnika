@@ -4,10 +4,9 @@ export const servicesData = [
     title: "Web Development",
     category: "IT & Software",
     company: "TechFlow Solutions",
-    cost: "2500 €",
-    duration: "4-8 weeks",
+    cost: 2500.0,
+    duration: 8, // Taken as the upper limit of 4-8 weeks
     contact: "contact@techflow.com",
-    actions: ["Consultation", "Development", "Maintenance"],
     description: "Custom web applications built with modern technologies."
   },
   {
@@ -15,10 +14,9 @@ export const servicesData = [
     title: "UI/UX Design",
     category: "Design",
     company: "PixelPerfect Studio",
-    cost: "1200 €",
-    duration: "2 weeks",
+    cost: 1200.0,
+    duration: 2,
     contact: "design@pixelperfect.io",
-    actions: ["Consultation", "Design", "Feedback"],
     description: "Beautiful and intuitive user interfaces designed for optimal user experience."
   },
   {
@@ -26,10 +24,9 @@ export const servicesData = [
     title: "Cloud Architecture",
     category: "Infrastructure",
     company: "SkyHigh Cloud",
-    cost: "5000 €",
-    duration: "Ongoing",
+    cost: 5000.0,
+    duration: 0, // Set to 0 for "Ongoing"
     contact: "support@skyhigh.com",
-    actions: ["Consultation", "Implementation", "Support"],
     description: "Scalable and secure cloud infrastructure setup using AWS, Azure, or Google Cloud."
   },
   {
@@ -37,10 +34,9 @@ export const servicesData = [
     title: "SEO Optimization",
     category: "Marketing",
     company: "RankBoosters",
-    cost: "800 € / month",
-    duration: "Monthly",
+    cost: 800.0,
+    duration: 4, // Set to 4 weeks for "Monthly"
     contact: "hello@rankboosters.net",
-    actions: ["Consultation", "Optimization", "Reporting"],
     description: "Strategic search engine optimization to increase your organic search visibility."
   },
   {
@@ -48,10 +44,9 @@ export const servicesData = [
     title: "Blockchain Development",
     category: "IT & Software",
     company: "ChainLinkers",
-    cost: "10000 €",
-    duration: "3-6 months",
+    cost: 10000.0,
+    duration: 24, // 6 months approximated to 24 weeks
     contact: "dev@chainlinkers.com",
-    actions: ["Consultation", "Development", "Maintenance"],
     description: "Secure decentralized applications and smart contract implementation."
   },
   {
@@ -59,11 +54,9 @@ export const servicesData = [
     title: "Database Management",
     category: "Infrastructure",
     company: "DataGuardians",
-    cost: "1500 €",
-    duration: "1 month",
+    cost: 1500.0,
+    duration: 4, // 1 month approximated to 4 weeks
     contact: "info@dataguardians.com",
-    actions: ["Consultation", "Management", "Support"],
     description: "Optimizing SQL and NoSQL databases for speed, reliability, and security."
   }
-  // ... You can follow this pattern for the remaining IDs
 ];

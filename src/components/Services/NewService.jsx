@@ -11,15 +11,25 @@ export function NewService() {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
 
-        const newService = {
+        const rawCost = formData.get("cost").replace(/[^0-9.]/g, "");
+    const rawDuration = formData.get("duration").replace(/[^0-9]/g, "");
+
+    const costValue = parseFloat(rawCost);
+    const durationValue = parseInt(rawDuration, 10);
+
+    if (isNaN(costValue) || isNaN(durationValue)) {
+        alert("Please enter valid numbers for Cost and Duration.");
+        return;
+    }
+
+    const newService = {
             id: Math.floor(Math.random() * 10000), // Generate a random ID for demonstration
             title: formData.get("title"),
             category: formData.get("category"),
             company: formData.get("company"),
-            cost: formData.get("cost"),
-            duration: formData.get("duration"),
+            cost: costValue,
+            duration: durationValue,
             contact: formData.get("contact"),
-            actions: formData.getAll("actions"),
             description: formData.get("description")
         };
         servicesData.push(newService);
@@ -54,10 +64,7 @@ export function NewService() {
                     <Form.Label>Contact</Form.Label>
                     <Form.Control type="email" name="contact" required />
                 </Form.Group>
-                <Form.Group className="mb-3">
-                    <Form.Label>Actions</Form.Label>
-                    < Form.Control as="textarea" rows={3} name="actions" required />
-                </Form.Group>
+                
                 <Form.Group className="mb-3">
                     <Form.Label>Description</Form.Label>
                     < Form.Control as="textarea" rows={3} name="description" required />
