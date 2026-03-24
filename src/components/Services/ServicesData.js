@@ -4,10 +4,9 @@ export const servicesData = [
     title: "Web Development",
     category: "IT & Software",
     company: "TechFlow Solutions",
-    cost: "2500 €",
-    duration: "4-8 weeks",
+    cost: 250.99,
+    duration: 4,
     contact: "contact@techflow.com",
-    actions: ["Consultation", "Development", "Maintenance"],
     description: "Custom web applications built with modern technologies."
   },
   {
