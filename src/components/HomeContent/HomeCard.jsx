@@ -1,6 +1,7 @@
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 
+
 function HomeCardStyle01({ title, text, location, date, investment, image, link }) {
   return (
     <Card style={{ width: '18rem' }}>
