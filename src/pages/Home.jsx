@@ -9,7 +9,7 @@ export default function Home() {
     <>
     <div>
       <h1>Welcome to {COMPANY_NAME}</h1>
-      <p>{TEXT_CARD_DATA_HOME[0].text}</p>
+      <p className="Text-Card-01">{TEXT_CARD_DATA_HOME[0].text}</p>
     </div>
     <Row className="Row-Card01">
         {CARD_DATA_HOME.map((item) => (

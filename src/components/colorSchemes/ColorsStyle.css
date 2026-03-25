@@ -11,6 +11,7 @@
   --text-color: #212529;
   --button-bg: #007bff;
   --button-text: #ffffff;
+  --border-color-home-text01: #b8b9bb;
 }
 
 /* Dark Theme */
@@ -19,6 +20,7 @@
   --text-color: #f8f9fa;
   --button-bg: #373b3e; 
   --button-text: #ffffff;
+  --border-color-home-text01: #6d6d6d;
   
   --bs-body-bg: var(--bg-color);
   --bs-body-color: var(--text-color);
