@@ -1,14 +1,36 @@
 import { Table, Badge, Button, Stack, Row } from "react-bootstrap";
-import { servicesData } from '../components/Services/ServicesData';
+import ServiceLogic from '../components/Services/Services';
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../constants";
+import { useEffect, useState } from "react";
 
 const ServicesMain = ({ selectedCategory }) => {
   const navigate = useNavigate();
 
-  const filteredServices = selectedCategory && selectedCategory !== "All"
-    ? servicesData.filter(service => service.category === selectedCategory)
-    : servicesData;
+  const [services, setServices] = useState([]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      const response = await ServiceLogic.getServices();
+      setServices(response.data);
+    };
+    loadData();
+  }, []);
+
+  const handleDelete = async (id, title) => {
+    if (window.confirm(`Are you sure you want to remove "${title}"?`)) {
+      const result = await ServiceLogic.remove(id);
+      if (result.success) {
+        // Update the local state to remove the item from the screen
+        setServices(prev => prev.filter(service => service.id !== id));
+      } else {
+        alert("Error removing service.");
+      }
+    }
+  };
+ const filteredServices = selectedCategory && selectedCategory !== "All"
+    ? services.filter(service => service.category === selectedCategory)
+    : services;
 
   const sortedServices = [...filteredServices].sort((a, b) =>
     a.category.localeCompare(b.category)

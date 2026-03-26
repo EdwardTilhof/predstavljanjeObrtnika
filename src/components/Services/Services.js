@@ -1,36 +1,35 @@
 import { servicesData } from "./ServicesData";
-import { mainCategories } from "./ServicesMainCategoriesData";
+
+let data = [...servicesData];
 
 async function getServices() {
-    return { data: servicesData };
+return { data: [...data] };
 }
 
 async function getById(id) {
-    const service = servicesData.find(s => s.id === parseInt(id));
+    const service = data.find(s => s.id === parseInt(id));
     return { data: service };
 }
 
 async function update(id, updatedService) {
-    const index = servicesData.findIndex(s => s.id === parseInt(id));
+    const index = data.findIndex(s => s.id === parseInt(id));
     if (index !== -1) {
-        servicesData[index] = { ...servicesData[index], ...updatedService };
-        console.log("Service updated successfully in memory:", servicesData[index]);
-        return { success: true, data: servicesData[index] };
+        data[index] = { ...data[index], ...updatedService };
+        console.log("Service updated:", data[index]);
+        return { success: true, data: data[index] };
     }
-    console.error("Service not found for ID:", id);
     return { success: false, error: "Service not found" };
 }
 
 async function remove(id) {
     const numericId = parseInt(id);
-    const index = servicesData.findIndex(s => s.id === numericId);
+    const index = data.findIndex(s => s.id === numericId);
 
     if (index !== -1) {
-        servicesData.splice(index, 1);
-        console.log(`Deleted service ID: ${numericId}. Remaining:`, servicesData.length);
+        data.splice(index, 1);
+        console.log(`Deleted ID: ${numericId}. Remaining:`, data.length);
         return { success: true };
     }
-    console.error("Could not find service to delete with ID:", id);
     return { success: false, error: "Service not found" };
 }
 
