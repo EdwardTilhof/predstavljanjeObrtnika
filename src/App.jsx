@@ -16,6 +16,7 @@ import {
 } from "./constants";
 import ServicesMain from "./pages/Services-Main";
 import { NewService } from './components/Services/NewService';
+import OurProjectsMain from './pages/OurProjectsMain';
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -40,6 +41,7 @@ function App() {
           <Route path={ROUTES.home} element={<Home />} />
           <Route path={ROUTES.services} element={<ServicesMain />} />
           <Route path={ROUTES.newService} element={<NewService />} />
+          <Route path={ROUTES.ourProjects} element={<OurProjectsMain/>} />
         </Routes>
       </main>
 

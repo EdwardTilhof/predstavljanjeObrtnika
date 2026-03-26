@@ -1,8 +1,7 @@
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 
-
-function HomeCardStyle01({ title, text, location, date, investment, image, link }) {
+function ProjectCardStyle01({ title, text, location, date, investment, image, link }) {
   return (
     <Card style={{ width: '18rem' }}>
       <Card.Img variant="top" src={image || "https://placehold.co/100x120"} />
@@ -22,4 +21,4 @@ function HomeCardStyle01({ title, text, location, date, investment, image, link 
   );
 }
 
-export default HomeCardStyle01;
+export default ProjectCardStyle01;

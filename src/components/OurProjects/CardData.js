@@ -1,14 +1,4 @@
-export const TEXT_CARD_DATA_HOME = [
-  {
-    id: 1,
-    text: `Short description of the company with the introduction of the services 
-    and products that the company offers. 
-    We are a team of skilled craftsmen dedicated to creating beautiful 
-    and functional wooden furniture.`
-  }
-];
-
-export const CARD_DATA_HOME = [
+export const PROJECT_CARD_DATA = [
   {
     id: 1,
     title: "Woodworker John",
