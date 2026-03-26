@@ -18,6 +18,7 @@ import ServicesMain from "./pages/Services-Main";
 import { NewService } from './components/Services/NewService';
 import OurProjectsMain from './pages/OurProjectsMain';
 import ChangeService from './components/Services/ChangeService';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function App() {
   const [theme, setTheme] = useState(() => {
