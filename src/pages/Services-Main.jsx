@@ -1,4 +1,4 @@
-import { Table, Badge, Button } from "react-bootstrap";
+import { Table, Badge, Button, Row } from "react-bootstrap";
 import { servicesData } from '../components/Services/ServicesData';
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../constants";
@@ -61,11 +61,19 @@ const ServicesMain = ({ selectedCategory }) => {
           )}
         </tbody>
       </Table>
-      {/* <button
+      <Row>
+      <button
       variant="primary"
       onClick={() => navigate(ROUTES.newService)}
-       className="btn btn-primary">Add New Service</button>
-       */}
+       className="btn btn-primary-change">Add New Service
+       </button>
+       
+       <button
+        variant = "secondary"
+        onClick={() => navigate(ROUTES.changeService)}
+        className="btn btn-secondary-change">Change existing service data
+       </button>
+      </Row>
       <div className="text-muted small mt-2">
         * Prices and durations are estimates based on standard project scopes. It may change based on specific requirements and negotiations with providers. Please contact the service provider directly for a detailed quote and project timeline.
       </div>

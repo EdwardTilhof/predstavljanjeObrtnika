@@ -5,11 +5,18 @@ async function getServices() {
     return { data: servicesData };
 }
 
-async function getCategories() {
-    return { data: mainCategories };
+async function getById(id) {
+    const service = servicesData.find(s => s.id === parseInt(id));
+    return { data: service };
+}
+
+async function update(id, updatedService) {
+    console.log("Updating service ID:", id, "with data:", updatedService);
+    return { success: true };
 }
 
 export default {
     getServices,
-    getCategories
+    getById,
+    update
 };
