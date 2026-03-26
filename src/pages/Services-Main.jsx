@@ -61,11 +61,11 @@ const ServicesMain = ({ selectedCategory }) => {
           )}
         </tbody>
       </Table>
-      <button
+      {/* <button
       variant="primary"
       onClick={() => navigate(ROUTES.newService)}
        className="btn btn-primary">Add New Service</button>
-      
+       */}
       <div className="text-muted small mt-2">
         * Prices and durations are estimates based on standard project scopes. It may change based on specific requirements and negotiations with providers. Please contact the service provider directly for a detailed quote and project timeline.
       </div>
