@@ -94,7 +94,7 @@ const ServicesMain = ({ selectedCategory }) => {
           ) : (
             <tr>
               <td colSpan="7" className="text-center py-4 text-muted">
-                No services found for the selected category.
+                No services found.
               </td>
             </tr>
           )}
