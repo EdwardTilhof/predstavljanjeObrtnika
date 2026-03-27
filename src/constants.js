@@ -4,6 +4,7 @@ export const COMPANY_PHONE = "+385 xx xxx xxx";
 export const COMPANY_EMAIL = "somethig@yourdomain.com";
 export const COMPANY_ADDRESS = "Your company address, city, country";
 export const COMPANY_WORKING_HOURS = "Monday - Friday: 9:00 AM - 5:00 PM";
+export const COMPANY_CID = "xxxx-xxxx-xxxx"
 
 // date and time formats
 export const CURRENT_YEAR = new Date().getFullYear();
@@ -15,7 +16,8 @@ export const ROUTES = {
   contact: "/contact",
   newService: "/new-service",
   ourProjects: "/ourProjects",
-  changeService: "/changeService"
+  changeService: "/changeService",
+  contactUs: "/contactUs"
 };
 
 export const NAV_LINKS = [
@@ -25,6 +27,7 @@ export const NAV_LINKS = [
   { label: "Contact", path: ROUTES.contact },
   { label: "Add Service", path: ROUTES.newService },
   { label: "Our Projects", path: ROUTES.ourProjects },
-  { label: "Change Service", path: ROUTES.changeService}
+  { label: "Change Service", path: ROUTES.changeService},
+  {label: "Contact Us", path: ROUTES.contactUs}
 ];
 

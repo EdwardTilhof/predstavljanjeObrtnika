@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom';
 import { HERO_CONTENT } from './ConstantsHome'; 
 import { ROUTES } from '../../constants'; 
 
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import HomeAnimation from '../Assets/Home element.lottie';
+
 export default function Hero() {
   return (
     <Row className="align-items-center py-5 my-5">
@@ -16,11 +19,13 @@ export default function Hero() {
         </Button>
       </Col>
       <Col lg={6}>
-        <img 
-          src={HERO_CONTENT.image} 
-          alt="Hero" 
-          className="img-fluid rounded-4 shadow-lg"
-        />
+        <div className="rounded-4 shadow-lg overflow-hidden">
+          <DotLottieReact
+            src={HomeAnimation}
+            loop
+            autoplay
+          />
+        </div>
       </Col>
     </Row>
   );
