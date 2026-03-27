@@ -20,6 +20,7 @@ import { NewService } from './components/Services/NewService';
 import OurProjectsMain from './pages/OurProjectsMain';
 import ChangeService from './components/Services/ChangeService';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import ContactUs from './pages/ContactUs';
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -46,7 +47,7 @@ function App() {
           <Route path={ROUTES.newService} element={<NewService />} />
           <Route path="/changeService/:id" element={<ChangeService />} />
           <Route path={ROUTES.ourProjects} element={<OurProjectsMain />} />
-          <Route path={ROUTES.contactUs} element={<contactUs />} />
+          <Route path={ROUTES.contactUs} element={<ContactUs />} />
         </Routes>
       </main>
 

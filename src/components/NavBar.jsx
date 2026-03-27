@@ -34,7 +34,7 @@ export default function NavBar({ theme, toggleTheme }) {
                 Services
               </NavDropdown.Item>
  {/* Contact us starting page  */}
-              <NavDropdown.Item as={Link} to={ROUTES.services}>
+              <NavDropdown.Item as={Link} to={ROUTES.contactUs}>
                 Contact us
               </NavDropdown.Item>
 
