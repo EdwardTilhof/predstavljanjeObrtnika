@@ -21,7 +21,7 @@ function RegistrationModal() {
           <MDBInput wrapperclassName='mb-4' label='Password' size='lg' id='form3' type='password'/>
           <MDBInput wrapperclassName='mb-4' label='Repeat your password' size='lg' id='form4' type='password'/>
           <div className='d-flex flex-row justify-content-center mb-4'>
-            <MDBCheckbox name='flexCheck' id='flexCheckDefault' label='I agree all statements in Terms of service' />
+            <MDBCheckbox name='flexCheck' id='flexCheckDefault' label='I agree all statements in Terms of CooperatingPartner' />
           </div>
           <MDBBtn className='mb-4 w-100 gradient-custom-4' size='lg'>Register</MDBBtn>
         </MDBCardBody>

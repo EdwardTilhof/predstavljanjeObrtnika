@@ -1,56 +1,56 @@
 import { Table, Badge, Button, Stack, Modal } from "react-bootstrap";
-import ServiceLogic from '../components/Services/Services';
+import CooperatingPartnerLogic from '../components/CooperatingPartners/CooperatingPartners';
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../constants";
 import { useEffect, useState } from "react";
 
-const ServicesMain = ({ selectedCategory }) => {
+const CooperatingPartnersMain = ({ selectedCategory }) => {
   const navigate = useNavigate();
-  const [services, setServices] = useState([]);
+  const [CooperatingPartners, setCooperatingPartners] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [targetService, setTargetService] = useState(null);
+  const [targetCooperatingPartner, setTargetCooperatingPartner] = useState(null);
 
   useEffect(() => {
     const loadData = async () => {
-      const response = await ServiceLogic.getServices();
-      setServices(response.data);
+      const response = await CooperatingPartnerLogic.getCooperatingPartners();
+      setCooperatingPartners(response.data);
     };
     loadData();
   }, []);
 
   const openConfirmModal = (id, title) => {
-    setTargetService({ id, title });
+    setTargetCooperatingPartner({ id, title });
     setShowModal(true);
   };
 
   const confirmDelete = async () => {
-    if (targetService) {
-      const result = await ServiceLogic.remove(targetService.id);
+    if (targetCooperatingPartner) {
+      const result = await CooperatingPartnerLogic.remove(targetCooperatingPartner.id);
       if (result.success) {
-        setServices(prev => prev.filter(s => s.id !== targetService.id));
+        setCooperatingPartners(prev => prev.filter(s => s.id !== targetCooperatingPartner.id));
       }
     }
     setShowModal(false);
   };
 
-  const filteredServices = selectedCategory && selectedCategory !== "All"
-    ? services.filter(service => service.category === selectedCategory)
-    : services;
+  const filteredCooperatingPartners = selectedCategory && selectedCategory !== "All"
+    ? CooperatingPartners.filter(CooperatingPartner => CooperatingPartner.category === selectedCategory)
+    : CooperatingPartners;
 
-  const sortedServices = [...filteredServices].sort((a, b) =>
+  const sortedCooperatingPartners = [...filteredCooperatingPartners].sort((a, b) =>
     a.category.localeCompare(b.category)
   );
 
   return (
-    <div className="services-container mt-4">
+    <div className="CooperatingPartners-container mt-4">
       <h2 className="mb-4 dynamic-heading">
-        {selectedCategory ? `${selectedCategory} Services` : "All Available Services through our Cooperating Partners"}
+        {selectedCategory ? `${selectedCategory} CooperatingPartners` : "All Available CooperatingPartners through our Cooperating Partners"}
       </h2>
 
       <Table striped bordered hover responsive className="shadow-sm custom-card">
         <thead className="table-dark">
           <tr>
-            <th>Service Title</th>
+            <th>CooperatingPartner Title</th>
             <th>Category</th>
             <th>Provider</th>
             <th>Investment</th>
@@ -60,30 +60,30 @@ const ServicesMain = ({ selectedCategory }) => {
           </tr>
         </thead>
         <tbody className="dynamic-text">
-          {sortedServices.length > 0 ? (
-            sortedServices.map((service) => (
-              <tr key={service.id}>
-                <td className="fw-bold">{service.title}</td>
+          {sortedCooperatingPartners.length > 0 ? (
+            sortedCooperatingPartners.map((CooperatingPartner) => (
+              <tr key={CooperatingPartner.id}>
+                <td className="fw-bold">{CooperatingPartner.title}</td>
                 <td>
-                  <Badge bg="info" text="dark">{service.category}</Badge>
+                  <Badge bg="info" text="dark">{CooperatingPartner.category}</Badge>
                 </td>
-                <td>{service.company}</td>
-                <td>{service.cost} EUR</td>
-                <td>{service.duration} weeks</td>
-                <td>{service.contact}</td>
+                <td>{CooperatingPartner.company}</td>
+                <td>{CooperatingPartner.cost} EUR</td>
+                <td>{CooperatingPartner.duration} weeks</td>
+                <td>{CooperatingPartner.contact}</td>
                 <td style={{ minWidth: "200px" }}>
                   <Stack direction="horizontal" gap={2}>
                     <Button
                       variant="secondary"
                       size="sm"
-                      onClick={() => navigate(`${ROUTES.changeService}/${service.id}`)}
+                      onClick={() => navigate(`${ROUTES.changeCooperatingPartner}/${CooperatingPartner.id}`)}
                     >
                       Change Data
                     </Button>
                     <Button
                       variant="outline-danger"
                       size="sm"
-                      onClick={() => openConfirmModal(service.id, service.title)}
+                      onClick={() => openConfirmModal(CooperatingPartner.id, CooperatingPartner.title)}
                     >
                       Remove
                     </Button>
@@ -94,7 +94,7 @@ const ServicesMain = ({ selectedCategory }) => {
           ) : (
             <tr>
               <td colSpan="7" className="text-center py-4 text-muted">
-                No services found.
+                No CooperatingPartners found.
               </td>
             </tr>
           )}
@@ -103,10 +103,10 @@ const ServicesMain = ({ selectedCategory }) => {
 
       <Button
         variant="primary"
-        onClick={() => navigate(ROUTES.newService)}
+        onClick={() => navigate(ROUTES.newCooperatingPartner)}
         className="btn-primary"
       >
-        Add New Service
+        Add New CooperatingPartner
       </Button>
 
       <div className="text-muted small mt-2">
@@ -126,7 +126,7 @@ const ServicesMain = ({ selectedCategory }) => {
           <i className="bi bi-exclamation-triangle text-danger" style={{ fontSize: '2rem' }}></i>
           <h5 className="mt-3 fw-bold">Are you sure?</h5>
           <p className="mb-0">
-            You are about to remove <strong>{targetService?.title}</strong>.
+            You are about to remove <strong>{targetCooperatingPartner?.title}</strong>.
           </p>
           <small className="text-muted">This action cannot be undone.</small>
         </Modal.Body>
@@ -143,4 +143,4 @@ const ServicesMain = ({ selectedCategory }) => {
   );
 };
 
-export default ServicesMain;
+export default CooperatingPartnersMain;

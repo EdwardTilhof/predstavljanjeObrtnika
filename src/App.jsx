@@ -17,13 +17,13 @@ import {
   CURRENT_YEAR,
   COMPANY_CID
 } from "./constants";
-import { NewService } from './components/Services/NewService';
+import { NewCooperatingPartner } from './components/CooperatingPartners/NewCooperatingPartner';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import ChangeService from './components/Services/ChangeService';
+import ChangeCooperatingPartner from './components/CooperatingPartners/ChangeCooperatingPartner';
 
 // Pages imports
 import OurProjectsMain from './pages/OurProjectsMain';
-import ServicesMain from "./pages/Services-Main";
+import CooperatingPartnersMain from "./pages/CooperatingPartners-Main";
 import ContactUs from './pages/ContactUs';
 import LoginMain from './pages/LoginMain';
 import RegistrationMain from './pages/RegistrationMain'
@@ -49,9 +49,9 @@ function App() {
       <main>
         <Routes>
           <Route path={ROUTES.home} element={<Home />} />
-          <Route path={ROUTES.services} element={<ServicesMain />} />
-          <Route path={ROUTES.newService} element={<NewService />} />
-          <Route path="/changeService/:id" element={<ChangeService />} />
+          <Route path={ROUTES.CooperatingPartners} element={<CooperatingPartnersMain />} />
+          <Route path={ROUTES.newCooperatingPartner} element={<NewCooperatingPartner />} />
+          <Route path="/changeCooperatingPartner/:id" element={<ChangeCooperatingPartner />} />
           <Route path={ROUTES.ourProjects} element={<OurProjectsMain />} />
           <Route path={ROUTES.contactUs} element={<ContactUs />} />
           <Route path={ROUTES.login} element={<LoginMain />} />

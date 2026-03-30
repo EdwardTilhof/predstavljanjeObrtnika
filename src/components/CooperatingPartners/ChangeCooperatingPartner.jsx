@@ -2,32 +2,32 @@ import { Button, Col, Form, Row, Container, Stack, InputGroup } from "react-boot
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "../../constants";
 import { useEffect, useState } from "react";
-import ServiceLogic from "../Services/Services";
+import CooperatingPartnerLogic from "./CooperatingPartners";
 
-export default function ChangeService() {
+export default function ChangeCooperatingPartner() {
     const navigate = useNavigate();
     const { id } = useParams();
-    const [service, setService] = useState({});
+    const [CooperatingPartner, setCooperatingPartner] = useState({});
 
-    async function fetchService() {
+    async function fetchCooperatingPartner() {
         try {
-            const response = await ServiceLogic.getById(id);
-            setService(response.data);
+            const response = await CooperatingPartnerLogic.getById(id);
+            setCooperatingPartner(response.data);
         } catch (error) {
-            console.error("Error loading service:", error);
+            console.error("Error loading CooperatingPartner:", error);
         }
     }
 
     useEffect(() => {
-        if (id) { fetchService(); }
+        if (id) { fetchCooperatingPartner(); }
     }, [id]);
 
     async function handleUpdate(updatedData) {
         try {
-            await ServiceLogic.update(id, updatedData);
-            navigate(ROUTES.services);
+            await CooperatingPartnerLogic.update(id, updatedData);
+            navigate(ROUTES.CooperatingPartners);
         } catch (error) {
-            alert("Failed to update service data.");
+            alert("Failed to update CooperatingPartner data.");
         }
     }
 
@@ -48,29 +48,29 @@ export default function ChangeService() {
 
     return (
         <Container className="mt-5">
-            <h3 className="mb-4 dynamic-heading">Edit Service: {service.title || "Loading..."}</h3>
+            <h3 className="mb-4 dynamic-heading">Edit CooperatingPartner: {CooperatingPartner.title || "Loading..."}</h3>
             <Form onSubmit={handleSubmit} className="shadow p-4 rounded custom-card border">
 
                 <Row className="mb-3">
                     <Col md={8}>
                         <Form.Group controlId="title">
-                            <Form.Label className="fw-bold dynamic-text">Service Name / Title</Form.Label>
+                            <Form.Label className="fw-bold dynamic-text">CooperatingPartner Name / Title</Form.Label>
                             <Form.Control
                                 type="text" name="title" required
-                                defaultValue={service.title}
+                                defaultValue={CooperatingPartner.title}
                                 placeholder="e.g. Web Development"
-                                key={`title-${service.id}`}
+                                key={`title-${CooperatingPartner.id}`}
                             />
                         </Form.Group>
                     </Col>
                     <Col md={4}>
                         <Form.Group controlId="category">
-                            <Form.Label className="fw-bold dynamic-text">Service Category</Form.Label>
+                            <Form.Label className="fw-bold dynamic-text">CooperatingPartner Category</Form.Label>
                             <Form.Control
                                 type="text" name="category" required
-                                defaultValue={service.category}
+                                defaultValue={CooperatingPartner.category}
                                 placeholder="e.g. IT & Software"
-                                key={`cat-${service.id}`}
+                                key={`cat-${CooperatingPartner.id}`}
                             />
                         </Form.Group>
                     </Col>
@@ -79,12 +79,12 @@ export default function ChangeService() {
                 <Row className="mb-3">
                     <Col md={6}>
                         <Form.Group controlId="company">
-                            <Form.Label className="fw-bold dynamic-text">Service Provider / Company Name</Form.Label>
+                            <Form.Label className="fw-bold dynamic-text">CooperatingPartner Provider / Company Name</Form.Label>
                             <Form.Control
                                 type="text" name="company"
-                                defaultValue={service.company}
+                                defaultValue={CooperatingPartner.company}
                                 placeholder="Enter company name"
-                                key={`comp-${service.id}`}
+                                key={`comp-${CooperatingPartner.id}`}
                             />
                         </Form.Group>
                     </Col>
@@ -93,9 +93,9 @@ export default function ChangeService() {
                             <Form.Label className="fw-bold dynamic-text">Contact Information</Form.Label>
                             <Form.Control
                                 type="text" name="contact"
-                                defaultValue={service.contact}
+                                defaultValue={CooperatingPartner.contact}
                                 placeholder="Email or Phone number"
-                                key={`cont-${service.id}`}
+                                key={`cont-${CooperatingPartner.id}`}
                             />
                         </Form.Group>
                     </Col>
@@ -108,8 +108,8 @@ export default function ChangeService() {
                             <InputGroup>
                                 <Form.Control
                                     type="number" name="cost" step={0.01}
-                                    defaultValue={service.cost}
-                                    key={`cost-${service.id}`}
+                                    defaultValue={CooperatingPartner.cost}
+                                    key={`cost-${CooperatingPartner.id}`}
                                 />
                                 <InputGroup.Text>EUR</InputGroup.Text>
                             </InputGroup>
@@ -121,8 +121,8 @@ export default function ChangeService() {
                             <InputGroup>
                                 <Form.Control
                                     type="number" name="duration"
-                                    defaultValue={service.duration}
-                                    key={`dur-${service.id}`}
+                                    defaultValue={CooperatingPartner.duration}
+                                    key={`dur-${CooperatingPartner.id}`}
                                 />
                                 <InputGroup.Text>weeks</InputGroup.Text>
                             </InputGroup>
@@ -134,16 +134,16 @@ export default function ChangeService() {
                     <Form.Label className="fw-bold dynamic-text">Detailed Description</Form.Label>
                     <Form.Control
                         as="textarea" rows={4} name="description"
-                        defaultValue={service.description}
-                        placeholder="Describe the service details here..."
-                        key={`desc-${service.id}`}
+                        defaultValue={CooperatingPartner.description}
+                        placeholder="Describe the CooperatingPartner details here..."
+                        key={`desc-${CooperatingPartner.id}`}
                     />
                 </Form.Group>
 
                 <hr className="my-4" />
 
                 <Stack direction="horizontal" gap={3} className="justify-content-end">
-                    <Link to={ROUTES.services} className="btn btn-outline-secondary px-4">
+                    <Link to={ROUTES.CooperatingPartners} className="btn btn-outline-secondary px-4">
                         Cancel
                     </Link>
                     <Button type="submit" variant="success" className="px-5 shadow-sm">

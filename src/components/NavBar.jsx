@@ -50,7 +50,7 @@ export default function NavBar({ theme, toggleTheme }) {
             <Nav.Link as={Link} to={ROUTES.home}>Home</Nav.Link>
 
             <NavDropdown title="Menu" id="basic-nav-dropdown">
-              <NavDropdown.Item as={Link} to={ROUTES.services}>Services</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={ROUTES.CooperatingPartners}>Cooperating Partners</NavDropdown.Item>
               <NavDropdown.Item as={Link} to={ROUTES.contactUs}>Contact us</NavDropdown.Item>
               <NavDropdown.Divider />
 
