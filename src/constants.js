@@ -17,7 +17,9 @@ export const ROUTES = {
   newService: "/new-service",
   ourProjects: "/ourProjects",
   changeService: "/changeService",
-  contactUs: "/contactUs"
+  contactUs: "/contactUs",
+  login: "/login",
+  register: "/register"
 };
 
 export const NAV_LINKS = [
@@ -27,7 +29,9 @@ export const NAV_LINKS = [
   { label: "Contact", path: ROUTES.contact },
   { label: "Add Service", path: ROUTES.newService },
   { label: "Our Projects", path: ROUTES.ourProjects },
-  { label: "Change Service", path: ROUTES.changeService},
-  {label: "Contact Us", path: ROUTES.contactUs}
+  { label: "Change Service", path: ROUTES.changeService },
+  { label: "Contact Us", path: ROUTES.contactUs },
+  { label: "Login", path: ROUTES.login },
+  { label: "Register", path: ROUTES.register }
 ];
 

@@ -5,7 +5,7 @@
   --button-text: #ffffff;
 }
 
- /* Light theme */
+/* Light theme */
 [data-bs-theme="light"] {
   --bg-color: #ffffff;
   --text-color: #212529;
@@ -14,33 +14,45 @@
 
   /*Feature card styles light*/
   --feature-card-bg: #ffffff;
-  --feature-icon-color: #007bff; /* Primary Blue */
+  --feature-icon-color: #007bff;
   --feature-text-muted: #6c757d;
   --feature-border: #dee2e6;
 
   /*Text style colors*/
   --heading-color: #007bff;
+
+  /* MDB Coloring log in and registration */
+  --form-card-bg: #ffffff;
+  --input-bg: #ffffff;
+  --input-text: #212529;
+  --input-border: #dee2e6;
 }
 
 /* Dark Theme */
 [data-bs-theme="dark"] {
   --bg-color: #121212;
   --text-color: #f8f9fa;
-  --button-bg: #373b3e; 
+  --button-bg: #373b3e;
   --button-text: #ffffff;
 
-    /*Feature card styles light*/
---feature-card-bg: #1e1e1e;   
-  --feature-icon-color: #3786ff; 
+  /*Feature card styles light*/
+  --feature-card-bg: #1e1e1e;
+  --feature-icon-color: #3786ff;
   --feature-text-muted: #adb5bd;
   --feature-border: #333333;
 
   /*Text style colors*/
   --heading-color: #3786ff;
-  
+
+  /* MDB Coloring log in and registration */
+  --form-card-bg: #1e1e1e;
+  --input-bg: #2b2b2b;
+  --input-text: #f8f9fa;
+  --input-border: #444444;
+
   --bs-body-bg: var(--bg-color);
   --bs-body-color: var(--text-color);
-  --bs-tertiary-bg: #1e1e1e; 
+  --bs-tertiary-bg: #1e1e1e;
 }
 
 body {
@@ -67,4 +79,37 @@ body {
   background-color: var(--feature-card-bg) !important;
   border-color: var(--feature-border) !important;
   color: var(--text-color) !important;
+}
+
+  /* MDB Coloring log in and registration */
+
+  .form-control {
+  background-color: var(--input-bg) !important;
+  color: var(--input-text) !important;
+  border-color: var(--input-border) !important;
+}
+
+.form-label {
+  color: var(--text-color) !important;
+}
+.custom-button-style {
+  background-color: var(--heading-color) !important;
+  border: none !important;
+}
+
+.form-check-label {
+  color: var(--text-color) !important;
+}
+
+.divider:after,
+.divider:before {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--feature-border); /* Uses your theme border color */
+}
+
+/* Lotus Gradient fixed with new colorts matching the theme */
+.gradient-custom-2 {
+  background: linear-gradient(to right, var(--heading-color), #ee7724, #d8363a, #dd3675);
 }

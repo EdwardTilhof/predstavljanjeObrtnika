@@ -1,3 +1,5 @@
+import 'mdb-react-ui-kit/dist/css/mdb.min.css';
+import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
@@ -15,12 +17,16 @@ import {
   CURRENT_YEAR,
   COMPANY_CID
 } from "./constants";
-import ServicesMain from "./pages/Services-Main";
 import { NewService } from './components/Services/NewService';
-import OurProjectsMain from './pages/OurProjectsMain';
-import ChangeService from './components/Services/ChangeService';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import ChangeService from './components/Services/ChangeService';
+
+// Pages imports
+import OurProjectsMain from './pages/OurProjectsMain';
+import ServicesMain from "./pages/Services-Main";
 import ContactUs from './pages/ContactUs';
+import LoginMain from './pages/LoginMain';
+import RegistrationMain from './pages/RegistrationMain'
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -48,6 +54,8 @@ function App() {
           <Route path="/changeService/:id" element={<ChangeService />} />
           <Route path={ROUTES.ourProjects} element={<OurProjectsMain />} />
           <Route path={ROUTES.contactUs} element={<ContactUs />} />
+          <Route path={ROUTES.login} element={<LoginMain />} />
+        <Route path={ROUTES.register} element={<RegistrationMain />} />
         </Routes>
       </main>
 
