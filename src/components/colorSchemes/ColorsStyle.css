@@ -27,6 +27,7 @@
   --input-text: #212529;
   --input-border: #dee2e6;
   --login-card: #373b3e;
+  --card-border-contactUs: #373b3e;
 }
 
 /* Dark Theme */
@@ -50,8 +51,9 @@
   --input-bg: #2b2b2b;
   --input-text: #f8f9fa;
   --input-border: #444444;
-  --login-card: rgba(255, 255, 255, 0.75);
-  
+  --login-card: #ffffffbf;
+  --card-border-contactUs: #ffffffbf;
+
   --bs-body-bg: var(--bg-color);
   --bs-body-color: var(--text-color);
   --bs-tertiary-bg: #1e1e1e;
@@ -175,4 +177,53 @@ body {
 .btn-theme-outline:hover {
   background-color: var(--login-card) !important;
   color: #ffffff !important;
+}
+
+/* contact us page coloring  */
+
+.italic {
+  font-style: italic;
+}
+
+/* taking the login button theming */
+.badge-admin-theme {
+  background-color: var(--login-card) !important;
+  color: var(--bg-color) !important;
+  font-weight: 500;
+  border-color: var(--login-card) !important;
+}
+
+.custom-card {
+  background-color: var(--feature-card-bg) !important;
+  border: 1px solid var(--feature-border) !important; /* Added explicit border */
+  color: var(--text-color) !important;
+}
+
+.badge-admin-theme {
+  background-color: var(--login-card) !important;
+  color: var(--bg-color) !important; /* Dark text in dark mode, light text in light mode */
+  border: none !important;
+}
+
+.btn-post-message {
+  background-color: var(--button-bg) !important;
+  color: var(--button-text) !important;
+  border: none !important;
+  padding: 10px 30px;
+  font-weight: 600;
+}
+
+/* border color of the contact us card */
+
+.custom-card-contact-us {
+  background-color: var(--feature-card-bg) !important;
+
+  border-top-color: var(--heading-color) !important;
+
+  border-right: 1px solid var(--feature-border) !important;
+  border-left: 1px solid var(--feature-border) !important;
+  border-bottom: 1px solid var(--feature-border) !important;
+  border-top: 5px solid var(--card-border-contactUs) !important;
+
+  color: var(--text-color) !important;
 }
