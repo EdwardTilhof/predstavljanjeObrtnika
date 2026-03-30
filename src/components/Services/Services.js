@@ -1,21 +1,27 @@
 import { servicesData } from "./ServicesData";
 
-let data = [...servicesData];
-
 async function getServices() {
-return { data: [...servicesData] };
+    return { data: servicesData };
 }
 
 async function getById(id) {
+    // FIX: Changed 'data' to 'servicesData'
     const service = servicesData.find(s => s.id === parseInt(id));
     return { data: service };
 }
 
+async function create(newService) {
+    servicesData.push(newService);
+    console.log("Service created in source:", newService);
+    return { success: true, data: newService };
+}
+
 async function update(id, updatedService) {
-    const index = servicesData.findIndex(s => s.id === parseInt(id));
+    const numericId = parseInt(id);
+    const index = servicesData.findIndex(s => s.id === numericId);
+    
     if (index !== -1) {
-        data[index] = { ...servicesData[index], ...updatedService };
-        console.log("Service updated:", servicesData[index]);
+        servicesData[index] = { ...servicesData[index], ...updatedService };
         return { success: true, data: servicesData[index] };
     }
     return { success: false, error: "Service not found" };
@@ -23,11 +29,11 @@ async function update(id, updatedService) {
 
 async function remove(id) {
     const numericId = parseInt(id);
+    // FIX: Changed 'data' to 'servicesData'
     const index = servicesData.findIndex(s => s.id === numericId);
 
     if (index !== -1) {
         servicesData.splice(index, 1);
-        console.log(`Deleted ID: ${numericId}. Remaining:`, data.length);
         return { success: true };
     }
     return { success: false, error: "Service not found" };
@@ -37,5 +43,6 @@ export default {
     getServices,
     getById,
     update,
-    remove
+    remove,
+    create
 };
