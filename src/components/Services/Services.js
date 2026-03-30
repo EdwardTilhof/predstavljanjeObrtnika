@@ -1,33 +1,31 @@
 import { servicesData } from "./ServicesData";
 
-let data = [...servicesData];
-
 async function getServices() {
-return { data: [...data] };
+return { data: [...servicesData] };
 }
 
 async function getById(id) {
-    const service = data.find(s => s.id === parseInt(id));
+    const service = servicesData.find(s => s.id === parseInt(id));
     return { data: service };
 }
 
 async function update(id, updatedService) {
-    const index = data.findIndex(s => s.id === parseInt(id));
+    const index = servicesData.findIndex(s => s.id === parseInt(id));
     if (index !== -1) {
-        data[index] = { ...data[index], ...updatedService };
-        console.log("Service updated:", data[index]);
-        return { success: true, data: data[index] };
+        servicesData[index] = { ...servicesData[index], ...updatedService };
+        console.log("Service updated:", servicesData[index]);
+        return { success: true, data: servicesData[index] };
     }
     return { success: false, error: "Service not found" };
 }
 
 async function remove(id) {
     const numericId = parseInt(id);
-    const index = data.findIndex(s => s.id === numericId);
+    const index = servicesData.findIndex(s => s.id === numericId);
 
     if (index !== -1) {
-        data.splice(index, 1);
-        console.log(`Deleted ID: ${numericId}. Remaining:`, data.length);
+        servicesData.splice(index, 1);
+        console.log(`Deleted ID: ${numericId}. Remaining:`, servicesData.length);
         return { success: true };
     }
     return { success: false, error: "Service not found" };
