@@ -15,6 +15,7 @@ function Registration() {
     <MDBContainer fluid>
       <MDBRow className='d-flex justify-content-center align-items-center'>
         <MDBCol lg='9' className='my-5'>
+          {/* Header already matches your theme color */}
           <h1 className="dynamic-heading mb-4 text-center">Create an Account</h1>
 
           <MDBCard className='custom-card shadow'>
@@ -29,7 +30,8 @@ function Registration() {
                 </MDBCol>
               </MDBRow>
 
-              <hr className="mx-n3" style={{ opacity: 0.1 }} />
+              {/* Updated HR to use your theme's border variable */}
+              <hr className="mx-n3" style={{ borderColor: 'var(--feature-border)', opacity: 0.2 }} />
 
               <MDBRow className='align-items-center pt-4 pb-3'>
                 <MDBCol md='3' className='ps-5'>
@@ -40,7 +42,7 @@ function Registration() {
                 </MDBCol>
               </MDBRow>
 
-              <hr className="mx-n3" style={{ opacity: 0.1 }} />
+              <hr className="mx-n3" style={{ borderColor: 'var(--feature-border)', opacity: 0.2 }} />
 
               <MDBRow className='align-items-center pt-4 pb-3'>
                 <MDBCol md='3' className='ps-5'>
@@ -51,7 +53,7 @@ function Registration() {
                 </MDBCol>
               </MDBRow>
 
-              <hr className="mx-n3" style={{ opacity: 0.1 }} />
+              <hr className="mx-n3" style={{ borderColor: 'var(--feature-border)', opacity: 0.2 }} />
 
               <MDBRow className='align-items-center pt-4 pb-3'>
                 <MDBCol md='3' className='ps-5'>
@@ -62,10 +64,13 @@ function Registration() {
                 </MDBCol>
               </MDBRow>
 
-              <hr className="mx-n3" style={{ opacity: 0.1 }} />
+              <hr className="mx-n3" style={{ borderColor: 'var(--feature-border)', opacity: 0.2 }} />
 
               <div className='text-center'>
-                <MDBBtn className='my-4 px-5' size='lg'>Register</MDBBtn>
+                {/* REPAIR: Added btn-theme-solid and shadow-none */}
+                <MDBBtn className='my-4 px-5 btn-theme-solid shadow-none' size='lg'>
+                  Register
+                </MDBBtn>
               </div>
 
             </MDBCardBody>

@@ -9,23 +9,24 @@
 [data-bs-theme="light"] {
   --bg-color: #ffffff;
   --text-color: #212529;
-  --button-bg: #007bff;
+  --button-bg: #373b3e;
   --button-text: #ffffff;
 
   /*Feature card styles light*/
   --feature-card-bg: #ffffff;
-  --feature-icon-color: #007bff;
+  --feature-icon-color: #373b3e;
   --feature-text-muted: #6c757d;
   --feature-border: #dee2e6;
 
   /*Text style colors*/
-  --heading-color: #007bff;
+  --heading-color: #373b3e;
 
   /* MDB Coloring log in and registration */
   --form-card-bg: #ffffff;
   --input-bg: #ffffff;
   --input-text: #212529;
   --input-border: #dee2e6;
+  --login-card: #373b3e;
 }
 
 /* Dark Theme */
@@ -49,7 +50,8 @@
   --input-bg: #2b2b2b;
   --input-text: #f8f9fa;
   --input-border: #444444;
-
+  --login-card: rgba(255, 255, 255, 0.75);
+  
   --bs-body-bg: var(--bg-color);
   --bs-body-color: var(--text-color);
   --bs-tertiary-bg: #1e1e1e;
@@ -81,9 +83,9 @@ body {
   color: var(--text-color) !important;
 }
 
-  /* MDB Coloring log in and registration */
+/* MDB Coloring log in and registration */
 
-  .form-control {
+.form-control {
   background-color: var(--input-bg) !important;
   color: var(--input-text) !important;
   border-color: var(--input-border) !important;
@@ -92,6 +94,7 @@ body {
 .form-label {
   color: var(--text-color) !important;
 }
+
 .custom-button-style {
   background-color: var(--heading-color) !important;
   border: none !important;
@@ -106,10 +109,70 @@ body {
   content: "";
   flex: 1;
   height: 1px;
-  background: var(--feature-border); /* Uses your theme border color */
+  background: var(--feature-border);
+  /* Uses your theme border color */
 }
 
 /* Lotus Gradient fixed with new colorts matching the theme */
 .gradient-custom-2 {
   background: linear-gradient(to right, var(--heading-color), #ee7724, #d8363a, #dd3675);
+}
+
+/* NavBar Hamburger Icon */
+
+/* Navbar icon image for safety */
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2833, 37, 41, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: middle;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;
+}
+
+[data-bs-theme="dark"] .navbar-toggler-icon {
+  filter: invert(1) brightness(200%) !important;
+}
+
+.navbar-toggler {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 992px) {
+  .navbar-toggler {
+    display: none !important;
+  }
+}
+
+/* LogIn and register buttons navbar */
+
+/* Solid Theme Button (Register/Submit) */
+.btn-theme-solid {
+  background-color: var(--button-bg) !important;
+  color: var(--button-text) !important;
+  border: none !important;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-theme-solid:hover {
+  filter: brightness(90%) !important;
+  transform: translateY(-1px);
+}
+
+/* Outline Theme Button (Log In/Toggle) */
+.btn-theme-outline {
+  background-color: transparent !important;
+  color: var(--login-card) !important;
+  border: 2px solid var(--login-card) !important;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-theme-outline:hover {
+  background-color: var(--login-card) !important;
+  color: #ffffff !important;
 }
