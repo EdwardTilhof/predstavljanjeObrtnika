@@ -1,5 +1,7 @@
 import { servicesData } from "./ServicesData";
 
+let data = [...servicesData];
+
 async function getServices() {
 return { data: [...servicesData] };
 }
@@ -12,7 +14,7 @@ async function getById(id) {
 async function update(id, updatedService) {
     const index = servicesData.findIndex(s => s.id === parseInt(id));
     if (index !== -1) {
-        servicesData[index] = { ...servicesData[index], ...updatedService };
+        data[index] = { ...servicesData[index], ...updatedService };
         console.log("Service updated:", servicesData[index]);
         return { success: true, data: servicesData[index] };
     }
@@ -25,7 +27,7 @@ async function remove(id) {
 
     if (index !== -1) {
         servicesData.splice(index, 1);
-        console.log(`Deleted ID: ${numericId}. Remaining:`, servicesData.length);
+        console.log(`Deleted ID: ${numericId}. Remaining:`, data.length);
         return { success: true };
     }
     return { success: false, error: "Service not found" };
