@@ -1,4 +1,4 @@
-import { Container, Navbar, Nav, NavDropdown, Button } from "react-bootstrap"; 
+import { Container, Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { COMPANY_NAME, ROUTES } from "../constants";
 
@@ -14,10 +14,10 @@ export default function NavBar({ theme, toggleTheme }) {
           <Button
             variant="link"
             onClick={toggleTheme}
-            className="me-2 text-decoration-none p-0 shadow-none" 
-            style={{ fontSize: '1.2rem', color: 'inherit' }} 
-            >
-            {theme === 'light' ? '🌙' : '☀️'} 
+            className="me-2 text-decoration-none p-0 shadow-none"
+            style={{ fontSize: '1.2rem', color: 'inherit' }}
+          >
+            {theme === 'light' ? '🌙' : '☀️'}
           </Button>
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -28,14 +28,26 @@ export default function NavBar({ theme, toggleTheme }) {
             <Nav.Link as={Link} to={ROUTES.home}>
               Home page
             </Nav.Link>
- {/* Services starting page  */}
+            {/* Services starting page  */}
             <NavDropdown title="Menu" id="basic-nav-dropdown">
               <NavDropdown.Item as={Link} to={ROUTES.services}>
                 Services
               </NavDropdown.Item>
- {/* Contact us starting page  */}
+              {/* Contact us starting page  */}
               <NavDropdown.Item as={Link} to={ROUTES.contactUs}>
                 Contact us
+              </NavDropdown.Item>
+
+            </NavDropdown>
+            {/*starting for vjezbanje*/}
+            <NavDropdown title="Vjezbanje" id="vjezbanje-nav-dropdown">
+              {/* Note: We use href instead of as={Link} to treat it as a separate file */}
+              <NavDropdown.Item
+                href="/vjezba01/index.html"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Vjezba 01
               </NavDropdown.Item>
 
               <NavDropdown.Divider />

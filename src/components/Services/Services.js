@@ -4,7 +4,8 @@ import { STORAGE_KEY } from "../../constants";
 const _getRawData = () => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (!saved) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(initialData));
+        const emptyArray = [];
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(emptyArray));
         return initialData;
     }
     return JSON.parse(saved);
@@ -26,9 +27,12 @@ async function getById(id) {
 
 async function create(newService) {
     const data = _getRawData();
-    data.push(newService);
+    const nextId = data.length > 0 ? Math.max(...data.map(s => s.id)) + 1 : 1;
+    const serviceWithId = { ...newService, id: nextId };
+    
+    data.push(serviceWithId);
     _saveRawData(data);
-    return { success: true, data: newService };
+    return { success: true, data: serviceWithId };
 }
 
 async function update(id, updatedService) {
@@ -57,7 +61,7 @@ async function remove(id) {
 }
 
 export default {
-    getServices,
+    getServices, 
     getById,
     update,
     remove,

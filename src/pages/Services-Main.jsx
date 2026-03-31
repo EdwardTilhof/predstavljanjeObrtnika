@@ -9,6 +9,7 @@ const ServicesMain = ({ selectedCategory }) => {
   const [services, setServices] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [targetService, setTargetService] = useState(null);
+  const categories = ["All", ...new Set(services.map(s => s.category))];
 
   useEffect(() => {
     const loadData = async () => {
@@ -113,9 +114,9 @@ const ServicesMain = ({ selectedCategory }) => {
         * Prices and durations are estimates based on standard project scopes...
       </div>
 
-      <Modal 
-        show={showModal} 
-        onHide={() => setShowModal(false)} 
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
         centered
         contentClassName="custom-card dynamic-text" // Uses your existing theme classes
       >

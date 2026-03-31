@@ -17,7 +17,9 @@ export const ROUTES = {
   newService: "/new-service",
   ourProjects: "/ourProjects",
   changeService: "/changeService",
-  contactUs: "/contactUs"
+  contactUs: "/contactUs",
+
+vjezba01: "/vjezba01"
 };
 
 export const NAV_LINKS = [
@@ -28,7 +30,9 @@ export const NAV_LINKS = [
   { label: "Add Service", path: ROUTES.newService },
   { label: "Our Projects", path: ROUTES.ourProjects },
   { label: "Change Service", path: ROUTES.changeService},
-  {label: "Contact Us", path: ROUTES.contactUs}
+  {label: "Contact Us", path: ROUTES.contactUs},
+
+{ label: "Vjezba 01", path: ROUTES.vjezba01 }
 ];
 
 // Data, Local storage
