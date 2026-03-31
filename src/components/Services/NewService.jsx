@@ -2,28 +2,29 @@ import { Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants";
 import { servicesData } from "./ServicesData";
+import ServiceLogic from "./Services";
 
 export function NewService() {
 
     const navigate = useNavigate();
 
-   const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
 
         const rawCost = formData.get("cost").replace(/[^0-9.]/g, "");
-    const rawDuration = formData.get("duration").replace(/[^0-9]/g, "");
+        const rawDuration = formData.get("duration").replace(/[^0-9]/g, "");
 
-    const costValue = parseFloat(rawCost);
-    const durationValue = parseInt(rawDuration, 10);
+        const costValue = parseFloat(rawCost);
+        const durationValue = parseInt(rawDuration, 10);
 
-    if (isNaN(costValue) || isNaN(durationValue)) {
-        alert("Please enter valid numbers for Cost and Duration.");
-        return;
-    }
+        if (isNaN(costValue) || isNaN(durationValue)) {
+            alert("Please enter valid numbers for Cost and Duration.");
+            return;
+        }
 
-    const newService = {
-            id: Math.floor(Math.random() * 10000), // Generate a random ID for demonstration
+        const newService = {
+            id: Date.now(), 
             title: formData.get("title"),
             category: formData.get("category"),
             company: formData.get("company"),
@@ -32,7 +33,7 @@ export function NewService() {
             contact: formData.get("contact"),
             description: formData.get("description")
         };
-        servicesData.push(newService);
+        await ServiceLogic.create(newService);
         navigate(ROUTES.services);
     }
 

@@ -2,7 +2,7 @@ import { Button, Col, Form, Row, Container, Stack, InputGroup, Spinner } from "r
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "../../constants";
 import { useEffect, useState } from "react";
-import ServiceLogic from "../Services/Services";
+import ServiceLogic from "./Services";
 
 export default function ChangeService() {
     const navigate = useNavigate();
@@ -36,14 +36,22 @@ export default function ChangeService() {
         e.preventDefault();
         const formData = new FormData(e.target);
 
+        const updatedCost = parseFloat(formData.get('cost'));
+        const updatedDuration = parseInt(formData.get('duration'), 10);
+
+        if (isNaN(updatedCost) || isNaN(updatedDuration)) {
+            alert("Please provide valid numbers for Investment and Duration.");
+            return;
+        }
+
         handleUpdate({
             title: formData.get('title'),
             category: formData.get('category'),
             company: formData.get('company'),
             contact: formData.get('contact'),
             description: formData.get('description'),
-            cost: parseFloat(formData.get('cost')),
-            duration: parseInt(formData.get('duration')),
+            cost: updatedCost,
+            duration: updatedDuration,
         });
     }
 

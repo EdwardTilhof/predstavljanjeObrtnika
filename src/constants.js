@@ -31,3 +31,8 @@ export const NAV_LINKS = [
   {label: "Contact Us", path: ROUTES.contactUs}
 ];
 
+// Data, Local storage
+
+export const DATA_SOURCE = localStorage
+export const STORAGE_KEY = "my_app_services";
+

@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
 import { Container } from 'react-bootstrap'
 import { Routes, Route } from 'react-router-dom'
+import './components/colorSchemes/ColorsStyle.css';
 
 import NavBar from "./components/NavBar"
 import Home from "./pages/Home"
@@ -23,6 +24,11 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import ContactUs from './pages/ContactUs';
 
 function App() {
+
+  const isDevelopment =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1";
+
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("theme") || "light";
   });
@@ -35,11 +41,9 @@ function App() {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
-
   return (
-    <Container className='MainContainer'>
+    <Container className={`MainContainer ${isDevelopment ? 'dev-mode' : ''}`} fluid>
       <NavBar theme={theme} toggleTheme={toggleTheme} />
-
       <main>
         <Routes>
           <Route path={ROUTES.home} element={<Home />} />
