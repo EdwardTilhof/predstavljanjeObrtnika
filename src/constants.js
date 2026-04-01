@@ -12,11 +12,11 @@ export const CURRENT_YEAR = new Date().getFullYear();
 export const ROUTES = {
   home: "/",
   about: "/about",
-  services: "/services/services-main",
+  CooperatingPartners: "/CooperatingPartners/CooperatingPartners-main",
   contact: "/contact",
-  newService: "/new-service",
+  newCooperatingPartner: "/new-CooperatingPartner",
   ourProjects: "/ourProjects",
-  changeService: "/changeService",
+  changeCooperatingPartner: "/changeCooperatingPartner",
   contactUs: "/contactUs",
 
 vjezba01: "/vjezba01"
@@ -25,11 +25,11 @@ vjezba01: "/vjezba01"
 export const NAV_LINKS = [
   { label: "Home", path: ROUTES.home },
   { label: "About", path: ROUTES.about },
-  { label: "Services", path: ROUTES.services },
+  { label: "CooperatingPartners", path: ROUTES.CooperatingPartners },
   { label: "Contact", path: ROUTES.contact },
-  { label: "Add Service", path: ROUTES.newService },
+  { label: "Add CooperatingPartner", path: ROUTES.newCooperatingPartner },
   { label: "Our Projects", path: ROUTES.ourProjects },
-  { label: "Change Service", path: ROUTES.changeService},
+  { label: "Change CooperatingPartner", path: ROUTES.changeCooperatingPartner},
   {label: "Contact Us", path: ROUTES.contactUs},
 
 { label: "Vjezba 01", path: ROUTES.vjezba01 }
@@ -38,5 +38,5 @@ export const NAV_LINKS = [
 // Data, Local storage
 
 export const DATA_SOURCE = localStorage
-export const STORAGE_KEY = "my_app_services";
+export const STORAGE_KEY = "my_app_CooperatingPartners";
 

@@ -1,4 +1,4 @@
-import { servicesData as initialData } from "./ServicesData";
+import { CooperatingPartnersData as initialData } from "./CooperatingPartnersData";
 import { STORAGE_KEY } from "../../constants";
 
 const _getRawData = () => {
@@ -15,37 +15,37 @@ const _saveRawData = (data) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 };
 
-async function getServices() {
+async function getCooperatingPartners() {
     return { data: _getRawData() };
 }
 
 async function getById(id) {
     const data = _getRawData();
-    const service = data.find(s => s.id === parseInt(id));
-    return { data: service };
+    const CooperatingPartner = data.find(s => s.id === parseInt(id));
+    return { data: CooperatingPartner };
 }
 
-async function create(newService) {
+async function create(newCooperatingPartner) {
     const data = _getRawData();
     const nextId = data.length > 0 ? Math.max(...data.map(s => s.id)) + 1 : 1;
-    const serviceWithId = { ...newService, id: nextId };
+    const CooperatingPartnerWithId = { ...newCooperatingPartner, id: nextId };
     
-    data.push(serviceWithId);
+    data.push(CooperatingPartnerWithId);
     _saveRawData(data);
-    return { success: true, data: serviceWithId };
+    return { success: true, data: CooperatingPartnerWithId };
 }
 
-async function update(id, updatedService) {
+async function update(id, updatedCooperatingPartner) {
     const data = _getRawData();
     const numericId = parseInt(id);
     const index = data.findIndex(s => s.id === numericId);
     
     if (index !== -1) {
-        data[index] = { ...data[index], ...updatedService };
+        data[index] = { ...data[index], ...updatedCooperatingPartner };
         _saveRawData(data);
         return { success: true, data: data[index] };
     }
-    return { success: false, error: "Service not found" };
+    return { success: false, error: "CooperatingPartner not found" };
 }
 
 async function remove(id) {
@@ -57,11 +57,11 @@ async function remove(id) {
         _saveRawData(filtered);
         return { success: true };
     }
-    return { success: false, error: "Service not found" };
+    return { success: false, error: "CooperatingPartner not found" };
 }
 
 export default {
-    getServices, 
+    getCooperatingPartners, 
     getById,
     update,
     remove,

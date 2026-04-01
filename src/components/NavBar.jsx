@@ -28,10 +28,10 @@ export default function NavBar({ theme, toggleTheme }) {
             <Nav.Link as={Link} to={ROUTES.home}>
               Home page
             </Nav.Link>
-            {/* Services starting page  */}
+            {/* CooperatingPartners starting page  */}
             <NavDropdown title="Menu" id="basic-nav-dropdown">
-              <NavDropdown.Item as={Link} to={ROUTES.services}>
-                Services
+              <NavDropdown.Item as={Link} to={ROUTES.CooperatingPartners}>
+                CooperatingPartners
               </NavDropdown.Item>
               {/* Contact us starting page  */}
               <NavDropdown.Item as={Link} to={ROUTES.contactUs}>

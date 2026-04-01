@@ -1,10 +1,10 @@
 import { Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants";
-import { servicesData } from "./ServicesData";
-import ServiceLogic from "./Services";
+import { CooperatingPartnersData } from "./CooperatingPartnersData";
+import CooperatingPartnerLogic from "./CooperatingPartners";
 
-export function NewService() {
+export function NewCooperatingPartner() {
 
     const navigate = useNavigate();
 
@@ -23,7 +23,7 @@ const handleSubmit = async (e) => {
             return;
         }
 
-        const newService = {
+        const newCooperatingPartner = {
             id: Date.now(), 
             title: formData.get("title"),
             category: formData.get("category"),
@@ -33,13 +33,13 @@ const handleSubmit = async (e) => {
             contact: formData.get("contact"),
             description: formData.get("description")
         };
-        await ServiceLogic.create(newService);
-        navigate(ROUTES.services);
+        await CooperatingPartnerLogic.create(newCooperatingPartner);
+        navigate(ROUTES.CooperatingPartners);
     }
 
     return (
-        <div className="new-service-form">
-            <h2 className="mb-4">Add New Service</h2>
+        <div className="new-CooperatingPartner-form">
+            <h2 className="mb-4">Add New CooperatingPartner</h2>
             <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3">
                     <Form.Label>Title</Form.Label>
@@ -76,9 +76,9 @@ const handleSubmit = async (e) => {
 
                 <div className="mt-4">
                     <Button type="submit" variant="primary" className="me-2">
-                        Add Service
+                        Add CooperatingPartner
                     </Button>
-                    <Button variant="secondary" onClick={() => navigate(ROUTES.services)}>
+                    <Button variant="secondary" onClick={() => navigate(ROUTES.CooperatingPartners)}>
                         Cancel
                     </Button>
                 </div>            

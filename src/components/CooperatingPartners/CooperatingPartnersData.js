@@ -1,4 +1,4 @@
-export const servicesData = [
+export const CooperatingPartnersData = [
   {
     id: 1,
     title: "Web Development",

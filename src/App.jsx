@@ -16,10 +16,10 @@ import {
   CURRENT_YEAR,
   COMPANY_CID
 } from "./constants";
-import ServicesMain from "./pages/Services-Main";
-import { NewService } from './components/Services/NewService';
+import CooperatingPartnersMain from "./pages/CooperatingPartnersMain";
+import { NewCooperatingPartner } from './components/CooperatingPartners/NewCooperatingPartner';
 import OurProjectsMain from './pages/OurProjectsMain';
-import ChangeService from './components/Services/ChangeService';
+import ChangeCooperatingPartner from './components/CooperatingPartners/ChangeCooperatingPartner';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import ContactUs from './pages/ContactUs';
 
@@ -47,9 +47,9 @@ function App() {
       <main>
         <Routes>
           <Route path={ROUTES.home} element={<Home />} />
-          <Route path={ROUTES.services} element={<ServicesMain />} />
-          <Route path={ROUTES.newService} element={<NewService />} />
-          <Route path="/changeService/:id" element={<ChangeService />} />
+          <Route path={ROUTES.CooperatingPartners} element={<CooperatingPartnersMain />} />
+          <Route path={ROUTES.newCooperatingPartner} element={<NewCooperatingPartner />} />
+          <Route path="/changeCooperatingPartner/:id" element={<ChangeCooperatingPartner />} />
           <Route path={ROUTES.ourProjects} element={<OurProjectsMain />} />
           <Route path={ROUTES.contactUs} element={<ContactUs />} />
 
