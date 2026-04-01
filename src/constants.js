@@ -37,6 +37,5 @@ export const NAV_LINKS = [
 
 // Data, Local storage
 
-export const DATA_SOURCE = localStorage
-export const STORAGE_KEY = "my_app_CooperatingPartners";
+export const DATA_SOURCE = 'localStorage'
 

@@ -49,7 +49,7 @@ function App() {
           <Route path={ROUTES.home} element={<Home />} />
           <Route path={ROUTES.CooperatingPartners} element={<CooperatingPartnersMain />} />
           <Route path={ROUTES.newCooperatingPartner} element={<NewCooperatingPartner />} />
-          <Route path="/changeCooperatingPartner/:id" element={<ChangeCooperatingPartner />} />
+          <Route path={ROUTES.changeCooperatingPartner} element={<ChangeCooperatingPartner />} />
           <Route path={ROUTES.ourProjects} element={<OurProjectsMain />} />
           <Route path={ROUTES.contactUs} element={<ContactUs />} />
 

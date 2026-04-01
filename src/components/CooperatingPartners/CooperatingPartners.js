@@ -1,12 +1,11 @@
-import { CooperatingPartnersData as initialData } from "./CooperatingPartnersData";
-import { STORAGE_KEY } from "../../constants";
+const STORAGE_KEY = 'my_app_CooperatingPartners'
 
 const _getRawData = () => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (!saved) {
         const emptyArray = [];
         localStorage.setItem(STORAGE_KEY, JSON.stringify(emptyArray));
-        return initialData;
+        return emptyArray;
     }
     return JSON.parse(saved);
 };

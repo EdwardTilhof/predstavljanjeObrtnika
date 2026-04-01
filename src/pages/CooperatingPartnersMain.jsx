@@ -9,7 +9,6 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
   const [CooperatingPartners, setCooperatingPartners] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [targetCooperatingPartner, setTargetCooperatingPartner] = useState(null);
-  const categories = ["All", ...new Set(CooperatingPartners.map(s => s.category))];
 
   useEffect(() => {
     const loadData = async () => {
