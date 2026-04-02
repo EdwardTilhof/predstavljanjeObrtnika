@@ -1,13 +1,12 @@
-import { Form, Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { Button, Col, Form, Row, Container, Stack, InputGroup } from "react-bootstrap";
+import { useNavigate, Link } from "react-router-dom";
 import { ROUTES } from "../../constants";
 import CooperatingPartnerLogic from "./CooperatingPartners";
 
 export function NewCooperatingPartner() {
-
     const navigate = useNavigate();
 
-const handleSubmit = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
 
@@ -18,70 +17,144 @@ const handleSubmit = async (e) => {
         const durationValue = parseInt(rawDuration, 10);
 
         if (isNaN(costValue) || isNaN(durationValue)) {
-            alert("Please enter valid numbers for Cost and Duration.");
+            alert("Please enter valid numbers for Investment and Duration.");
             return;
         }
 
         const newCooperatingPartner = {
-            id: Date.now(), 
+            id: Date.now(),
             title: formData.get("title"),
             category: formData.get("category"),
             company: formData.get("company"),
+            contact: formData.get("contact"),
+            description: formData.get("description"),
             cost: costValue,
             duration: durationValue,
-            contact: formData.get("contact"),
-            description: formData.get("description")
         };
-        await CooperatingPartnerLogic.create(newCooperatingPartner);
-        navigate(ROUTES.CooperatingPartners);
-    }
+
+        try {
+            await CooperatingPartnerLogic.create(newCooperatingPartner);
+            navigate(ROUTES.CooperatingPartners);
+        } catch (error) {
+            console.error("Error creating CooperatingPartner:", error);
+            alert("Failed to create new CooperatingPartner.");
+        }
+    };
 
     return (
-        <div className="new-CooperatingPartner-form">
-            <h2 className="mb-4">Add New CooperatingPartner</h2>
-            <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3">
-                    <Form.Label>Title</Form.Label>
-                    <Form.Control type="text" name="title" required />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                    <Form.Label>Category</Form.Label>
-                    <Form.Control type="text" name="category" required />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                    <Form.Label>Company</Form.Label>
-                    <Form.Control type="text" name="company" required />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                    <Form.Label>Cost</Form.Label>
-                    <Form.Control type="text" name="cost" required />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                    <Form.Label>Duration</Form.Label>
-                    <Form.Control type="text" name="duration" required />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                    <Form.Label>Contact</Form.Label>
-                    <Form.Control type="email" name="contact" required />
-                </Form.Group>
+        <Container className="mt-5">
+            <h3 className="mb-4 dynamic-heading">Add New Cooperating Partner</h3>
+            <Form onSubmit={handleSubmit} className="shadow p-4 rounded custom-card border">
                 
-                <Form.Group className="mb-3">
-                    <Form.Label>Description</Form.Label>
-                    < Form.Control as="textarea" rows={3} name="description" required />
+                {/* Title and Category */}
+                <Row className="mb-3">
+                    <Col md={6}>
+                        <Form.Group controlId="title">
+                            <Form.Label className="fw-bold dynamic-text">Work Title</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="title"
+                                required
+                                placeholder="e.g. Web Development"
+                            />
+                        </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                        <Form.Group controlId="category">
+                            <Form.Label className="fw-bold dynamic-text">CooperatingPartner Category</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="category"
+                                required
+                                placeholder="e.g. IT & Software"
+                            />
+                        </Form.Group>
+                    </Col>
+                </Row>
+
+                {/* Company and Contact */}
+                <Row className="mb-3">
+                    <Col md={6}>
+                        <Form.Group controlId="company">
+                            <Form.Label className="fw-bold dynamic-text">Company Name/Provider</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="company"
+                                required
+                                placeholder="Enter company name"
+                            />
+                        </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                        <Form.Group controlId="contact">
+                            <Form.Label className="fw-bold dynamic-text">Contact Information</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="contact"
+                                required
+                                placeholder="Email or phone"
+                            />
+                        </Form.Group>
+                    </Col>
+                </Row>
+
+                {/* Cost and Duration */}
+                <Row className="mb-3">
+                    <Col md={6}>
+                        <Form.Group controlId="cost">
+                            <Form.Label className="fw-bold dynamic-text">Total Investment</Form.Label>
+                            <InputGroup>
+                                <Form.Control
+                                    type="number"
+                                    name="cost"
+                                    step={0.01}
+                                    required
+                                    placeholder="0.00"
+                                />
+                                <InputGroup.Text>EUR</InputGroup.Text>
+                            </InputGroup>
+                        </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                        <Form.Group controlId="duration">
+                            <Form.Label className="fw-bold dynamic-text">Project Duration</Form.Label>
+                            <InputGroup>
+                                <Form.Control
+                                    type="number"
+                                    name="duration"
+                                    required
+                                    placeholder="0"
+                                />
+                                <InputGroup.Text>weeks</InputGroup.Text>
+                            </InputGroup>
+                        </Form.Group>
+                    </Col>
+                </Row>
+
+                {/* Description */}
+                <Form.Group className="mb-4" controlId="description">
+                    <Form.Label className="fw-bold dynamic-text">Detailed Description</Form.Label>
+                    <Form.Control
+                        as="textarea"
+                        rows={4}
+                        name="description"
+                        required
+                        placeholder="Describe the CooperatingPartner details here..."
+                    />
                 </Form.Group>
 
-                <hr style={{ marginTop: '50px', border: '0px' }} />
+                <hr className="my-4" />
 
-
-                <div className="mt-4">
-                    <Button type="submit" variant="primary" className="me-2">
+                {/* Actions */}
+                <Stack direction="horizontal" gap={3} className="justify-content-end">
+                    <Link to={ROUTES.CooperatingPartners} className="btn btn-outline-secondary px-4">
+                        Cancel
+                    </Link>
+                    <Button type="submit" variant="primary" className="px-5 shadow-sm">
                         Add CooperatingPartner
                     </Button>
-                    <Button variant="secondary" onClick={() => navigate(ROUTES.CooperatingPartners)}>
-                        Cancel
-                    </Button>
-                </div>            
-                </Form>
-        </div>
+                </Stack>
+            </Form>
+        </Container>
     );
 }

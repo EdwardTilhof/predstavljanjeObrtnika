@@ -19,7 +19,7 @@ export default function NavBar({ theme, toggleTheme }) {
         </Navbar.Brand>
 
         <div className="d-flex align-items-center order-lg-3">
-          
+
           {/* 1. STORAGE SWITCHER */}
           <Stack direction="horizontal" gap={2} className="me-2 border-end pe-2">
             <span className="small fw-bold text-muted" style={{ fontSize: '0.6rem' }}>D Base:</span>
@@ -42,7 +42,11 @@ export default function NavBar({ theme, toggleTheme }) {
             {currentUser ? (
               <Stack direction="horizontal" gap={2}>
                 <span className="fw-bold text-primary small d-flex align-items-center">
-                  <i className="bi bi-person-circle me-1"></i>
+                  <Button as={Link} to={ROUTES.userProfile}
+                    variant="primary"
+                    size="sm"
+                    className="bi bi-person-circle me-1">
+                  </Button>
                   <span className="d-none d-sm-inline">{currentUser.username}</span>
                 </span>
                 <Button

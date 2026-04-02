@@ -49,34 +49,10 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
       <h2 className="mb-4 dynamic-heading">
         {selectedCategory ? `${selectedCategory} Partners` : "Cooperating Partners"}
       </h2>
-
-      {/* Data Source Switcher
-      <div className="bg-light p-3 mb-4 border rounded shadow-sm">
-        <Form>
-          <Form.Label className="fw-bold me-3">Storage Mode:</Form.Label>
-          <Form.Check
-            type="radio"
-            label="Memory (Temporary)"
-            name="storageSource"
-            id="mem"
-            checked={dataSource === 'memory'}
-            onChange={() => setDataSource('memory')}
-          />
-          <Form.Check
-            type="radio"
-            label="Local Storage (Persistent)"
-            name="storageSource"
-            id="loc"
-            checked={dataSource === 'localStorage'}
-            onChange={() => setDataSource('localStorage')}
-          />
-        </Form>
-      </div> */}
-
       <Table striped bordered hover responsive className="shadow-sm custom-card">
         <thead className="table-dark">
           <tr>
-            <th>Title</th>
+            <th>Work title</th>
             <th>Category</th>
             <th>Provider</th>
             <th>Investment</th>

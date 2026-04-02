@@ -20,7 +20,8 @@ export const ROUTES = {
   contactUs: "/contactUs",
   vjezba01: "/vjezba01",
   login: "/login",
-  registration: "/register"
+  registration: "/register",
+  userProfile: "/userProfile"
 };
 
 export const NAV_LINKS = [
@@ -35,6 +36,7 @@ export const NAV_LINKS = [
   { label: "Vjezba 01", path: ROUTES.vjezba01 },
   { label: "LogIn", path: ROUTES.login },
   { label: "Registration", path: ROUTES.registration },
+  { label: "UserProfile", path: ROUTES.userProfile },
 ];
 
 // Data, Local storage

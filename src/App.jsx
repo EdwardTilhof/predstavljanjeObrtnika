@@ -22,9 +22,10 @@ import { NewCooperatingPartner } from './components/CooperatingPartners/NewCoope
 import OurProjectsMain from './pages/OurProjectsMain';
 import ChangeCooperatingPartner from './components/CooperatingPartners/ChangeCooperatingPartner';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import ContactUs from './pages/ContactUs';
-import LogInPage from './UserData/LogInComponent'
-import RegistrationPage from './UserData/RegistrationComponent'
+import ContactUs from './pages/ContactUsMain';
+import LogInPage from './UserData/LogInComponent';
+import RegistrationPage from './UserData/RegistrationComponent';
+import UserProfileMain from './pages/UserProfileMain';
 
 function App() {
 
@@ -58,6 +59,7 @@ function App() {
           <Route path={ROUTES.contactUs} element={<ContactUs />} />
           <Route path={ROUTES.login} element={<LogInPage />} />
           <Route path={ROUTES.registration} element={<RegistrationPage />} />
+          <Route path={ROUTES.userProfile} element={<UserProfileMain />} />
 
         </Routes>
       </main>

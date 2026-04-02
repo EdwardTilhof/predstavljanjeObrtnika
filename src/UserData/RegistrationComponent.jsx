@@ -4,21 +4,19 @@ import { useDataSource } from '../DataSource/DataSourceContext';
 import AuthLogic from './AuthLogic';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../constants';
-
-// ✅ NEW IMPORTS
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 
 const Register = () => {
-    const { dataSource } = useDataSource();
+    const { dataSource, loginUser } = useDataSource();
 
     const [formData, setFormData] = useState({
         username: '',
         email: '',
         password: '',
         confirmPassword: '',
-        phone: '' // ✅ NEW FIELD
+        phone: ''
     });
 
     const [message, setMessage] = useState({ text: '', variant: '' });
@@ -29,7 +27,7 @@ const Register = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    // ✅ PHONE HANDLER
+    //  PHONE HANDLER
     const handlePhoneChange = (value) => {
         setFormData({ ...formData, phone: value });
     };
@@ -43,7 +41,7 @@ const Register = () => {
             return;
         }
 
-        // ✅ OPTIONAL: phone validation before submit
+        //  OPTIONAL: phone validation before submit
         if (formData.phone && !isValidPhoneNumber(formData.phone)) {
             setMessage({ text: "Invalid phone number!", variant: "danger" });
             return;
@@ -53,19 +51,21 @@ const Register = () => {
             const result = await AuthLogic.register(formData, dataSource);
 
             if (result.success) {
+                // 2. LOG THE USER IN GLOBALLY
+                loginUser({
+                    username: formData.username,
+                    email: formData.email,
+                    phone: formData.phone,
+                    role: 'User',
+                    joinedDate: new Date().toLocaleDateString()
+                });
+
                 setMessage({
-                    text: `Account created successfully in ${dataSource}!`,
+                    text: `Account created successfully!`,
                     variant: "success"
                 });
 
-                setFormData({
-                    username: '',
-                    email: '',
-                    password: '',
-                    confirmPassword: '',
-                    phone: ''
-                });
-
+                // Clear form...
             } else {
                 setMessage({ text: result.error || "Registration failed", variant: "danger" });
             }

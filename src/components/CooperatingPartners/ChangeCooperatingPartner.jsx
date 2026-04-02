@@ -45,7 +45,7 @@ export default function ChangeCooperatingPartner() {
         }
 
         handleUpdate({
-            title: formData.get('title'),
+            WorkTitle: formData.get('WorkTitle'),
             category: formData.get('category'),
             company: formData.get('company'),
             contact: formData.get('contact'),
@@ -69,9 +69,9 @@ export default function ChangeCooperatingPartner() {
             <h3 className="mb-4 dynamic-heading">Edit CooperatingPartner: {CooperatingPartner.title}</h3>
             <Form onSubmit={handleSubmit} className="shadow p-4 rounded custom-card border">
                 <Row className="mb-3">
-                    <Col md={8}>
+                    <Col md={6}>
                         <Form.Group controlId="title">
-                            <Form.Label className="fw-bold dynamic-text">CooperatingPartner Name / Title</Form.Label>
+                            <Form.Label className="fw-bold dynamic-text">Work title</Form.Label>
                             <Form.Control
                                 type="text" name="title" required
                                 defaultValue={CooperatingPartner.title}
@@ -79,7 +79,7 @@ export default function ChangeCooperatingPartner() {
                             />
                         </Form.Group>
                     </Col>
-                    <Col md={4}>
+                    <Col md={6}>
                         <Form.Group controlId="category">
                             <Form.Label className="fw-bold dynamic-text">CooperatingPartner Category</Form.Label>
                             <Form.Control
@@ -94,7 +94,7 @@ export default function ChangeCooperatingPartner() {
                 <Row className="mb-3">
                     <Col md={6}>
                         <Form.Group controlId="company">
-                            <Form.Label className="fw-bold dynamic-text">CooperatingPartner Provider / Company Name</Form.Label>
+                            <Form.Label className="fw-bold dynamic-text">Company Name/Provider</Form.Label>
                             <Form.Control
                                 type="text" name="company"
                                 defaultValue={CooperatingPartner.company}
