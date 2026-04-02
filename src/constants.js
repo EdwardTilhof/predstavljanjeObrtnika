@@ -16,9 +16,11 @@ export const ROUTES = {
   contact: "/contact",
   newCooperatingPartner: "/new-CooperatingPartner",
   ourProjects: "/ourProjects",
-  changeCooperatingPartner: "/changeCooperatingPartner/:id", 
+  changeCooperatingPartner: "/changeCooperatingPartner/:id",
   contactUs: "/contactUs",
-  vjezba01: "/vjezba01"
+  vjezba01: "/vjezba01",
+  login: "/login",
+  registration: "/register"
 };
 
 export const NAV_LINKS = [
@@ -30,7 +32,9 @@ export const NAV_LINKS = [
   { label: "Our Projects", path: ROUTES.ourProjects },
   { label: "Change CooperatingPartner", path: ROUTES.changeCooperatingPartner },
   { label: "Contact Us", path: ROUTES.contactUs },
-  { label: "Vjezba 01", path: ROUTES.vjezba01 }
+  { label: "Vjezba 01", path: ROUTES.vjezba01 },
+  { label: "LogIn", path: ROUTES.login },
+  { label: "Registration", path: ROUTES.registration },
 ];
 
 // Data, Local storage

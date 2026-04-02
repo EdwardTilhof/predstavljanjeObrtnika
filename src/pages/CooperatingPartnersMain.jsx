@@ -3,13 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "../constants";
 import { useEffect, useState } from "react";
 import CooperatingPartnerLogic from '../components/CooperatingPartners/CooperatingPartners';
+import { useDataSource } from "../DataSource/DataSourceContext";
 
 const CooperatingPartnersMain = ({ selectedCategory }) => {
   const navigate = useNavigate();
-  const [CooperatingPartners, setCooperatingPartners] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [targetCooperatingPartner, setTargetCooperatingPartner] = useState(null);
-  const [dataSource, setDataSource] = useState('memory');
+  const { dataSource, setDataSource } = useDataSource();
+
+  const [CooperatingPartners, setCooperatingPartners] = useState([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -17,7 +19,7 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
       setCooperatingPartners(response.data || []);
     };
     loadData();
-  }, [dataSource]); 
+  }, [dataSource]);
 
   const openConfirmModal = (id, title) => {
     setTargetCooperatingPartner({ id, title });
@@ -48,7 +50,7 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
         {selectedCategory ? `${selectedCategory} Partners` : "Cooperating Partners"}
       </h2>
 
-      {/* Data Source Switcher */}
+      {/* Data Source Switcher
       <div className="bg-light p-3 mb-4 border rounded shadow-sm">
         <Form>
           <Form.Label className="fw-bold me-3">Storage Mode:</Form.Label>
@@ -69,7 +71,7 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
             onChange={() => setDataSource('localStorage')}
           />
         </Form>
-      </div>
+      </div> */}
 
       <Table striped bordered hover responsive className="shadow-sm custom-card">
         <thead className="table-dark">

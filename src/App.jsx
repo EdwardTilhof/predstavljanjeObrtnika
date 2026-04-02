@@ -4,6 +4,7 @@ import './App.css'
 import { Container } from 'react-bootstrap'
 import { Routes, Route } from 'react-router-dom'
 import './components/colorSchemes/ColorsStyle.css';
+import { DataSourceProvider } from "./DataSource/DataSourceContext";
 
 import NavBar from "./components/NavBar"
 import Home from "./pages/Home"
@@ -22,6 +23,8 @@ import OurProjectsMain from './pages/OurProjectsMain';
 import ChangeCooperatingPartner from './components/CooperatingPartners/ChangeCooperatingPartner';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import ContactUs from './pages/ContactUs';
+import LogInPage from './UserData/LogInComponent'
+import RegistrationPage from './UserData/RegistrationComponent'
 
 function App() {
 
@@ -42,6 +45,7 @@ function App() {
   };
 
   return (
+    <DataSourceProvider>
     <Container className={`MainContainer ${isDevelopment ? 'dev-mode' : ''}`} fluid>
       <NavBar theme={theme} toggleTheme={toggleTheme} />
       <main>
@@ -52,6 +56,8 @@ function App() {
           <Route path={ROUTES.changeCooperatingPartner} element={<ChangeCooperatingPartner />} />
           <Route path={ROUTES.ourProjects} element={<OurProjectsMain />} />
           <Route path={ROUTES.contactUs} element={<ContactUs />} />
+          <Route path={ROUTES.login} element={<LogInPage />} />
+          <Route path={ROUTES.registration} element={<RegistrationPage />} />
 
         </Routes>
       </main>
@@ -84,6 +90,7 @@ function App() {
         </div>
       </footer>
     </Container>
+    </DataSourceProvider>
   );
 }
 
