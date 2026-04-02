@@ -1,7 +1,6 @@
 import { Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants";
-import { CooperatingPartnersData } from "./CooperatingPartnersData";
 import CooperatingPartnerLogic from "./CooperatingPartners";
 
 export function NewCooperatingPartner() {

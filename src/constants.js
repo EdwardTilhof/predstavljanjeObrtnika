@@ -16,10 +16,9 @@ export const ROUTES = {
   contact: "/contact",
   newCooperatingPartner: "/new-CooperatingPartner",
   ourProjects: "/ourProjects",
-  changeCooperatingPartner: "/changeCooperatingPartner",
+  changeCooperatingPartner: "/changeCooperatingPartner/:id", 
   contactUs: "/contactUs",
-
-vjezba01: "/vjezba01"
+  vjezba01: "/vjezba01"
 };
 
 export const NAV_LINKS = [
@@ -29,13 +28,12 @@ export const NAV_LINKS = [
   { label: "Contact", path: ROUTES.contact },
   { label: "Add CooperatingPartner", path: ROUTES.newCooperatingPartner },
   { label: "Our Projects", path: ROUTES.ourProjects },
-  { label: "Change CooperatingPartner", path: ROUTES.changeCooperatingPartner},
-  {label: "Contact Us", path: ROUTES.contactUs},
-
-{ label: "Vjezba 01", path: ROUTES.vjezba01 }
+  { label: "Change CooperatingPartner", path: ROUTES.changeCooperatingPartner },
+  { label: "Contact Us", path: ROUTES.contactUs },
+  { label: "Vjezba 01", path: ROUTES.vjezba01 }
 ];
 
 // Data, Local storage
 
-export const DATA_SOURCE = 'localStorage'
-
+// export const DATA_SOURCE = 'localStorage';
+export const DATA_SOURCE = 'memory';

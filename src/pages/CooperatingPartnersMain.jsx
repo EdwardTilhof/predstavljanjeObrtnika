@@ -1,22 +1,23 @@
-import { Table, Badge, Button, Stack, Modal } from "react-bootstrap";
-import CooperatingPartnerLogic from '../components/CooperatingPartners/CooperatingPartners';
-import { useNavigate } from "react-router-dom";
+import { Table, Badge, Button, Stack, Modal, Form } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "../constants";
 import { useEffect, useState } from "react";
+import CooperatingPartnerLogic from '../components/CooperatingPartners/CooperatingPartners';
 
 const CooperatingPartnersMain = ({ selectedCategory }) => {
   const navigate = useNavigate();
   const [CooperatingPartners, setCooperatingPartners] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [targetCooperatingPartner, setTargetCooperatingPartner] = useState(null);
+  const [dataSource, setDataSource] = useState('memory');
 
   useEffect(() => {
     const loadData = async () => {
-      const response = await CooperatingPartnerLogic.getCooperatingPartners();
-      setCooperatingPartners(response.data);
+      const response = await CooperatingPartnerLogic.getCooperatingPartners(dataSource);
+      setCooperatingPartners(response.data || []);
     };
     loadData();
-  }, []);
+  }, [dataSource]); 
 
   const openConfirmModal = (id, title) => {
     setTargetCooperatingPartner({ id, title });
@@ -25,7 +26,7 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
 
   const confirmDelete = async () => {
     if (targetCooperatingPartner) {
-      const result = await CooperatingPartnerLogic.remove(targetCooperatingPartner.id);
+      const result = await CooperatingPartnerLogic.remove(targetCooperatingPartner.id, dataSource);
       if (result.success) {
         setCooperatingPartners(prev => prev.filter(s => s.id !== targetCooperatingPartner.id));
       }
@@ -34,7 +35,7 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
   };
 
   const filteredCooperatingPartners = selectedCategory && selectedCategory !== "All"
-    ? CooperatingPartners.filter(CooperatingPartner => CooperatingPartner.category === selectedCategory)
+    ? CooperatingPartners.filter(cp => cp.category === selectedCategory)
     : CooperatingPartners;
 
   const sortedCooperatingPartners = [...filteredCooperatingPartners].sort((a, b) =>
@@ -44,13 +45,36 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
   return (
     <div className="CooperatingPartners-container mt-4">
       <h2 className="mb-4 dynamic-heading">
-        {selectedCategory ? `${selectedCategory} CooperatingPartners` : "All Available CooperatingPartners through our Cooperating Partners"}
+        {selectedCategory ? `${selectedCategory} Partners` : "Cooperating Partners"}
       </h2>
+
+      {/* Data Source Switcher */}
+      <div className="bg-light p-3 mb-4 border rounded shadow-sm">
+        <Form>
+          <Form.Label className="fw-bold me-3">Storage Mode:</Form.Label>
+          <Form.Check
+            type="radio"
+            label="Memory (Temporary)"
+            name="storageSource"
+            id="mem"
+            checked={dataSource === 'memory'}
+            onChange={() => setDataSource('memory')}
+          />
+          <Form.Check
+            type="radio"
+            label="Local Storage (Persistent)"
+            name="storageSource"
+            id="loc"
+            checked={dataSource === 'localStorage'}
+            onChange={() => setDataSource('localStorage')}
+          />
+        </Form>
+      </div>
 
       <Table striped bordered hover responsive className="shadow-sm custom-card">
         <thead className="table-dark">
           <tr>
-            <th>CooperatingPartner Title</th>
+            <th>Title</th>
             <th>Category</th>
             <th>Provider</th>
             <th>Investment</th>
@@ -61,30 +85,20 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
         </thead>
         <tbody className="dynamic-text">
           {sortedCooperatingPartners.length > 0 ? (
-            sortedCooperatingPartners.map((CooperatingPartner) => (
-              <tr key={CooperatingPartner.id}>
-                <td className="fw-bold">{CooperatingPartner.title}</td>
+            sortedCooperatingPartners.map((cp) => (
+              <tr key={cp.id}>
+                <td className="fw-bold">{cp.title}</td>
+                <td><Badge bg="info" text="dark">{cp.category}</Badge></td>
+                <td>{cp.company}</td>
+                <td>{cp.cost} EUR</td>
+                <td>{cp.duration} weeks</td>
+                <td>{cp.contact}</td>
                 <td>
-                  <Badge bg="info" text="dark">{CooperatingPartner.category}</Badge>
-                </td>
-                <td>{CooperatingPartner.company}</td>
-                <td>{CooperatingPartner.cost} EUR</td>
-                <td>{CooperatingPartner.duration} weeks</td>
-                <td>{CooperatingPartner.contact}</td>
-                <td style={{ minWidth: "200px" }}>
                   <Stack direction="horizontal" gap={2}>
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => navigate(`${ROUTES.changeCooperatingPartner}/${CooperatingPartner.id}`)}
-                    >
-                      Change Data
-                    </Button>
-                    <Button
-                      variant="outline-danger"
-                      size="sm"
-                      onClick={() => openConfirmModal(CooperatingPartner.id, CooperatingPartner.title)}
-                    >
+                    <Link to={ROUTES.changeCooperatingPartner.replace(':id', cp.id)} className="btn btn-secondary btn-sm">
+                      Edit
+                    </Link>
+                    <Button variant="outline-danger" size="sm" onClick={() => openConfirmModal(cp.id, cp.title)}>
                       Remove
                     </Button>
                   </Stack>
@@ -92,51 +106,26 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
               </tr>
             ))
           ) : (
-            <tr>
-              <td colSpan="7" className="text-center py-4 text-muted">
-                No CooperatingPartners found.
-              </td>
-            </tr>
+            <tr><td colSpan="7" className="text-center py-4 text-muted">No Partners found.</td></tr>
           )}
         </tbody>
       </Table>
 
-      <Button
-        variant="primary"
-        onClick={() => navigate(ROUTES.newCooperatingPartner)}
-        className="btn-primary"
-      >
-        Add New CooperatingPartner
+      <Button variant="primary" onClick={() => navigate(ROUTES.newCooperatingPartner)}>
+        Add New Partner
       </Button>
 
-      <div className="text-muted small mt-2">
-        * Prices and durations are estimates based on standard project scopes...
-      </div>
-
-      <Modal
-        show={showModal}
-        onHide={() => setShowModal(false)}
-        centered
-        contentClassName="custom-card dynamic-text" // Uses your existing theme classes
-      >
-        <Modal.Header closeButton className="bg-danger text-white border-0">
-          <Modal.Title className="fw-bold">Confirm Deletion</Modal.Title>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header closeButton className="bg-danger text-white">
+          <Modal.Title>Confirm Deletion</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="py-4 text-center">
-          <i className="bi bi-exclamation-triangle text-danger" style={{ fontSize: '2rem' }}></i>
-          <h5 className="mt-3 fw-bold">Are you sure?</h5>
-          <p className="mb-0">
-            You are about to remove <strong>{targetCooperatingPartner?.title}</strong>.
-          </p>
-          <small className="text-muted">This action cannot be undone.</small>
+        <Modal.Body className="text-center py-4">
+          <h5>Are you sure?</h5>
+          <p>Remove <strong>{targetCooperatingPartner?.title}</strong> from {dataSource}?</p>
         </Modal.Body>
-        <Modal.Footer className="border-0 justify-content-center pb-4">
-          <Button variant="outline-secondary" className="px-4" onClick={() => setShowModal(false)}>
-            Keep it
-          </Button>
-          <Button variant="danger" className="px-4 shadow-sm" onClick={confirmDelete}>
-            Yes, Delete
-          </Button>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>Cancel</Button>
+          <Button variant="danger" onClick={confirmDelete}>Yes, Delete</Button>
         </Modal.Footer>
       </Modal>
     </div>
