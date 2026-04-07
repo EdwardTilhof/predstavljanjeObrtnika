@@ -3,6 +3,9 @@ import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 import { ROUTES } from "../../constants";
 import CooperatingPartnerLogic from "./CooperatingPartners";
+import { mainCategories } from "./CooperatingPartnersData/CooperatingPartnersMainCategoriesData";
+import { CooperatingPartnersData } from "./CooperatingPartnersData/CooperatingPartnersData";
+import CooperatingPartnersMemory from "./CooperatingPartnersMemory";
 
 export function NewCooperatingPartner() {
     const navigate = useNavigate();
@@ -90,14 +93,18 @@ export function NewCooperatingPartner() {
                         </Form.Group>
                     </Col>
                     <Col md={6}>
-                        <Form.Group controlId="category">
-                            <Form.Label className="fw-bold dynamic-text">Category</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="category"
-                                placeholder="e.g. IT & Software"
-                            />
-                        </Form.Group>
+                         <Form.Label className="fw-bold dynamic-text">Category</Form.Label>
+                        <Form.Select
+                            aria-label="Category"
+                            name="category"
+                            defaultValue={CooperatingPartnersMemory.category}
+                        >
+                            {mainCategories.map((category) => (
+                                <option key={category.id} value={category.slug}>
+                                    {category.name}
+                                </option>
+                            ))}
+                        </Form.Select>
                     </Col>
                 </Row>
 

@@ -3,11 +3,13 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "../../constants";
 import { useEffect, useState } from "react";
 import CooperatingPartnerLogic from "./CooperatingPartners";
+import { mainCategories } from "./CooperatingPartnersData/CooperatingPartnersMainCategoriesData";
+import CooperatingPartnersMemory from "./CooperatingPartnersMemory";
 
 export default function ChangeCooperatingPartner() {
     const navigate = useNavigate();
     const { id } = useParams();
-    
+
     const [CooperatingPartner, setCooperatingPartner] = useState(null);
     const [error, setError] = useState("");
 
@@ -16,9 +18,9 @@ export default function ChangeCooperatingPartner() {
         if (parts.length === 0) return false;
 
         const emailExpression = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const phoneExpression = /^(\+?\d[\d\s-]{5,}\d)$/; 
+        const phoneExpression = /^(\+?\d[\d\s-]{5,}\d)$/;
 
-        return parts.every(part => 
+        return parts.every(part =>
             emailExpression.test(part) || phoneExpression.test(part)
         );
     };
@@ -49,7 +51,7 @@ export default function ChangeCooperatingPartner() {
     function handleSubmit(e) {
         e.preventDefault();
         setError("");
-        
+
         const formData = new FormData(e.target);
 
         const title = formData.get('title').trim();
@@ -79,8 +81,8 @@ export default function ChangeCooperatingPartner() {
         }
 
         handleUpdate({
-            title, 
-            category, 
+            title,
+            category,
             company,
             contact,
             description,
@@ -101,7 +103,7 @@ export default function ChangeCooperatingPartner() {
     return (
         <Container className="mt-5">
             <h3 className="mb-4 dynamic-heading">Edit CooperatingPartner: {CooperatingPartner.title}</h3>
-            
+
             {error && <Alert variant="danger" className="shadow-sm">{error}</Alert>}
 
             <Form onSubmit={handleSubmit} className="shadow p-4 rounded custom-card border">
@@ -110,7 +112,7 @@ export default function ChangeCooperatingPartner() {
                         <Form.Group controlId="title">
                             <Form.Label className="fw-bold dynamic-text">Work title</Form.Label>
                             <Form.Control
-                                type="text" 
+                                type="text"
                                 name="title"
                                 defaultValue={CooperatingPartner.title}
                                 placeholder="e.g. Web Development"
@@ -118,15 +120,18 @@ export default function ChangeCooperatingPartner() {
                         </Form.Group>
                     </Col>
                     <Col md={6}>
-                        <Form.Group controlId="category">
-                            <Form.Label className="fw-bold dynamic-text">Category</Form.Label>
-                            <Form.Control
-                                type="text" 
-                                name="category"
-                                defaultValue={CooperatingPartner.category}
-                                placeholder="e.g. IT & Software"
-                            />
-                        </Form.Group>
+                        <Form.Label className="fw-bold dynamic-text">Category</Form.Label>
+                        <Form.Select
+                            aria-label="Category"
+                            name="category"
+                            defaultValue={CooperatingPartnersMemory.category}
+                        >
+                            {mainCategories.map((category) => (
+                                <option key={category.id} value={category.slug}>
+                                    {category.name}
+                                </option>
+                            ))}
+                        </Form.Select>
                     </Col>
                 </Row>
 
@@ -135,7 +140,7 @@ export default function ChangeCooperatingPartner() {
                         <Form.Group controlId="company">
                             <Form.Label className="fw-bold dynamic-text">Company Name/Provider</Form.Label>
                             <Form.Control
-                                type="text" 
+                                type="text"
                                 name="company"
                                 defaultValue={CooperatingPartner.company}
                                 placeholder="Enter company name"
@@ -146,7 +151,7 @@ export default function ChangeCooperatingPartner() {
                         <Form.Group controlId="contact">
                             <Form.Label className="fw-bold dynamic-text">Contact Information</Form.Label>
                             <Form.Control
-                                type="text" 
+                                type="text"
                                 name="contact"
                                 defaultValue={CooperatingPartner.contact}
                                 placeholder="Email and/or Phone (e.g. mail@co.com, +385...)"
@@ -161,8 +166,8 @@ export default function ChangeCooperatingPartner() {
                             <Form.Label className="fw-bold dynamic-text">Total Investment</Form.Label>
                             <InputGroup>
                                 <Form.Control
-                                    type="number" 
-                                    name="cost" 
+                                    type="number"
+                                    name="cost"
                                     step={0.01}
                                     defaultValue={CooperatingPartner.cost}
                                 />
@@ -175,7 +180,7 @@ export default function ChangeCooperatingPartner() {
                             <Form.Label className="fw-bold dynamic-text">Project Duration</Form.Label>
                             <InputGroup>
                                 <Form.Control
-                                    type="number" 
+                                    type="number"
                                     name="duration"
                                     defaultValue={CooperatingPartner.duration}
                                 />
@@ -188,8 +193,8 @@ export default function ChangeCooperatingPartner() {
                 <Form.Group className="mb-4" controlId="description">
                     <Form.Label className="fw-bold dynamic-text">Detailed Description</Form.Label>
                     <Form.Control
-                        as="textarea" 
-                        rows={4} 
+                        as="textarea"
+                        rows={4}
                         name="description"
                         defaultValue={CooperatingPartner.description}
                         placeholder="Describe the details here..."
