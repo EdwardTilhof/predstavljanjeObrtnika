@@ -83,6 +83,7 @@ export default function NavBar({ theme, toggleTheme }) {
           <Nav className="me-auto align-items-center">
             <Nav.Link as={Link} to={ROUTES.home}>Home page</Nav.Link>
             <NavDropdown title="Menu" id="basic-nav-dropdown">
+                            <NavDropdown.Item as={Link} to={ROUTES.cooperatingPartersCategoyChange}>CooperatingPartners category edit</NavDropdown.Item>
               <NavDropdown.Item as={Link} to={ROUTES.CooperatingPartners}>CooperatingPartners</NavDropdown.Item>
               <NavDropdown.Item as={Link} to={ROUTES.contactUs}>Contact us</NavDropdown.Item>
             </NavDropdown>

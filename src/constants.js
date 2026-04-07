@@ -21,7 +21,8 @@ export const ROUTES = {
   vjezba01: "/vjezba01",
   login: "/login",
   registration: "/register",
-  userProfile: "/userProfile"
+  userProfile: "/userProfile",
+  cooperatingPartersCategoyChange: "/cooperating-partners-category-change"
 };
 
 export const NAV_LINKS = [
@@ -37,6 +38,7 @@ export const NAV_LINKS = [
   { label: "LogIn", path: ROUTES.login },
   { label: "Registration", path: ROUTES.registration },
   { label: "UserProfile", path: ROUTES.userProfile },
+  { label: "Change Category", path: ROUTES.cooperatingPartersCategoyChange },
 ];
 
 // Data, Local storage

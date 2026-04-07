@@ -19,8 +19,9 @@ import {
 } from "./constants";
 import CooperatingPartnersMain from "./pages/CooperatingPartnersMain";
 import { NewCooperatingPartner } from './components/CooperatingPartners/NewCooperatingPartner';
-import OurProjectsMain from './pages/OurProjectsMain';
+import CooperatingPartnersCategoryChange from './pages/CooperatingPartnersCategoryChange';
 import ChangeCooperatingPartner from './components/CooperatingPartners/ChangeCooperatingPartner';
+import OurProjectsMain from './pages/OurProjectsMain';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import ContactUs from './pages/ContactUsMain';
 import LogInPage from './UserData/LogInComponent';
@@ -47,51 +48,51 @@ function App() {
 
   return (
     <DataSourceProvider>
-    <Container className={`MainContainer ${isDevelopment ? 'dev-mode' : ''}`} fluid>
-      <NavBar theme={theme} toggleTheme={toggleTheme} />
-      <main>
-        <Routes>
-          <Route path={ROUTES.home} element={<Home />} />
-          <Route path={ROUTES.CooperatingPartners} element={<CooperatingPartnersMain />} />
-          <Route path={ROUTES.newCooperatingPartner} element={<NewCooperatingPartner />} />
-          <Route path={ROUTES.changeCooperatingPartner} element={<ChangeCooperatingPartner />} />
-          <Route path={ROUTES.ourProjects} element={<OurProjectsMain />} />
-          <Route path={ROUTES.contactUs} element={<ContactUs />} />
-          <Route path={ROUTES.login} element={<LogInPage />} />
-          <Route path={ROUTES.registration} element={<RegistrationPage />} />
-          <Route path={ROUTES.userProfile} element={<UserProfileMain />} />
+      <Container className={`MainContainer ${isDevelopment ? 'dev-mode' : ''}`} fluid>
+        <NavBar theme={theme} toggleTheme={toggleTheme} />
+        <main>
+          <Routes>
+            <Route path={ROUTES.home} element={<Home />} />
+            <Route path={ROUTES.CooperatingPartners} element={<CooperatingPartnersMain />} />
+            <Route path={ROUTES.newCooperatingPartner} element={<NewCooperatingPartner />} />
+            <Route path={ROUTES.changeCooperatingPartner} element={<ChangeCooperatingPartner />} />
+            <Route path={ROUTES.ourProjects} element={<OurProjectsMain />} />
+            <Route path={ROUTES.contactUs} element={<ContactUs />} />
+            <Route path={ROUTES.login} element={<LogInPage />} />
+            <Route path={ROUTES.registration} element={<RegistrationPage />} />
+            <Route path={ROUTES.userProfile} element={<UserProfileMain />} />
+            <Route path={ROUTES.cooperatingPartersCategoyChange}element={<CooperatingPartnersCategoryChange />}/>
+          </Routes>
+        </main>
 
-        </Routes>
-      </main>
+        <hr />
 
-      <hr />
+        <footer className="site-footer mt-5 pb-3">
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-start">
 
-      <footer className="site-footer mt-5 pb-3">
-        <div className="d-flex flex-column flex-md-row justify-content-between align-items-start">
+            <div className="footer-left">
+              <h5>{COMPANY_NAME}</h5>
+              <p className="mb-1">{COMPANY_ADDRESS}</p>
+              <p className="text-muted">Working time: {COMPANY_WORKING_HOURS}</p>
+              <p className="mb-1">Company CID: {COMPANY_CID}</p>
+            </div>
 
-          <div className="footer-left">
-            <h5>{COMPANY_NAME}</h5>
-            <p className="mb-1">{COMPANY_ADDRESS}</p>
-            <p className="text-muted">Working time: {COMPANY_WORKING_HOURS}</p>
-            <p className="mb-1">Company CID: {COMPANY_CID}</p>
+            <div className="footer-right text-md-end">
+              <h5>Contact</h5>
+              <p className="mb-1">Phone: {COMPANY_PHONE}</p>
+              <p>Email: <a href={`Mailto:${COMPANY_EMAIL}`}>{COMPANY_EMAIL}</a></p>
+            </div>
+
           </div>
 
-          <div className="footer-right text-md-end">
-            <h5>Contact</h5>
-            <p className="mb-1">Phone: {COMPANY_PHONE}</p>
-            <p>Email: <a href={`Mailto:${COMPANY_EMAIL}`}>{COMPANY_EMAIL}</a></p>
+          {/* Full width copyright at the bottom */}
+          <div className="text-center mt-4 border-top pt-3">
+            <small className="text-secondary">
+              &copy; {CURRENT_YEAR} {COMPANY_NAME}. All rights reserved.
+            </small>
           </div>
-
-        </div>
-
-        {/* Full width copyright at the bottom */}
-        <div className="text-center mt-4 border-top pt-3">
-          <small className="text-secondary">
-            &copy; {CURRENT_YEAR} {COMPANY_NAME}. All rights reserved.
-          </small>
-        </div>
-      </footer>
-    </Container>
+        </footer>
+      </Container>
     </DataSourceProvider>
   );
 }
