@@ -93,18 +93,24 @@ export function NewCooperatingPartner() {
                         </Form.Group>
                     </Col>
                     <Col md={6}>
-                         <Form.Label className="fw-bold dynamic-text">Category</Form.Label>
-                        <Form.Select
-                            aria-label="Category"
+                        <Form.Label className="fw-bold dynamic-text">Category</Form.Label>
+                        <Form.Control
+                            list="category-options"
                             name="category"
+                            placeholder="Select or type a new category..."
                             defaultValue={CooperatingPartnersMemory.category}
-                        >
+                            onChange={(e) => {
+                                const value = e.target.value;
+                            }}
+                        />
+
+                        <datalist id="category-options">
                             {mainCategories.map((category) => (
-                                <option key={category.id} value={category.slug}>
+                                <option key={category.id} value={category.name}>
                                     {category.name}
                                 </option>
                             ))}
-                        </Form.Select>
+                        </datalist>
                     </Col>
                 </Row>
 

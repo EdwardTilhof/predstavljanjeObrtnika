@@ -121,17 +121,24 @@ export default function ChangeCooperatingPartner() {
                     </Col>
                     <Col md={6}>
                         <Form.Label className="fw-bold dynamic-text">Category</Form.Label>
-                        <Form.Select
-                            aria-label="Category"
+                        <Form.Control
+                            list="category-options"
                             name="category"
-                            defaultValue={CooperatingPartnersMemory.category}
-                        >
+                            placeholder="Select or type a new category..."
+                            defaultValue={CooperatingPartner.category}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                console.log("Selected/Typed:", value);
+                            }}
+                        />
+
+                        <datalist id="category-options">
                             {mainCategories.map((category) => (
-                                <option key={category.id} value={category.slug}>
+                                <option key={category.id} value={category.name}>
                                     {category.name}
                                 </option>
                             ))}
-                        </Form.Select>
+                        </datalist>
                     </Col>
                 </Row>
 
