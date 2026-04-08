@@ -19,6 +19,8 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
       setCooperatingPartners(response.data || []);
     };
     loadData();
+    window.addEventListener("partnersUpdated", loadData);
+    return () => window.removeEventListener("partnersUpdated", loadData);
   }, [dataSource]);
 
   const openConfirmModal = (id, title) => {

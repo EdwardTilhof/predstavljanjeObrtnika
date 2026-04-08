@@ -81,7 +81,7 @@ export function NewCooperatingPartner() {
         };
 
         try {
-            await CooperatingPartnerLogic.create(newPartner);
+            await CooperatingPartnerLogic.create(newPartner, dataSource);
             navigate(ROUTES.CooperatingPartners);
         } catch (error) {
             console.error("Error creating Partner:", error);
