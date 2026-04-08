@@ -5,7 +5,14 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 const DataSourceContext = createContext();
 
 export const DataSourceProvider = ({ children }) => {
-  const [dataSource, setDataSource] = useState('memory');
+const [dataSource, setDataSource] = useState(() => {
+    return localStorage.getItem('userPreferredSource') || 'localStorage';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('userPreferredSource', dataSource);
+  }, [dataSource]);
+
   const [currentUser, setCurrentUser] = useState(null);
 
  useEffect(() => {
