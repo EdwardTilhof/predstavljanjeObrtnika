@@ -5,7 +5,6 @@ import { BrowserRouter } from "react-router-dom";
 
 // Importing the Bootstrap CSS
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import './index.css';
 import './App.css';
 import './components/colorSchemes/ColorsStyle.css';

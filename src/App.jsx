@@ -1,4 +1,3 @@
-import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -25,8 +24,6 @@ import ChangeCooperatingPartner from './components/CooperatingPartners/ChangeCoo
 import OurProjectsMain from './pages/OurProjectsMain';
 import CooperatingPartnersMain from "./pages/CooperatingPartners-Main";
 import ContactUs from './pages/ContactUs';
-import LoginMain from './pages/LoginMain';
-import RegistrationMain from './pages/RegistrationMain'
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -54,8 +51,6 @@ function App() {
           <Route path="/changeCooperatingPartner/:id" element={<ChangeCooperatingPartner />} />
           <Route path={ROUTES.ourProjects} element={<OurProjectsMain />} />
           <Route path={ROUTES.contactUs} element={<ContactUs />} />
-          <Route path={ROUTES.login} element={<LoginMain />} />
-        <Route path={ROUTES.register} element={<RegistrationMain />} />
         </Routes>
       </main>
 
