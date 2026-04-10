@@ -12,21 +12,27 @@ export default function ChangeCooperatingPartner() {
     const { dataSource } = useDataSource();
 
     const [partner, setPartner] = useState(null);
-    const [options, setOptions] = useState([]); // This is named 'options'
     const [error, setError] = useState("");
+
+    const [options, setOptions] = useState(() => {
+        const saved = localStorage.getItem('globalCategories');
+        if (dataSource === 'memory') {
+            return mainCategories;
+        }
+        return saved ? JSON.parse(saved) : mainCategories;
+    });
 
     useEffect(() => {
         const syncData = () => {
             const saved = localStorage.getItem('globalCategories');
             if (dataSource === 'memory') {
-                setOptions(mainCategories); // Changed from setCategories to setOptions
+                setOptions(mainCategories);
             } else {
                 setOptions(saved ? JSON.parse(saved) : mainCategories);
             }
         };
 
         syncData();
-        // Add the listener so it stays in sync dynamically
         window.addEventListener("categoriesUpdated", syncData);
         return () => window.removeEventListener("categoriesUpdated", syncData);
     }, [dataSource]);
@@ -34,7 +40,7 @@ export default function ChangeCooperatingPartner() {
     useEffect(() => {
         const fetchPartner = async () => {
             try {
-                const response = await CooperatingPartnerLogic.getById(id);
+                const response = await CooperatingPartnerLogic.getById(id, dataSource);
                 setPartner(response.data);
             } catch (err) {
                 console.error("Error loading Partner:", err);
@@ -42,7 +48,7 @@ export default function ChangeCooperatingPartner() {
             }
         };
         if (id) fetchPartner();
-    }, [id]);
+    }, [id, dataSource]); 
 
     const isValidContact = (value) => {
         const parts = value.split(/[,\s]+/).filter(part => part.length > 0);
@@ -87,14 +93,14 @@ export default function ChangeCooperatingPartner() {
             await CooperatingPartnerLogic.update(id, {
                 title, category, company, contact, description,
                 cost: updatedCost, duration: updatedDuration
-            });
+            }, dataSource);
             navigate(ROUTES.CooperatingPartners);
         } catch (err) {
             setError("Failed to update data.");
         }
     };
 
-    if (!partner) {
+    if (!partner || options.length === 0) {
         return (
             <Container className="mt-5 text-center">
                 <Spinner animation="border" variant="primary" />
@@ -102,7 +108,7 @@ export default function ChangeCooperatingPartner() {
             </Container>
         );
     }
-
+    
     return (
         <Container className="mt-5">
             <h3 className="mb-4 dynamic-heading">Edit Partner: {partner.title}</h3>
@@ -119,7 +125,11 @@ export default function ChangeCooperatingPartner() {
                     </Col>
                     <Col md={6}>
                         <Form.Label className="fw-bold">Category</Form.Label>
-                        <Form.Select name="category" defaultValue={partner.category}>
+                        <Form.Select 
+                            name="category" 
+                            key={partner.id || 'loading'} 
+                            defaultValue={partner.category}
+                        >
                             <option value="">Select a category...</option>
                             {options.map((cat) => (
                                 <option key={cat.id} value={cat.name}>{cat.name}</option>

@@ -6,6 +6,7 @@ const getService = (source) => {
 };
 
 const CooperatingPartnerLogic = {
+  getAll: (source) => getService(source).getCooperatingPartners(),
   getCooperatingPartners: (source) => getService(source).getCooperatingPartners(),
   getById: (id, source) => getService(source).getById(id),
   create: (p, source) => getService(source).create(p),

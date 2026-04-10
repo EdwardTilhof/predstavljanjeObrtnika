@@ -69,8 +69,13 @@ export function NewCooperatingPartner() {
             return;
         }
 
+        const existingPartners = await CooperatingPartnerLogic.getAll(dataSource);
+         const maxId = existingPartners.length > 0
+            ? Math.max(...existingPartners.map(p => p.id))
+            : 0;
+
         const newPartner = {
-            id: Date.now(),
+            id: maxId + 1,
             title,
             category,
             company,
