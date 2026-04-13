@@ -27,6 +27,7 @@ export const CooperatingPartnersData = [
     cost: 5000.0,
     duration: 0, // Set to 0 for "Ongoing"
     contact: "support@skyhigh.com",
+    region: "Beli Manastir",
     description: "Scalable and secure cloud infrastructure setup using AWS, Azure, or Google Cloud."
   },
   {
@@ -37,6 +38,7 @@ export const CooperatingPartnersData = [
     cost: 800.0,
     duration: 4, // Set to 4 weeks for "Monthly"
     contact: "hello@rankboosters.net",
+    region: "Osijek",
     description: "Strategic search engine optimization to increase your organic search visibility."
   },
   {
@@ -47,6 +49,7 @@ export const CooperatingPartnersData = [
     cost: 10000.0,
     duration: 24, // 6 months approximated to 24 weeks
     contact: "dev@chainlinkers.com",
+    region: "Osijek",
     description: "Secure decentralized applications and smart contract implementation."
   },
   {
@@ -57,6 +60,7 @@ export const CooperatingPartnersData = [
     cost: 1500.0,
     duration: 4, // 1 month approximated to 4 weeks
     contact: "info@dataguardians.com",
+    region: "Osijek",
     description: "Optimizing SQL and NoSQL databases for speed, reliability, and security."
   }
 ];

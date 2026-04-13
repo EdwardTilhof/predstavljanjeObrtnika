@@ -62,6 +62,7 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
             <th>Investment</th>
             <th>Duration</th>
             <th>Contact</th>
+            <th>Region</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -75,6 +76,7 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
                 <td>{cp.cost} EUR</td>
                 <td>{cp.duration} weeks</td>
                 <td>{cp.contact}</td>
+                <td>{cp.region || "N/A"}</td>
                 <td>
                   <Stack direction="horizontal" gap={2}>
                     <Link to={ROUTES.changeCooperatingPartner.replace(':id', cp.id)} className="btn btn-secondary btn-sm">

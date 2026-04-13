@@ -5,6 +5,7 @@ import { ROUTES } from "../../constants";
 import CooperatingPartnerLogic from "./CooperatingPartners";
 import { useDataSource } from "../../DataSource/DataSourceContext";
 import { mainCategories } from "./CooperatingPartnersData/CooperatingPartnersMainCategoriesData";
+import { regions } from "../../DataSource/dataGenerator";
 
 export function NewCooperatingPartner() {
     const navigate = useNavigate();
@@ -50,8 +51,9 @@ export function NewCooperatingPartner() {
         const description = formData.get("description").trim();
         const rawCost = formData.get("cost");
         const rawDuration = formData.get("duration");
+        const selectedRegion = formData.get("region").trim();
 
-        if (!title || !category || !company || !contact || !description) {
+        if (!title || !category || !company || !contact || !description || !selectedRegion) {
             setError("Fields cannot be empty or contain only spaces.");
             return;
         }
@@ -70,7 +72,7 @@ export function NewCooperatingPartner() {
         }
 
         const existingPartners = await CooperatingPartnerLogic.getAll(dataSource);
-         const maxId = existingPartners.length > 0
+        const maxId = existingPartners.length > 0
             ? Math.max(...existingPartners.map(p => p.id))
             : 0;
 
@@ -81,6 +83,7 @@ export function NewCooperatingPartner() {
             company,
             contact,
             description,
+            region: selectedRegion,
             cost: costValue,
             duration: durationValue,
         };
@@ -90,7 +93,7 @@ export function NewCooperatingPartner() {
             navigate(ROUTES.CooperatingPartners);
         } catch (error) {
             console.error("Error creating Partner:", error);
-            setError("Failed to save the new partner to the data source.");
+            setError("Failed to save the new partner.");
         }
     };
 
@@ -153,6 +156,28 @@ export function NewCooperatingPartner() {
                             </InputGroup>
                         </Form.Group>
                     </Col>
+                </Row>
+                <Row className="mb-3">
+                    <Col md={6}>
+                        <Form.Group controlId="region">
+                            <Form.Label className="fw-bold dynamic-text">Region</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="region"
+                                list="region-options"
+                                placeholder="Type to add new or select..."
+                            />
+                            <datalist id="region-options">
+                                {regions.map((reg) => (
+                                    <option key={reg} value={reg} />
+                                ))}
+                            </datalist>
+                            <Form.Text className="text-muted">
+                                Choose from the list or type a new region name.
+                            </Form.Text>
+                        </Form.Group>
+                    </Col>
+                    <Col md={6}></Col>
                 </Row>
 
                 <Form.Group className="mb-4" controlId="description">

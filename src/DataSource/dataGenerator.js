@@ -30,6 +30,13 @@ const companies = [
     "Market Magnet", "Logic Gate", "Element Design", "Backbone Tech", "Viral Venture"
 ];
 
+export const regions = [
+    "Bjelovar-Bilogora", "Brod-Posavina", "Dubrovnik-Neretva", "Istria", "Karlovac",
+    "Koprivnica-Križevci", "Krapina-Zagorje", "Lika-Senj", "Međimurje", "Osijek-Baranja",
+    "Požega-Slavonia", "Primorje-Gorski Kotar", "Šibenik-Knin", "Sisak-Moslavina", "Split-Dalmatia",
+    "Varaždin", "Virovitica-Podravina", "Vukovar-Srijem", "Zadar", "Zagreb County", "City of Zagreb"
+];
+
 export const generateMockPartners = (baseData, categories, count = 15) => {
     const generatedData = [...baseData];
 
@@ -45,6 +52,7 @@ export const generateMockPartners = (baseData, categories, count = 15) => {
             company: randomCompany,
             cost: getRandomInt(500, 15000),
             duration: getRandomInt(1, 52),
+            region: regions[getRandomInt(0, regions.length - 1)],
             contact: `info@${randomCompany.toLowerCase().replace(/[^a-z0-9]/g, '')}.com`,
             description: "Generated placeholder description for professional services."
         });
