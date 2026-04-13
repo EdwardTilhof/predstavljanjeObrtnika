@@ -1,0 +1,25 @@
+export const regions = [
+        { id: "reg404", name: "Osijek" },
+
+    { id: "reg1", name: "Bjelovar-Bilogora" },
+    { id: "reg2", name: "Brod-Posavina" },
+    { id: "reg3", name: "Dubrovnik-Neretva" },
+    { id: "reg4", name: "Istria" },
+    { id: "reg5", name: "Karlovac" },
+    { id: "reg6", name: "Koprivnica-Križevci" },
+    { id: "reg7", name: "Krapina-Zagorje" },
+    { id: "reg8", name: "Lika-Senj" },
+    { id: "reg9", name: "Međimurje" },
+    { id: "reg10", name: "Osijek-Baranja" },
+    { id: "reg11", name: "Požega-Slavonia" },
+    { id: "reg12", name: "Primorje-Gorski Kotar" },
+    { id: "reg13", name: "Šibenik-Knin" },
+    { id: "reg14", name: "Sisak-Moslavina" },
+    { id: "reg15", name: "Split-Dalmatia" },
+    { id: "reg16", name: "Varaždin" },
+    { id: "reg17", name: "Virovitica-Podravina" },
+    { id: "reg18", name: "Vukovar-Srijem" },
+    { id: "reg19", name: "Zadar" },
+    { id: "reg20", name: "Zagreb County" },
+    { id: "reg21", name: "City of Zagreb" }
+];

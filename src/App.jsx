@@ -18,7 +18,7 @@ import {
   COMPANY_CID
 } from "./constants";
 import CooperatingPartnersMain from "./pages/CooperatingPartnersMain";
-import { NewCooperatingPartner } from './components/CooperatingPartners/NewCooperatingPartner';
+import  {NewCooperatingPartner}  from './components/CooperatingPartners/NewCooperatingPartner';
 import CooperatingPartnersCategoryChange from './pages/CooperatingPartnersCategoryChange';
 import ChangeCooperatingPartner from './components/CooperatingPartners/ChangeCooperatingPartner';
 import OurProjectsMain from './pages/OurProjectsMain';

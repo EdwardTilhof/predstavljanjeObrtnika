@@ -1,29 +1,49 @@
-import { Table, Badge, Button, Stack, Modal, Form } from "react-bootstrap";
+import { Table, Badge, Button, Stack, Modal } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "../constants";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import CooperatingPartnerLogic from '../components/CooperatingPartners/CooperatingPartners';
 import { useDataSource } from "../DataSource/DataSourceContext";
+import { regions as allRegions } from "../DataSource/regionData";
+import { mainCategories } from "../components/CooperatingPartners/CooperatingPartnersData/CooperatingPartnersMainCategoriesData";
 
 const CooperatingPartnersMain = ({ selectedCategory }) => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [targetCooperatingPartner, setTargetCooperatingPartner] = useState(null);
-  
-  // 1. Get partners and setPartners from Context
   const { dataSource, partners, setPartners } = useDataSource();
 
- useEffect(() => {
-    const loadData = async () => {
-      if (dataSource !== 'memory') {
-        const response = await CooperatingPartnerLogic.getCooperatingPartners(dataSource);
-        setPartners(response.data || []);
+
+  const loadData = useCallback(async (isUpdate = false) => {
+    if (dataSource === 'memory' && partners.length > 0 && !isUpdate) {
+      console.log("Memory mode: Using existing partners from Context.");
+      return;
+    }
+
+    try {
+      const response = await CooperatingPartnerLogic.getCooperatingPartners(dataSource);
+
+      if (response) {
+        const fetchedList = response.data?.data || response.data || (Array.isArray(response) ? response : []);
+
+        if (dataSource !== 'memory') {
+          setPartners(fetchedList);
+        } else if (partners.length === 0) {
+          setPartners(fetchedList);
+        }
       }
-    };
-  loadData();
-    window.addEventListener("partnersUpdated", loadData);
-    return () => window.removeEventListener("partnersUpdated", loadData);
-  }, [dataSource, setPartners]);
+    } catch (error) {
+      console.error("Failed to load partners:", error);
+    }
+  }, [dataSource, setPartners, partners.length]);
+
+  useEffect(() => {
+    loadData();
+
+    const handleUpdate = () => loadData(true);
+    window.addEventListener("partnersUpdated", handleUpdate);
+    return () => window.removeEventListener("partnersUpdated", handleUpdate);
+  }, [loadData]);
 
   const openConfirmModal = (id, title) => {
     setTargetCooperatingPartner({ id, title });
@@ -33,25 +53,33 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
   const confirmDelete = async () => {
     if (targetCooperatingPartner) {
       const result = await CooperatingPartnerLogic.remove(targetCooperatingPartner.id, dataSource);
-      if (result.success) {
-        setCooperatingPartners(prev => prev.filter(s => s.id !== targetCooperatingPartner.id));
+      if (result.success || result) {
+        setPartners(prev => prev.filter(s => s.id !== targetCooperatingPartner.id));
       }
     }
     setShowModal(false);
   };
 
-  const filteredCooperatingPartners = selectedCategory && selectedCategory !== "All"
-    ? partners.filter(cp => cp.category === selectedCategory)
-    : partners;
+  const safePartners = Array.isArray(partners) ? partners : [];
 
-  const sortedCooperatingPartners = [...filteredCooperatingPartners].sort((a, b) =>
-    (a.category || "").localeCompare(b.category || "")
-  );
+  const filteredCooperatingPartners = (selectedCategory && selectedCategory !== "All")
+    ? safePartners.filter(cp => {
+      const catObj = mainCategories.find(cat => String(cat.id) === String(cp.category));
+      const partnerCatName = catObj ? catObj.name : cp.category;
+      return String(partnerCatName).toLowerCase() === String(selectedCategory).toLowerCase();
+    })
+    : safePartners;
+
+  const sortedCooperatingPartners = [...filteredCooperatingPartners].sort((a, b) => {
+    const catA = mainCategories.find(c => String(c.id) === String(a.category))?.name || "";
+    const catB = mainCategories.find(c => String(c.id) === String(b.category))?.name || "";
+    return catA.localeCompare(catB);
+  });
 
   return (
     <div className="CooperatingPartners-container mt-4">
       <h2 className="mb-4 dynamic-heading">
-        {selectedCategory ? `${selectedCategory} Partners` : "Cooperating Partners"}
+        {selectedCategory && selectedCategory !== "All" ? `${selectedCategory} Partners` : "Cooperating Partners"}
       </h2>
       <Table striped bordered hover responsive className="shadow-sm custom-card">
         <thead className="table-dark">
@@ -68,29 +96,44 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
         </thead>
         <tbody className="dynamic-text">
           {sortedCooperatingPartners.length > 0 ? (
-            sortedCooperatingPartners.map((cp) => (
-              <tr key={cp.id}>
-                <td className="fw-bold">{cp.title}</td>
-                <td><Badge bg="info" text="dark">{cp.category}</Badge></td>
-                <td>{cp.company}</td>
-                <td>{cp.cost} EUR</td>
-                <td>{cp.duration} weeks</td>
-                <td>{cp.contact}</td>
-                <td>{cp.region || "N/A"}</td>
-                <td>
-                  <Stack direction="horizontal" gap={2}>
-                    <Link to={ROUTES.changeCooperatingPartner.replace(':id', cp.id)} className="btn btn-secondary btn-sm">
-                      Edit
-                    </Link>
-                    <Button variant="outline-danger" size="sm" onClick={() => openConfirmModal(cp.id, cp.title)}>
-                      Remove
-                    </Button>
-                  </Stack>
-                </td>
-              </tr>
-            ))
+            sortedCooperatingPartners.map((cp) => {
+              const catObj = mainCategories.find(cat => String(cat.id) === String(cp.category));
+              const categoryName = catObj ? catObj.name : cp.category;
+
+              const titleDisplay = Array.isArray(cp.titles) && cp.titles.length > 0
+                ? cp.titles.filter(t => t.trim() !== "").join(", ")
+                : (cp.title || cp.workTitle || "N/A");
+
+              const regionDisplay = Array.isArray(cp.regions) && cp.regions.length > 0
+                ? cp.regions
+                  .map(regId => allRegions.find(r => String(r.id) === String(regId))?.name || regId)
+                  .join(", ")
+                : (allRegions.find(r => String(r.id) === String(cp.region))?.name || cp.region || "N/A");
+
+              return (
+                <tr key={cp.id}>
+                  <td className="fw-bold">{titleDisplay}</td>
+                  <td><Badge bg="info" text="dark">{categoryName}</Badge></td>
+                  <td>{cp.company}</td>
+                  <td>{cp.cost} EUR</td>
+                  <td>{cp.duration} weeks</td>
+                  <td>{cp.contact}</td>
+                  <td>{regionDisplay}</td>
+                  <td>
+                    <Stack direction="horizontal" gap={2}>
+                      <Link to={ROUTES.changeCooperatingPartner.replace(':id', cp.id)} className="btn btn-secondary btn-sm">
+                        Edit
+                      </Link>
+                      <Button variant="outline-danger" size="sm" onClick={() => openConfirmModal(cp.id, titleDisplay)}>
+                        Remove
+                      </Button>
+                    </Stack>
+                  </td>
+                </tr>
+              );
+            })
           ) : (
-            <tr><td colSpan="7" className="text-center py-4 text-muted">No Partners found.</td></tr>
+            <tr><td colSpan="8" className="text-center py-4 text-muted">No Partners found.</td></tr>
           )}
         </tbody>
       </Table>
@@ -99,6 +142,7 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
         Add New Partner
       </Button>
 
+      {/* Delete Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton className="bg-danger text-white">
           <Modal.Title>Confirm Deletion</Modal.Title>

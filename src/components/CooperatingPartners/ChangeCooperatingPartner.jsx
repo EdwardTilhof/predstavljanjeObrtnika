@@ -5,180 +5,198 @@ import { ROUTES } from "../../constants";
 import CooperatingPartnerLogic from "./CooperatingPartners";
 import { useDataSource } from "../../DataSource/DataSourceContext";
 import { mainCategories } from "./CooperatingPartnersData/CooperatingPartnersMainCategoriesData";
+import { regions as allRegions } from "../../DataSource/regionData";
 
 export default function ChangeCooperatingPartner() {
     const navigate = useNavigate();
     const { id } = useParams();
-    const { dataSource } = useDataSource();
+    const { dataSource, setPartners } = useDataSource();
 
     const [partner, setPartner] = useState(null);
     const [error, setError] = useState("");
+    const [selectedRegions, setSelectedRegions] = useState([]);
+    const [selectedTitles, setSelectedTitles] = useState([]);
 
-    const [options, setOptions] = useState(() => {
+    const [options] = useState(() => {
         const saved = localStorage.getItem('globalCategories');
-        if (dataSource === 'memory') {
-            return mainCategories;
-        }
-        return saved ? JSON.parse(saved) : mainCategories;
+        return (dataSource === 'memory') ? mainCategories : (saved ? JSON.parse(saved) : mainCategories);
     });
-
-    useEffect(() => {
-        const syncData = () => {
-            const saved = localStorage.getItem('globalCategories');
-            if (dataSource === 'memory') {
-                setOptions(mainCategories);
-            } else {
-                setOptions(saved ? JSON.parse(saved) : mainCategories);
-            }
-        };
-
-        syncData();
-        window.addEventListener("categoriesUpdated", syncData);
-        return () => window.removeEventListener("categoriesUpdated", syncData);
-    }, [dataSource]);
 
     useEffect(() => {
         const fetchPartner = async () => {
             try {
                 const response = await CooperatingPartnerLogic.getById(id, dataSource);
-                setPartner(response.data);
+
+                const data = response.data?.data || response.data || response;
+
+                if (data) {
+                    console.log("Extracted Partner Object:", data); // This should now show the id, title, etc. directly
+                    setPartner(data);
+
+                    const titles = Array.isArray(data.titles)
+                        ? data.titles
+                        : [data.title || data.workTitle || ""];
+
+                    const regions = Array.isArray(data.regions)
+                        ? data.regions
+                        : [data.region || ""];
+
+                    setSelectedTitles(titles);
+                    setSelectedRegions(regions);
+                }
             } catch (err) {
-                console.error("Error loading Partner:", err);
+                console.error("Fetch Error:", err);
                 setError("Could not load partner data.");
             }
         };
         if (id) fetchPartner();
-    }, [id, dataSource]); 
+    }, [id, dataSource]);
 
-    const isValidContact = (value) => {
-        const parts = value.split(/[,\s]+/).filter(part => part.length > 0);
-        if (parts.length === 0) return false;
-        const emailExpression = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const phoneExpression = /^(\+?\d[\d\s-]{5,}\d)$/;
-        return parts.every(part => emailExpression.test(part) || phoneExpression.test(part));
+    const handleTitleChange = (index, value) => {
+        const updated = [...selectedTitles];
+        updated[index] = value;
+        setSelectedTitles(updated);
+    };
+
+    const addTitleField = () => setSelectedTitles([...selectedTitles, ""]);
+    const removeTitleField = (index) => {
+        const updated = selectedTitles.filter((_, i) => i !== index);
+        setSelectedTitles(updated.length ? updated : [""]);
+    };
+
+    const handleRegionChange = (index, value) => {
+        const updated = [...selectedRegions];
+        updated[index] = value;
+        setSelectedRegions(updated);
+    };
+
+    const addRegionField = () => setSelectedRegions([...selectedRegions, ""]);
+    const removeRegionField = (index) => {
+        const updated = selectedRegions.filter((_, i) => i !== index);
+        setSelectedRegions(updated.length ? updated : [""]);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
-
         const formData = new FormData(e.target);
-        const title = formData.get('title').trim();
-        const category = formData.get('category').trim();
-        const company = formData.get('company').trim();
-        const contact = formData.get('contact').trim();
-        const description = formData.get('description').trim();
-        const rawCost = formData.get('cost');
-        const rawDuration = formData.get('duration');
+        const finalRegions = selectedRegions.filter(r => r !== "");
+        const finalTitles = selectedTitles.filter(t => t.trim() !== "");
 
-        if (!title || !category || !company || !contact || !description) {
-            setError("All fields are required.");
+        if (finalRegions.length === 0 || finalTitles.length === 0) {
+            setError("Please provide at least one title and one region.");
             return;
         }
 
-        if (!isValidContact(contact)) {
-            setError("Please enter valid contact information.");
-            return;
-        }
-
-        const updatedCost = parseFloat(rawCost);
-        const updatedDuration = parseInt(rawDuration, 10);
-
-        if (isNaN(updatedCost) || updatedCost < 0 || isNaN(updatedDuration) || updatedDuration < 0) {
-            setError("Please provide valid positive numbers.");
-            return;
-        }
+        const updatedData = {
+            ...partner,
+            titles: finalTitles,
+            category: formData.get('category'),
+            company: formData.get('company').trim(),
+            contact: formData.get('contact').trim(),
+            description: formData.get('description').trim(),
+            regions: finalRegions,
+            cost: parseFloat(formData.get('cost')),
+            duration: parseInt(formData.get('duration'), 10)
+        };
 
         try {
-            await CooperatingPartnerLogic.update(id, {
-                title, category, company, contact, description,
-                cost: updatedCost, duration: updatedDuration
-            }, dataSource);
+            await CooperatingPartnerLogic.update(id, updatedData, dataSource);
+            window.dispatchEvent(new Event("partnersUpdated"));
             navigate(ROUTES.CooperatingPartners);
+            setPartners(prev => prev.map(p => String(p.id) === String(id) ? updatedData : p));
         } catch (err) {
             setError("Failed to update data.");
         }
     };
 
-    if (!partner || options.length === 0) {
-        return (
-            <Container className="mt-5 text-center">
-                <Spinner animation="border" variant="primary" />
-                <p className="mt-3">Loading data...</p>
-            </Container>
-        );
-    }
-    
+    if (!partner) return <Container className="mt-5 text-center"><Spinner animation="border" /></Container>;
+
     return (
         <Container className="mt-5">
-            <h3 className="mb-4 dynamic-heading">Edit Partner: {partner.title}</h3>
-
             {error && <Alert variant="danger">{error}</Alert>}
 
-            <Form onSubmit={handleSubmit} className="shadow p-4 rounded custom-card border">
+            <Form onSubmit={handleSubmit} key={partner?.id || 'loading'}>
+                <Row className="mb-3">
+                    <Col md={12}>
+                        <Form.Label className="fw-bold">Work Titles</Form.Label>
+                        {selectedTitles.map((title, index) => (
+                            <InputGroup className="mb-2" key={index}>
+                                <Form.Control
+                                    type="text"
+                                    value={title}
+                                    onChange={(e) => handleTitleChange(index, e.target.value)}
+                                    required
+                                />
+                                <Button variant="outline-danger" onClick={() => removeTitleField(index)} disabled={selectedTitles.length === 1}>×</Button>
+                            </InputGroup>
+                        ))}
+                        <Button variant="outline-primary" size="sm" onClick={addTitleField}>+ Add Title</Button>
+                    </Col>
+                </Row>
+
                 <Row className="mb-3">
                     <Col md={6}>
-                        <Form.Group controlId="title">
-                            <Form.Label className="fw-bold">Work title</Form.Label>
-                            <Form.Control type="text" name="title" defaultValue={partner.title} />
-                        </Form.Group>
-                    </Col>
-                    <Col md={6}>
                         <Form.Label className="fw-bold">Category</Form.Label>
-                        <Form.Select 
-                            name="category" 
-                            key={partner.id || 'loading'} 
-                            defaultValue={partner.category}
-                        >
+                        <Form.Select name="category" defaultValue={partner?.category || ""}>
                             <option value="">Select a category...</option>
                             {options.map((cat) => (
-                                <option key={cat.id} value={cat.name}>{cat.name}</option>
+                                <option key={cat.id} value={cat.id}>{cat.name}</option>
                             ))}
                         </Form.Select>
                     </Col>
-                </Row>
-
-                <Row className="mb-3">
                     <Col md={6}>
-                        <Form.Group controlId="company">
-                            <Form.Label className="fw-bold">Company Name</Form.Label>
-                            <Form.Control type="text" name="company" defaultValue={partner.company} />
-                        </Form.Group>
-                    </Col>
-                    <Col md={6}>
-                        <Form.Group controlId="contact">
-                            <Form.Label className="fw-bold">Contact Information</Form.Label>
-                            <Form.Control type="text" name="contact" defaultValue={partner.contact} />
-                        </Form.Group>
+                        <Form.Label className="fw-bold">Company</Form.Label>
+                        <Form.Control type="text" name="company" defaultValue={partner?.company || ""} />
                     </Col>
                 </Row>
 
                 <Row className="mb-3">
                     <Col md={6}>
-                        <Form.Group controlId="cost">
-                            <Form.Label className="fw-bold">Total Investment</Form.Label>
-                            <InputGroup>
-                                <Form.Control type="number" name="cost" step={0.01} defaultValue={partner.cost} />
-                                <InputGroup.Text>EUR</InputGroup.Text>
+                        <Form.Label className="fw-bold">Regions</Form.Label>
+                        {selectedRegions.map((currentId, index) => (
+                            <InputGroup className="mb-2" key={index}>
+                                <Form.Select
+                                    value={String(currentId || "")}
+                                    onChange={(e) => handleRegionChange(index, e.target.value)}
+                                >
+                                    <option value="">Select region...</option>
+                                    {allRegions.map(reg => (
+                                        <option key={reg.id} value={reg.id}>{reg.name}</option>
+                                    ))}
+                                </Form.Select>
+                                <Button variant="outline-danger" onClick={() => removeRegionField(index)}>×</Button>
                             </InputGroup>
-                        </Form.Group>
+                        ))}
+                        <Button variant="outline-primary" size="sm" onClick={addRegionField}>+ Add Region</Button>
                     </Col>
-                    <Col md={6}>
-                        <Form.Group controlId="duration">
-                            <Form.Label className="fw-bold">Duration (weeks)</Form.Label>
-                            <Form.Control type="number" name="duration" defaultValue={partner.duration} />
-                        </Form.Group>
+                </Row>
+                <Row className="mb-3">
+                    <Col md={4}>
+                        <Form.Label className="fw-bold">Investment</Form.Label>
+                        <InputGroup>
+                            <Form.Control type="number" name="cost" defaultValue={partner?.cost || 0} />
+                            <InputGroup.Text>EUR</InputGroup.Text>
+                        </InputGroup>
+                    </Col>
+                    <Col md={4}>
+                        <Form.Label className="fw-bold">Duration</Form.Label>
+                        <Form.Control type="number" name="duration" defaultValue={partner?.duration || 0} />
+                    </Col>
+                    <Col md={4}>
+                        <Form.Label className="fw-bold">Contact</Form.Label>
+                        <Form.Control type="text" name="contact" defaultValue={partner?.contact || ""} />
                     </Col>
                 </Row>
 
-                <Form.Group className="mb-4" controlId="description">
+                <Form.Group className="mb-4">
                     <Form.Label className="fw-bold">Description</Form.Label>
-                    <Form.Control as="textarea" rows={4} name="description" defaultValue={partner.description} />
+                    <Form.Control as="textarea" rows={4} name="description" defaultValue={partner?.description || ""} />
                 </Form.Group>
 
                 <Stack direction="horizontal" gap={3} className="justify-content-end">
-                    <Link to={ROUTES.CooperatingPartners} className="btn btn-outline-secondary px-4">Cancel</Link>
-                    <Button type="submit" variant="success" className="px-5 shadow-sm">Save Changes</Button>
+                    <Link to={ROUTES.CooperatingPartners} className="btn btn-outline-secondary">Cancel</Link>
+                    <Button type="submit" variant="success">Save Changes</Button>
                 </Stack>
             </Form>
         </Container>

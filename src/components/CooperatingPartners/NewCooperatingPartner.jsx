@@ -5,15 +5,16 @@ import { ROUTES } from "../../constants";
 import CooperatingPartnerLogic from "./CooperatingPartners";
 import { useDataSource } from "../../DataSource/DataSourceContext";
 import { mainCategories } from "./CooperatingPartnersData/CooperatingPartnersMainCategoriesData";
-import { regions } from "../../DataSource/dataGenerator";
+import { regions as allRegions } from "../../DataSource/regionData";
 
 export function NewCooperatingPartner() {
     const navigate = useNavigate();
     const [error, setError] = useState("");
-    const { dataSource } = useDataSource();
+    const { dataSource, setPartners } = useDataSource();
     const [options, setOptions] = useState([]);
+    const [selectedRegions, setSelectedRegions] = useState([""]);
+    const [selectedTitles, setSelectedTitles] = useState([""]);
 
-    // Sync categories from memory/localStorage
     useEffect(() => {
         const syncData = () => {
             const saved = localStorage.getItem('globalCategories');
@@ -23,20 +24,41 @@ export function NewCooperatingPartner() {
                 setOptions(saved ? JSON.parse(saved) : mainCategories);
             }
         };
-
         syncData();
         window.addEventListener("categoriesUpdated", syncData);
         return () => window.removeEventListener("categoriesUpdated", syncData);
     }, [dataSource]);
+
+    const handleTitleChange = (index, value) => {
+        const updated = [...selectedTitles];
+        updated[index] = value;
+        setSelectedTitles(updated);
+    };
+
+    const addTitleField = () => setSelectedTitles([...selectedTitles, ""]);
+    const removeTitleField = (index) => {
+        const updated = selectedTitles.filter((_, i) => i !== index);
+        setSelectedTitles(updated.length ? updated : [""]);
+    };
+
+    const addRegionField = () => setSelectedRegions([...selectedRegions, ""]);
+    const removeRegionField = (index) => {
+        const updated = selectedRegions.filter((_, i) => i !== index);
+        setSelectedRegions(updated.length ? updated : [""]);
+    };
+
+    const handleRegionChange = (index, value) => {
+        const updated = [...selectedRegions];
+        updated[index] = value;
+        setSelectedRegions(updated);
+    };
 
     const isValidContact = (value) => {
         const parts = value.split(/[,\s]+/).filter(part => part.length > 0);
         if (parts.length === 0) return false;
         const emailExpression = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const phoneExpression = /^(\+?\d[\d\s-]{5,}\d)$/;
-        return parts.every(part =>
-            emailExpression.test(part) || phoneExpression.test(part)
-        );
+        return parts.every(part => emailExpression.test(part) || phoneExpression.test(part));
     };
 
     const handleSubmit = async (e) => {
@@ -44,17 +66,18 @@ export function NewCooperatingPartner() {
         setError("");
 
         const formData = new FormData(e.currentTarget);
-        const title = formData.get("title").trim();
-        const category = formData.get("category").trim();
+        const categoryId = formData.get("category");
         const company = formData.get("company").trim();
         const contact = formData.get("contact").trim();
         const description = formData.get("description").trim();
         const rawCost = formData.get("cost");
         const rawDuration = formData.get("duration");
-        const selectedRegion = formData.get("region").trim();
 
-        if (!title || !category || !company || !contact || !description || !selectedRegion) {
-            setError("Fields cannot be empty or contain only spaces.");
+        const finalRegions = selectedRegions.filter(id => id !== "");
+        const finalTitles = selectedTitles.filter(t => t.trim() !== "");
+
+        if (finalTitles.length === 0 || !categoryId || !company || !contact || !description || finalRegions.length === 0) {
+            setError("All fields are required, including at least one title and one region.");
             return;
         }
 
@@ -71,28 +94,29 @@ export function NewCooperatingPartner() {
             return;
         }
 
-        const existingPartners = await CooperatingPartnerLogic.getAll(dataSource);
-        const maxId = existingPartners.length > 0
-            ? Math.max(...existingPartners.map(p => p.id))
-            : 0;
-
-        const newPartner = {
-            id: maxId + 1,
-            title,
-            category,
-            company,
-            contact,
-            description,
-            region: selectedRegion,
-            cost: costValue,
-            duration: durationValue,
-        };
-
         try {
+            const existingPartners = await CooperatingPartnerLogic.getAll(dataSource);
+            const maxId = existingPartners.length > 0 ? Math.max(...existingPartners.map(p => p.id)) : 0;
+
+            const newPartner = {
+                id: maxId + 1,
+                titles: finalTitles,
+                category: categoryId,
+                company,
+                contact,
+                description,
+                regions: finalRegions,
+                cost: costValue,
+                duration: durationValue,
+            };
+
             await CooperatingPartnerLogic.create(newPartner, dataSource);
+            
+            setPartners(prev => [...prev, newPartner]);
+            window.dispatchEvent(new Event("partnersUpdated"));
+            
             navigate(ROUTES.CooperatingPartners);
         } catch (error) {
-            console.error("Error creating Partner:", error);
             setError("Failed to save the new partner.");
         }
     };
@@ -100,96 +124,90 @@ export function NewCooperatingPartner() {
     return (
         <Container className="mt-5">
             <h3 className="mb-4 dynamic-heading">Add New Cooperating Partner</h3>
-
-            {error && <Alert variant="danger" className="shadow-sm">{error}</Alert>}
+            {error && <Alert variant="danger">{error}</Alert>}
 
             <Form onSubmit={handleSubmit} className="shadow p-4 rounded custom-card border">
                 <Row className="mb-3">
-                    <Col md={6}>
-                        <Form.Group controlId="title">
-                            <Form.Label className="fw-bold dynamic-text">Work Title</Form.Label>
-                            <Form.Control type="text" name="title" placeholder="e.g. Web Development" />
-                        </Form.Group>
+                    <Col md={12}>
+                        <Form.Label className="fw-bold">Work Titles</Form.Label>
+                        {selectedTitles.map((title, index) => (
+                            <InputGroup className="mb-2" key={index}>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="e.g. Web Development"
+                                    value={title}
+                                    onChange={(e) => handleTitleChange(index, e.target.value)}
+                                />
+                                <Button variant="outline-danger" onClick={() => removeTitleField(index)} disabled={selectedTitles.length === 1}>×</Button>
+                            </InputGroup>
+                        ))}
+                        <Button variant="outline-primary" size="sm" onClick={addTitleField}>+ Add Title</Button>
                     </Col>
+                </Row>
+
+                <Row className="mb-3">
                     <Col md={6}>
-                        <Form.Label className="fw-bold dynamic-text">Category</Form.Label>
+                        <Form.Label className="fw-bold">Category</Form.Label>
                         <Form.Select name="category">
                             <option value="">Select a category...</option>
                             {options.map((cat) => (
-                                <option key={cat.id} value={cat.name}>{cat.name}</option>
+                                <option key={cat.id} value={cat.id}>{cat.name}</option>
                             ))}
                         </Form.Select>
                     </Col>
-                </Row>
-
-                <Row className="mb-3">
                     <Col md={6}>
-                        <Form.Group controlId="company">
-                            <Form.Label className="fw-bold dynamic-text">Company Name</Form.Label>
-                            <Form.Control type="text" name="company" placeholder="Enter company name" />
-                        </Form.Group>
-                    </Col>
-                    <Col md={6}>
-                        <Form.Group controlId="contact">
-                            <Form.Label className="fw-bold dynamic-text">Contact (Email or Phone)</Form.Label>
-                            <Form.Control type="text" name="contact" placeholder="user@mail.com or +xxx..." />
-                        </Form.Group>
+                        <Form.Label className="fw-bold">Company Name</Form.Label>
+                        <Form.Control type="text" name="company" placeholder="Enter company name" />
                     </Col>
                 </Row>
 
                 <Row className="mb-3">
                     <Col md={6}>
-                        <Form.Group controlId="cost">
-                            <Form.Label className="fw-bold dynamic-text">Total Investment</Form.Label>
-                            <InputGroup>
-                                <Form.Control type="number" name="cost" step="0.01" placeholder="0.00" />
-                                <InputGroup.Text>EUR</InputGroup.Text>
+                        <Form.Label className="fw-bold">Operating Regions</Form.Label>
+                        {selectedRegions.map((currentId, index) => (
+                            <InputGroup className="mb-2" key={index}>
+                                <Form.Select
+                                    value={currentId}
+                                    onChange={(e) => handleRegionChange(index, e.target.value)}
+                                >
+                                    <option value="">Select region...</option>
+                                    {allRegions.map(reg => (
+                                        <option key={reg.id} value={reg.id}>{reg.name}</option>
+                                    ))}
+                                </Form.Select>
+                                <Button variant="outline-danger" onClick={() => removeRegionField(index)}>×</Button>
                             </InputGroup>
-                        </Form.Group>
+                        ))}
+                        <Button variant="outline-primary" size="sm" onClick={addRegionField}>+ Add Region</Button>
                     </Col>
-                    <Col md={6}>
-                        <Form.Group controlId="duration">
-                            <Form.Label className="fw-bold dynamic-text">Duration</Form.Label>
-                            <InputGroup>
-                                <Form.Control type="number" name="duration" placeholder="0" />
-                                <InputGroup.Text>weeks</InputGroup.Text>
-                            </InputGroup>
-                        </Form.Group>
-                    </Col>
-                </Row>
+                    </Row>
                 <Row className="mb-3">
-                    <Col md={6}>
-                        <Form.Group controlId="region">
-                            <Form.Label className="fw-bold dynamic-text">Region</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="region"
-                                list="region-options"
-                                placeholder="Type to add new or select..."
-                            />
-                            <datalist id="region-options">
-                                {regions.map((reg) => (
-                                    <option key={reg} value={reg} />
-                                ))}
-                            </datalist>
-                            <Form.Text className="text-muted">
-                                Choose from the list or type a new region name.
-                            </Form.Text>
-                        </Form.Group>
+                    <Col md={12}>
+                        <Row>
+                            <Col md={4}>
+                                <Form.Label className="fw-bold">Investment</Form.Label>
+                                <InputGroup><Form.Control type="number" name="cost" step="0.01" /><InputGroup.Text>EUR</InputGroup.Text></InputGroup>
+                            </Col>
+                            <Col md={4}>
+                                <Form.Label className="fw-bold">Duration</Form.Label>
+                                <InputGroup><Form.Control type="number" name="duration" placeholder='Weeks' /><InputGroup.Text>wks</InputGroup.Text></InputGroup>
+                            </Col>
+                            <Col md={4}>
+                                <Form.Label className="fw-bold">Contact</Form.Label>
+                                <Form.Control type="text" name="contact" placeholder="Email or Phone" />
+                            </Col>
+                        </Row>
                     </Col>
-                    <Col md={6}></Col>
                 </Row>
 
-                <Form.Group className="mb-4" controlId="description">
-                    <Form.Label className="fw-bold dynamic-text">Detailed Description</Form.Label>
-                    <Form.Control as="textarea" rows={4} name="description" placeholder="Describe details here..." />
+                <Form.Group className="mb-4">
+                    <Form.Label className="fw-bold">Detailed Description</Form.Label>
+                    <Form.Control as="textarea" rows={4} name="description" />
                 </Form.Group>
-
-                <hr className="my-4" />
 
                 <Stack direction="horizontal" gap={3} className="justify-content-end">
                     <Link to={ROUTES.CooperatingPartners} className="btn btn-outline-secondary px-4">Cancel</Link>
-                    <Button type="submit" variant="primary" className="px-5 shadow-sm">Add CooperatingPartner</Button>
+                    <Button type="submit" variant="primary" className="px-5 shadow-sm">Add Partner</Button>
                 </Stack>
             </Form>
         </Container>
