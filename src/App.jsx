@@ -4,7 +4,7 @@ import './App.css'
 import { Container } from 'react-bootstrap'
 import { Routes, Route } from 'react-router-dom'
 import './components/colorSchemes/ColorsStyle.css';
-import { DataSourceProvider } from "./DataSource/DataSourceContext";
+import { useDataSource, DataSourceProvider } from "./DataSource/DataSourceContext";
 
 import NavBar from "./components/NavBar"
 import Home from "./pages/Home"
@@ -28,6 +28,28 @@ import LogInPage from './UserData/LogInComponent';
 import RegistrationPage from './UserData/RegistrationComponent';
 import UserProfileMain from './pages/UserProfileMain';
 
+/* data generator for mock data */
+import { mainCategories } from './components/CooperatingPartners/CooperatingPartnersData/CooperatingPartnersMainCategoriesData';
+import { CooperatingPartnersData } from './components/CooperatingPartners/CooperatingPartnersData/CooperatingPartnersData';
+import { generateMockPartners } from './DataSource/dataGenerator';
+
+function DataInitializer() {
+  const { setPartners, dataSource } = useDataSource();
+
+  useEffect(() => {
+    console.log("Current Data Source:", dataSource);
+    if (CooperatingPartnersData.length < 10) {
+      const fullData = generateMockPartners(CooperatingPartnersData, mainCategories,
+         15);
+      setPartners(fullData);
+      console.log(" Mock data injected. Total count:", fullData.length);
+    }
+  }, [setPartners]);
+
+  return null;
+}
+
+
 function App() {
 
   const isDevelopment =
@@ -48,6 +70,7 @@ function App() {
 
   return (
     <DataSourceProvider>
+      <DataInitializer />
       <Container className={`MainContainer ${isDevelopment ? 'dev-mode' : ''}`} fluid>
         <NavBar theme={theme} toggleTheme={toggleTheme} />
         <main>
@@ -61,7 +84,7 @@ function App() {
             <Route path={ROUTES.login} element={<LogInPage />} />
             <Route path={ROUTES.registration} element={<RegistrationPage />} />
             <Route path={ROUTES.userProfile} element={<UserProfileMain />} />
-            <Route path={ROUTES.cooperatingPartersCategoyChange}element={<CooperatingPartnersCategoryChange />}/>
+            <Route path={ROUTES.cooperatingPartersCategoyChange} element={<CooperatingPartnersCategoryChange />} />
           </Routes>
         </main>
 

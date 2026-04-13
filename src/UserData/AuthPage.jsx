@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button, Container, Row, Col, Card, Alert } from 'react-bootstrap';
 import AuthLogic from './AuthLogic'; 
 
 const AuthPage = ({ isRegisterMode, dataSource }) => {
   const [formData, setFormData] = useState({ email: '', password: '', username: '' });
   const [message, setMessage] = useState({ text: '', variant: '' });
+
+
 
   const handleInput = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

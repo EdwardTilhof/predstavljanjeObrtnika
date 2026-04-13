@@ -9,19 +9,21 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [targetCooperatingPartner, setTargetCooperatingPartner] = useState(null);
-  const { dataSource, setDataSource } = useDataSource();
+  
+  // 1. Get partners and setPartners from Context
+  const { dataSource, partners, setPartners } = useDataSource();
 
-  const [CooperatingPartners, setCooperatingPartners] = useState([]);
-
-  useEffect(() => {
+ useEffect(() => {
     const loadData = async () => {
-      const response = await CooperatingPartnerLogic.getCooperatingPartners(dataSource);
-      setCooperatingPartners(response.data || []);
+      if (dataSource !== 'memory') {
+        const response = await CooperatingPartnerLogic.getCooperatingPartners(dataSource);
+        setPartners(response.data || []);
+      }
     };
-    loadData();
+  loadData();
     window.addEventListener("partnersUpdated", loadData);
     return () => window.removeEventListener("partnersUpdated", loadData);
-  }, [dataSource]);
+  }, [dataSource, setPartners]);
 
   const openConfirmModal = (id, title) => {
     setTargetCooperatingPartner({ id, title });
@@ -39,11 +41,11 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
   };
 
   const filteredCooperatingPartners = selectedCategory && selectedCategory !== "All"
-    ? CooperatingPartners.filter(cp => cp.category === selectedCategory)
-    : CooperatingPartners;
+    ? partners.filter(cp => cp.category === selectedCategory)
+    : partners;
 
   const sortedCooperatingPartners = [...filteredCooperatingPartners].sort((a, b) =>
-    a.category.localeCompare(b.category)
+    (a.category || "").localeCompare(b.category || "")
   );
 
   return (
