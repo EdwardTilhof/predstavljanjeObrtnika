@@ -33,25 +33,30 @@ const companies = [
 
 export const generateMockPartners = (baseData, categories, count = 15) => {
     const generatedData = [...baseData];
+    const maxId = baseData.length > 0 
+        ? Math.max(...baseData.map(p => Number(p.id) || 0)) 
+        : 0;
 
+   
     for (let i = 0; i < count; i++) {
         const categoryObj = categories[getRandomInt(0, categories.length - 1)];
         const randomCompany = companies[getRandomInt(0, companies.length - 1)];
         const regionObj = regions[getRandomInt(0, regions.length - 1)];
 
+
       generatedData.push({
-    id: Date.now() + i + Math.random(),
-    title: titles[getRandomInt(0, titles.length - 1)],
-    titles: [titles[getRandomInt(0, titles.length - 1)]], 
-    category: categoryObj.id, 
-    company: randomCompany,
-    cost: getRandomInt(500, 15000),
-    duration: getRandomInt(1, 52),
-    region: regionObj.id, 
-    regions: [regionObj.id], // Wrap in array
-    contact: `info@${randomCompany.toLowerCase().replace(/[^a-z0-9]/g, '')}.com`,
-    description: "Generated placeholder description."
-});
+            id: maxId + i + 1, 
+            title: titles[getRandomInt(0, titles.length - 1)],
+            titles: [titles[getRandomInt(0, titles.length - 1)]], 
+            category: categoryObj.id, 
+            company: randomCompany,
+            cost: getRandomInt(500, 15000),
+            duration: getRandomInt(1, 52),
+            region: regionObj.id, 
+            regions: [regionObj.id], 
+            contact: `info@${randomCompany.toLowerCase().replace(/[^a-z0-9]/g, '')}.com`,
+            description: "Generated placeholder description."
+        });
     }
 
     return generatedData;

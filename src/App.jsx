@@ -34,22 +34,18 @@ import { CooperatingPartnersData } from './components/CooperatingPartners/Cooper
 import { generateMockPartners } from './DataSource/dataGenerator';
 
 function DataInitializer() {
-  const { setPartners, dataSource } = useDataSource();
+  const { partners, setPartners, dataSource } = useDataSource();
 
   useEffect(() => {
-    console.log("Current Data Source:", dataSource);
-    if (CooperatingPartnersData.length < 10) {
-      const fullData = generateMockPartners(CooperatingPartnersData, mainCategories,
-         15);
+    if (dataSource === 'memory' && partners.length === 6) {
+      console.log("Injecting fresh mock data...");
+      const fullData = generateMockPartners(CooperatingPartnersData, mainCategories, 15);
       setPartners(fullData);
-      console.log(" Mock data injected. Total count:", fullData.length);
     }
-  }, [setPartners]);
+  }, [dataSource, partners.length]); 
 
   return null;
 }
-
-
 function App() {
 
   const isDevelopment =

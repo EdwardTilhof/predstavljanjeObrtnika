@@ -46,7 +46,7 @@ export const CooperatingPartnersData = [
     description: "Strategic search engine optimization to increase your organic search visibility."
   },
   {
-    id: 14,
+    id: 3,
     title: "Blockchain Development",
     category: "cat1", 
     company: "ChainLinkers",
@@ -57,7 +57,7 @@ export const CooperatingPartnersData = [
     description: "Secure decentralized applications and smart contract implementation."
   },
   {
-    id: 20,
+    id: 7,
     title: "Database Management",
     category: "cat3", 
     company: "DataGuardians",

@@ -10,7 +10,7 @@ import { regions as allRegions } from "../../DataSource/regionData";
 export default function ChangeCooperatingPartner() {
     const navigate = useNavigate();
     const { id } = useParams();
-    const { dataSource, setPartners } = useDataSource();
+    const { dataSource, setPartners, partners } = useDataSource();
 
     const [partner, setPartner] = useState(null);
     const [error, setError] = useState("");
@@ -23,34 +23,34 @@ export default function ChangeCooperatingPartner() {
     });
 
     useEffect(() => {
-        const fetchPartner = async () => {
-            try {
-                const response = await CooperatingPartnerLogic.getById(id, dataSource);
+    const fetchPartner = async () => {
+        try {
+            const response = await CooperatingPartnerLogic.getById(id, dataSource, partners);
 
-                const data = response.data?.data || response.data || response;
+            console.log("Raw Service Response:", response);
 
-                if (data) {
-                    console.log("Extracted Partner Object:", data); // This should now show the id, title, etc. directly
-                    setPartner(data);
+            const actualPartner = response.data; 
 
-                    const titles = Array.isArray(data.titles)
-                        ? data.titles
-                        : [data.title || data.workTitle || ""];
+            if (actualPartner) {
+                setPartner(actualPartner);
 
-                    const regions = Array.isArray(data.regions)
-                        ? data.regions
-                        : [data.region || ""];
+                setSelectedTitles(Array.isArray(actualPartner.titles) 
+                    ? actualPartner.titles 
+                    : [actualPartner.title || ""]);
 
-                    setSelectedTitles(titles);
-                    setSelectedRegions(regions);
-                }
-            } catch (err) {
-                console.error("Fetch Error:", err);
-                setError("Could not load partner data.");
+                setSelectedRegions(Array.isArray(actualPartner.regions) 
+                    ? actualPartner.regions 
+                    : [actualPartner.region || ""]);
+            } else {
+                setError(`Partner with ID ${id} was not found in ${dataSource}.`);
             }
-        };
-        if (id) fetchPartner();
-    }, [id, dataSource]);
+        } catch (err) {
+            console.error("Fetch Error:", err);
+            setError("Could not load partner data.");
+        }
+    };
+    if (id) fetchPartner();
+}, [id, dataSource, partners]);
 
     const handleTitleChange = (index, value) => {
         const updated = [...selectedTitles];
@@ -116,7 +116,7 @@ export default function ChangeCooperatingPartner() {
         <Container className="mt-5">
             {error && <Alert variant="danger">{error}</Alert>}
 
-            <Form onSubmit={handleSubmit} key={partner?.id || 'loading'}>
+            <Form onSubmit={handleSubmit} key={partner.id || 'loading'}>
                 <Row className="mb-3">
                     <Col md={12}>
                         <Form.Label className="fw-bold">Work Titles</Form.Label>
