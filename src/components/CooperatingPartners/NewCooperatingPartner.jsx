@@ -10,7 +10,7 @@ import { regions as allRegions } from "../../DataSource/regionData";
 export function NewCooperatingPartner() {
     const navigate = useNavigate();
     const [error, setError] = useState("");
-    const { dataSource, setPartners } = useDataSource();
+    const { dataSource, setPartners, partners } = useDataSource();
     const [options, setOptions] = useState([]);
     const [selectedRegions, setSelectedRegions] = useState([""]);
     const [selectedTitles, setSelectedTitles] = useState([""]);
@@ -62,58 +62,58 @@ export function NewCooperatingPartner() {
     };
 
     const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+        e.preventDefault();
+        setError("");
 
-    const formData = new FormData(e.currentTarget);
-    
-    const categoryId = formData.get("category"); 
-    const company = formData.get("company").trim();
-    const contact = formData.get("contact").trim();
-    const description = formData.get("description").trim();
-    
-    const finalRegions = selectedRegions.filter(id => id !== "");
-    const finalTitles = selectedTitles.filter(t => t.trim() !== "");
+        const formData = new FormData(e.currentTarget);
 
-    if (finalTitles.length === 0 || !categoryId || !company || !contact || !description || finalRegions.length === 0) {
-        setError("All fields are required.");
-        return;
-    }
+        const categoryId = formData.get("category");
+        const company = formData.get("company").trim();
+        const contact = formData.get("contact").trim();
+        const description = formData.get("description").trim();
 
-    if (!isValidContact(contact)) {
-        setError("Please enter a valid email address or phone number.");
-        return;
-    }
+        const finalRegions = selectedRegions.filter(id => id !== "");
+        const finalTitles = selectedTitles.filter(t => t.trim() !== "");
 
-    try {
-        const currentIds = partners.map(p => Number(p.id)).filter(id => !isNaN(id));
-        const maxId = currentIds.length > 0 ? Math.max(...currentIds) : 0;
-        const newId = maxId + 1;
+        if (finalTitles.length === 0 || !categoryId || !company || !contact || !description || finalRegions.length === 0) {
+            setError("All fields are required.");
+            return;
+        }
 
-        const newPartner = {
-            id: newId, 
-            titles: finalTitles,  
-            category: categoryId, 
-            company,
-            contact,
-            description,
-            regions: finalRegions, 
-            cost: parseFloat(formData.get("cost")) || 0,
-            duration: parseInt(formData.get("duration"), 10) || 0,
-        };
+        if (!isValidContact(contact)) {
+            setError("Please enter a valid email address or phone number.");
+            return;
+        }
 
-        await CooperatingPartnerLogic.create(newPartner, dataSource);
-        
-        setPartners(prev => [...prev, newPartner]);
+        try {
+            const currentIds = partners.map(p => Number(p.id)).filter(id => !isNaN(id));
+            const maxId = currentIds.length > 0 ? Math.max(...currentIds) : 0;
+            const newId = maxId + 1;
 
-        window.dispatchEvent(new Event("partnersUpdated"));
-        navigate(ROUTES.CooperatingPartners);
-        
-    } catch (error) {
-        console.error("Creation Error:", error);
-        setError("Failed to save the new partner.");
-    }
-};
+            const newPartner = {
+                id: newId,
+                titles: finalTitles,
+                category: categoryId,
+                company,
+                contact,
+                description,
+                regions: finalRegions,
+                cost: parseFloat(formData.get("cost")) || 0,
+                duration: parseInt(formData.get("duration"), 10) || 0,
+            };
+
+            await CooperatingPartnerLogic.create(newPartner, dataSource);
+
+            setPartners(prev => [...prev, newPartner]);
+
+            window.dispatchEvent(new Event("partnersUpdated"));
+            navigate(ROUTES.CooperatingPartners);
+
+        } catch (error) {
+            console.error("Creation Error:", error);
+            setError("Failed to save the new partner.");
+        }
+    };
 
     return (
         <Container className="mt-5">
@@ -174,7 +174,7 @@ export function NewCooperatingPartner() {
                         ))}
                         <Button variant="outline-primary" size="sm" onClick={addRegionField}>+ Add Region</Button>
                     </Col>
-                    </Row>
+                </Row>
                 <Row className="mb-3">
                     <Col md={12}>
                         <Row>
