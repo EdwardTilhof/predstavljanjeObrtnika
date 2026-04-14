@@ -5,7 +5,8 @@ import { ROUTES } from "../../constants";
 import CooperatingPartnerLogic from "./CooperatingPartners";
 import { useDataSource } from "../../DataSource/DataSourceContext";
 import { mainCategories } from "./CooperatingPartnersData/CooperatingPartnersMainCategoriesData";
-import { regions as allRegions } from "../../DataSource/regionData";
+import { regions as defaultRegions } from "../../DataSource/regionData";
+
 
 export function NewCooperatingPartner() {
     const navigate = useNavigate();
@@ -14,6 +15,21 @@ export function NewCooperatingPartner() {
     const [options, setOptions] = useState([]);
     const [selectedRegions, setSelectedRegions] = useState([""]);
     const [selectedTitles, setSelectedTitles] = useState([""]);
+    const [allRegions, setAllRegions] = useState([]);
+
+    useEffect(() => {
+        const syncRegions = () => {
+            const saved = localStorage.getItem('globalRegions');
+            if (dataSource === 'memory') {
+                setAllRegions(defaultRegions);
+            } else {
+                setAllRegions(saved ? JSON.parse(saved) : defaultRegions);
+            }
+        };
+        syncRegions();
+        window.addEventListener("regionsUpdated", syncRegions);
+        return () => window.removeEventListener("regionsUpdated", syncRegions);
+    }, [dataSource]);
 
     useEffect(() => {
         const syncData = () => {

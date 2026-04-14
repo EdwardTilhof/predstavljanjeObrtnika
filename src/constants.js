@@ -22,7 +22,8 @@ export const ROUTES = {
   login: "/login",
   registration: "/register",
   userProfile: "/userProfile",
-  cooperatingPartersCategoyChange: "/cooperating-partners-category-change"
+  cooperatingPartersCategoyChange: "/cooperating-partners-category-change",
+  addNewRegions: "/addNewRegions"
 };
 
 export const NAV_LINKS = [
@@ -39,6 +40,7 @@ export const NAV_LINKS = [
   { label: "Registration", path: ROUTES.registration },
   { label: "UserProfile", path: ROUTES.userProfile },
   { label: "Change Category", path: ROUTES.cooperatingPartersCategoyChange },
+  { label: "Add Regions", path: ROUTES.addNewRegions }
 ];
 
 // Data, Local storage

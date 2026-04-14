@@ -7,20 +7,41 @@ const CooperatingPartnersCategoryChange = () => {
     const { dataSource } = useDataSource();
     const isInitialMount = useRef(true);
 
-    const [categories, setCategories] = useState(() => {
-        const saved = localStorage.getItem('globalCategories');
-        if (saved && dataSource !== 'memory') {
-            return JSON.parse(saved);
-        }
-        return mainCategories;
-    });
-
+    const [categories, setCategories] = useState([]);
     const [editingId, setEditingId] = useState(null);
     const [tempName, setTempName] = useState("");
     const [newName, setNewName] = useState("");
-
     const [showModal, setShowModal] = useState(false);
     const [targetCategory, setTargetCategory] = useState(null);
+
+   useEffect(() => {
+    const loadData = () => {
+        if (dataSource === 'memory') {
+            setCategories(mainCategories);
+        } else {
+            const saved = localStorage.getItem('globalCategories');
+            if (saved) {
+                setCategories(JSON.parse(saved));
+            } else {
+                setCategories(mainCategories);
+            }
+        }
+    };
+    
+    loadData();
+}, [dataSource]);
+
+    useEffect(() => {
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+            return;
+        }
+
+        if (dataSource !== 'memory') {
+            localStorage.setItem('globalCategories', JSON.stringify(categories));
+            window.dispatchEvent(new Event("categoriesUpdated"));
+        }
+    }, [categories, dataSource]);
 
     const handleDeleteClick = (cat) => {
         setTargetCategory(cat);
@@ -29,7 +50,7 @@ const CooperatingPartnersCategoryChange = () => {
 
     const confirmDelete = () => {
         if (targetCategory) {
-            setCategories(categories.filter(cat => cat.id !== targetCategory.id));
+            setCategories(prev => prev.filter(cat => cat.id !== targetCategory.id));
             if (editingId === targetCategory.id) {
                 setEditingId(null);
                 setTempName("");
@@ -41,42 +62,27 @@ const CooperatingPartnersCategoryChange = () => {
 
     const handleAddCategory = () => {
         if (!newName.trim()) return;
-        const nextNumber = categories.length > 0
-            ? Math.max(...categories.map(c => parseInt(c.id.replace('cat', '')) || 0)) + 1
-            : 1;
 
-        setCategories([...categories, { id: `cat${nextNumber}`, name: newName }]);
+        const numericIds = categories
+            .map(c => {
+                const num = parseInt(String(c.id).replace(/\D/g, ''));
+                return isNaN(num) ? 0 : num;
+            });
+
+        const nextNumber = numericIds.length > 0 ? Math.max(...numericIds) + 1 : 1;
+
+        setCategories(prev => [...prev, { id: `cat${nextNumber}`, name: newName.trim() }]);
         setNewName("");
     };
 
     const saveEdit = (id) => {
         if (!tempName.trim()) return;
-        setCategories(categories.map((cat) =>
-            cat.id === id ? { ...cat, name: tempName } : cat
+        setCategories(prev => prev.map((cat) =>
+            cat.id === id ? { ...cat, name: tempName.trim() } : cat
         ));
         setEditingId(null);
         setTempName("");
     };
-
-    useEffect(() => {
-        if (dataSource === 'memory') {
-            setCategories(mainCategories);
-        } else {
-            const saved = localStorage.getItem('globalCategories');
-            setCategories(saved ? JSON.parse(saved) : mainCategories);
-        }
-    }, [dataSource]);
-
-    useEffect(() => {
-        if (isInitialMount.current) {
-            isInitialMount.current = false;
-            return;
-        }
-        if (dataSource !== 'memory') {
-            localStorage.setItem('globalCategories', JSON.stringify(categories));
-            window.dispatchEvent(new Event("categoriesUpdated"));
-        }
-    }, [categories, dataSource]);
 
     return (
         <Container className="mt-4">

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
 import { Container } from 'react-bootstrap'
@@ -32,6 +32,10 @@ import UserProfileMain from './pages/UserProfileMain';
 import { mainCategories } from './components/CooperatingPartners/CooperatingPartnersData/CooperatingPartnersMainCategoriesData';
 import { CooperatingPartnersData } from './components/CooperatingPartners/CooperatingPartnersData/CooperatingPartnersData';
 import { generateMockPartners } from './DataSource/dataGenerator';
+
+/*Regions add imports */
+const RegionsCategoryAdd = lazy(() => import('./pages/RegionsCategoryAdd'));
+
 
 function DataInitializer() {
   const { partners, setPartners, dataSource } = useDataSource();
@@ -70,6 +74,7 @@ function App() {
       <Container className={`MainContainer ${isDevelopment ? 'dev-mode' : ''}`} fluid>
         <NavBar theme={theme} toggleTheme={toggleTheme} />
         <main>
+          <Suspense fallback={<div>Loading Page...</div>}>
           <Routes>
             <Route path={ROUTES.home} element={<Home />} />
             <Route path={ROUTES.CooperatingPartners} element={<CooperatingPartnersMain />} />
@@ -81,7 +86,9 @@ function App() {
             <Route path={ROUTES.registration} element={<RegistrationPage />} />
             <Route path={ROUTES.userProfile} element={<UserProfileMain />} />
             <Route path={ROUTES.cooperatingPartersCategoyChange} element={<CooperatingPartnersCategoryChange />} />
+            <Route path={ROUTES.addNewRegions} element={<RegionsCategoryAdd />} />
           </Routes>
+          </Suspense>
         </main>
 
         <hr />
