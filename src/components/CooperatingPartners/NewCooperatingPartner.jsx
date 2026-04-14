@@ -62,64 +62,58 @@ export function NewCooperatingPartner() {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError("");
+    e.preventDefault();
+    setError("");
 
-        const formData = new FormData(e.currentTarget);
-        const categoryId = formData.get("category");
-        const company = formData.get("company").trim();
-        const contact = formData.get("contact").trim();
-        const description = formData.get("description").trim();
-        const rawCost = formData.get("cost");
-        const rawDuration = formData.get("duration");
+    const formData = new FormData(e.currentTarget);
+    
+    const categoryId = formData.get("category"); 
+    const company = formData.get("company").trim();
+    const contact = formData.get("contact").trim();
+    const description = formData.get("description").trim();
+    
+    const finalRegions = selectedRegions.filter(id => id !== "");
+    const finalTitles = selectedTitles.filter(t => t.trim() !== "");
 
-        const finalRegions = selectedRegions.filter(id => id !== "");
-        const finalTitles = selectedTitles.filter(t => t.trim() !== "");
+    if (finalTitles.length === 0 || !categoryId || !company || !contact || !description || finalRegions.length === 0) {
+        setError("All fields are required.");
+        return;
+    }
 
-        if (finalTitles.length === 0 || !categoryId || !company || !contact || !description || finalRegions.length === 0) {
-            setError("All fields are required, including at least one title and one region.");
-            return;
-        }
+    if (!isValidContact(contact)) {
+        setError("Please enter a valid email address or phone number.");
+        return;
+    }
 
-        if (!isValidContact(contact)) {
-            setError("Please enter a valid email address or phone number.");
-            return;
-        }
+    try {
+        const currentIds = partners.map(p => Number(p.id)).filter(id => !isNaN(id));
+        const maxId = currentIds.length > 0 ? Math.max(...currentIds) : 0;
+        const newId = maxId + 1;
 
-        const costValue = parseFloat(rawCost);
-        const durationValue = parseInt(rawDuration, 10);
+        const newPartner = {
+            id: newId, 
+            titles: finalTitles,  
+            category: categoryId, 
+            company,
+            contact,
+            description,
+            regions: finalRegions, 
+            cost: parseFloat(formData.get("cost")) || 0,
+            duration: parseInt(formData.get("duration"), 10) || 0,
+        };
 
-        if (isNaN(costValue) || costValue < 0 || isNaN(durationValue) || durationValue < 0) {
-            setError("Please enter valid positive numbers for Investment and Duration.");
-            return;
-        }
+        await CooperatingPartnerLogic.create(newPartner, dataSource);
+        
+        setPartners(prev => [...prev, newPartner]);
 
-        try {
-            const existingPartners = await CooperatingPartnerLogic.getAll(dataSource);
-            const maxId = existingPartners.length > 0 ? Math.max(...existingPartners.map(p => p.id)) : 0;
-
-            const newPartner = {
-                id: maxId + 1,
-                titles: finalTitles,
-                category: categoryId,
-                company,
-                contact,
-                description,
-                regions: finalRegions,
-                cost: costValue,
-                duration: durationValue,
-            };
-
-            await CooperatingPartnerLogic.create(newPartner, dataSource);
-            
-            setPartners(prev => [...prev, newPartner]);
-            window.dispatchEvent(new Event("partnersUpdated"));
-            
-            navigate(ROUTES.CooperatingPartners);
-        } catch (error) {
-            setError("Failed to save the new partner.");
-        }
-    };
+        window.dispatchEvent(new Event("partnersUpdated"));
+        navigate(ROUTES.CooperatingPartners);
+        
+    } catch (error) {
+        console.error("Creation Error:", error);
+        setError("Failed to save the new partner.");
+    }
+};
 
     return (
         <Container className="mt-5">
