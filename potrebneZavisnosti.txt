@@ -1,8 +1,11 @@
 U terminalu nakon što ste zaustavili aplikaciju (ctrl+c) izvesti:
 
 npm install
+
 npm install react-bootstrap bootstrap
+
 npm install react-router-dom
 
 npm install react-icons
+
 npm install bootstrap-icons
