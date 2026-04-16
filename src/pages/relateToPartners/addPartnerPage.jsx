@@ -21,8 +21,8 @@ const AddPartnerPage = () => {
         regions: [""], 
         category: "", 
         company: "", 
-        cost: 0, 
-        duration: 0, 
+        cost: "", 
+        duration: "", 
         contact: "", 
         description: ""
     });

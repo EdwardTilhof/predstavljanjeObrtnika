@@ -65,7 +65,8 @@ const CategoryManager = () => {
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
                 />
-                <Button variant="success" onClick={handleAdd}>Add</Button>
+                <Button variant="success" 
+                onClick={handleAdd}>Add</Button>
             </InputGroup>
 
             <Table hover responsive className="align-middle">
@@ -94,13 +95,25 @@ const CategoryManager = () => {
                             <td className="text-end">
                                 {editId === cat.id ? (
                                     <>
-                                        <Button variant="primary" size="sm" className="me-2" onClick={handleSaveEdit}>Save</Button>
-                                        <Button variant="secondary" size="sm" onClick={() => setEditId(null)}>Cancel</Button>
+                                        <Button variant="primary" size="sm" className="me-2" 
+                                        onClick={handleSaveEdit}>
+                                            <i className="bi bi-check-lg"></i>
+                                        </Button>
+                                        <Button variant="secondary" size="sm" 
+                                        onClick={() => setEditId(null)}>
+                                            <i className="bi bi-x-lg"></i>
+                                        </Button>
                                     </>
                                 ) : (
                                     <>
-                                        <Button variant="outline-primary" size="sm" className="me-2" onClick={() => startEdit(cat)}>Edit</Button>
-                                        <Button variant="outline-danger" size="sm" onClick={() => handleDeleteClick(cat)}>Delete</Button>
+                                        <Button variant="outline-primary" size="sm" className="me-2" 
+                                        onClick={() => startEdit(cat)}>
+                                            <i className="bi bi-pencil"></i>
+                                        </Button>
+                                        <Button variant="outline-danger" size="sm" 
+                                        onClick={() => handleDeleteClick(cat)}>
+                                            <i className="bi bi-trash"></i>
+                                        </Button>
                                     </>
                                 )}
                             </td>

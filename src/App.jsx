@@ -1,8 +1,9 @@
 import React, { useState, Suspense, useEffect } from "react";
 import './App.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 import { Container } from "react-bootstrap";
 import { Route, Routes } from "react-router-dom";
-
 import { DataSourceProvider } from "./dataSource/DataSourceContext";
 import NavBarMain from './crossPageComponents/navBar/NavBarMain';
 import AboutUsFooter from "./crossPageComponents/footers/AboutUsFooter";

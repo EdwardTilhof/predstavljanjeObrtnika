@@ -92,9 +92,21 @@ const PartnerFormUI = ({
             </Form.Group>
 
             <Row className="mb-3">
-                <Col md={4}><Form.Label>Investment (EUR)</Form.Label><Form.Control type="number" value={formData.cost} onChange={(e) => setFormData({ ...formData, cost: e.target.value })} /></Col>
-                <Col md={4}><Form.Label>Duration (Wks)</Form.Label><Form.Control type="number" value={formData.duration} onChange={(e) => setFormData({ ...formData, duration: e.target.value })} /></Col>
-                <Col md={4}><Form.Label>Contact</Form.Label><Form.Control type="text" value={formData.contact} onChange={(e) => setFormData({ ...formData, contact: e.target.value })} /></Col>
+
+                <Col md={4}><Form.Label>Investment (EUR)</Form.Label>
+                    <Form.Control placeholder="e.g. 5000.00"
+                        type="number" value={formData.cost}
+                        onChange={(e) => setFormData({ ...formData, cost: e.target.value })} /></Col>
+
+                <Col md={4}><Form.Label>Duration (Wks)</Form.Label>
+                    <Form.Control placeholder="e.g. 12"
+                        type="number" value={formData.duration}
+                        onChange={(e) => setFormData({ ...formData, duration: e.target.value })} /></Col>
+
+                <Col md={4}><Form.Label>Contact</Form.Label>
+                    <Form.Control placeholder="e.g. john.doe@example.com"
+                        type="text" value={formData.contact}
+                        onChange={(e) => setFormData({ ...formData, contact: e.target.value })} /></Col>
             </Row>
 
             <Form.Group className="mb-4">

@@ -3,7 +3,7 @@ import { Table, Button, Form, InputGroup } from 'react-bootstrap';
 import { createUniqueId } from "../../../dataRepository/UUIDGenerator";
 import { regions as defaultRegions } from "../../../dataRepository/locations/RegionsData";
 // Path updated as per your instruction
-import DeleteConfirmationModal from "../../crossPageComponents/modal/DeleteConfirmationModal"; 
+import DeleteConfirmationModal from "../../crossPageComponents/modal/DeleteConfirmationModal";
 
 const RegionManager = () => {
     const [regions, setRegions] = useState([]);
@@ -101,16 +101,25 @@ const RegionManager = () => {
                             <td className="text-end">
                                 {editId === reg.id ? (
                                     <>
-                                        <Button variant="primary" size="sm" className="me-2" onClick={handleSaveEdit}>Save</Button>
-                                        <Button variant="secondary" size="sm" onClick={() => setEditId(null)}>Cancel</Button>
+                                        <Button variant="primary" size="sm" className="me-2"
+                                            onClick={handleSaveEdit}>
+                                            <i className="bi bi-check-lg"></i>
+                                        </Button>
+                                        <Button variant="secondary" size="sm"
+                                            onClick={() => setEditId(null)}>
+                                            <i className="bi bi-x-lg"></i>
+                                        </Button>
                                     </>
                                 ) : (
                                     <>
-                                        <Button variant="outline-primary"
-                                            size="sm" className="me-2"
-                                            onClick={() => startEdit(reg)}>Edit</Button>
+                                        <Button variant="outline-primary" size="sm" className="me-2"
+                                            onClick={() => startEdit(cat)}>
+                                            <i className="bi bi-pencil"></i>
+                                        </Button>
                                         <Button variant="outline-danger" size="sm"
-                                            onClick={() => handleDeleteClick(reg)}>Delete</Button>
+                                            onClick={() => handleDeleteClick(cat)}>
+                                            <i className="bi bi-trash"></i>
+                                        </Button>
                                     </>
                                 )}
                             </td>
@@ -120,7 +129,7 @@ const RegionManager = () => {
             </Table>
 
             {/* Added the Modal component here */}
-            <DeleteConfirmationModal 
+            <DeleteConfirmationModal
                 show={showDeleteModal}
                 onHide={() => setShowDeleteModal(false)}
                 onConfirm={handleConfirmDelete}
