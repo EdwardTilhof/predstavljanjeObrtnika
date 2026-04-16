@@ -1,30 +1,23 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { DATA_SOURCE_TYPE } from '../constants'; // Import the constant
 
 const DataSourceContext = createContext();
 
 export const DataSourceProvider = ({ children }) => {
-  // 1. Restore the dataSource state (The missing piece!)
-  const [dataSource, setDataSource] = useState(() => {
-    return localStorage.getItem('userPreferredSource') || 'memory';
-  });
+  const dataSource = DATA_SOURCE_TYPE; // Reading directly from constants
 
-  // 2. Partners state with local persistence
   const [partners, setPartners] = useState(() => {
     const saved = localStorage.getItem('memory_partners');
     return saved ? JSON.parse(saved) : [];
   });
 
-  // Sync partners to localStorage whenever they change
+
+
   useEffect(() => {
     if (partners.length > 0) {
       localStorage.setItem('memory_partners', JSON.stringify(partners));
     }
   }, [partners]);
-
-  // Sync dataSource preference to localStorage
-  useEffect(() => {
-    localStorage.setItem('userPreferredSource', dataSource);
-  }, [dataSource]);
 
   const [currentUser, setCurrentUser] = useState(null);
 
@@ -45,7 +38,7 @@ export const DataSourceProvider = ({ children }) => {
 
   return (
     <DataSourceContext.Provider value={{ 
-      dataSource, setDataSource, 
+      dataSource, 
       partners, setPartners, 
       currentUser, loginUser, logoutUser 
     }}>

@@ -15,27 +15,31 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
 
 
   const loadData = useCallback(async (isUpdate = false) => {
-    if (dataSource === 'memory' && partners.length > 0 && !isUpdate) {
-      console.log("Memory mode: Using existing partners from Context.");
-      return;
-    }
+  // Logic to prevent unnecessary re-fetches
+  if (dataSource === 'memory' && partners.length > 0 && !isUpdate) {
+    return;
+  }
 
-    try {
-      const response = await CooperatingPartnerLogic.getCooperatingPartners(dataSource);
+  try {
+    // CHANGE: Ensure you are calling .getAll (the standard method in the Logic file)
+    const response = await CooperatingPartnerLogic.getAll(dataSource);
 
-      if (response) {
-        const fetchedList = response.data?.data || response.data || (Array.isArray(response) ? response : []);
-
-        if (dataSource !== 'memory') {
-          setPartners(fetchedList);
-        } else if (partners.length === 0) {
-          setPartners(fetchedList);
-        }
+    if (response.success) {
+      const fetchedList = response.data;
+      
+      // If we are in memory mode and current context is empty, hydrate it
+      if (dataSource === 'memory' && partners.length === 0) {
+        setPartners(fetchedList);
+      } 
+      // If we are in localStorage, always sync the local state
+      else if (dataSource === 'localStorage') {
+        setPartners(fetchedList);
       }
-    } catch (error) {
-      console.error("Failed to load partners:", error);
     }
-  }, [dataSource, setPartners, partners.length]);
+  } catch (err) {
+    console.error("Failed to load partners:", err);
+  }
+}, [dataSource, partners.length, setPartners]);
 
   useEffect(() => {
     loadData();

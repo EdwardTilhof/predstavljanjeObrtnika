@@ -11,8 +11,7 @@ import { regions as defaultRegions } from "../../DataSource/regionData";
 export function NewCooperatingPartner() {
     const navigate = useNavigate();
     const [error, setError] = useState("");
-    const { dataSource, setPartners, partners } = useDataSource();
-    const [options, setOptions] = useState([]);
+const { dataSource, setPartners, partners } = useDataSource();    const [options, setOptions] = useState([]);
     const [selectedRegions, setSelectedRegions] = useState([""]);
     const [selectedTitles, setSelectedTitles] = useState([""]);
     const [allRegions, setAllRegions] = useState([]);

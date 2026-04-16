@@ -46,4 +46,4 @@ export const NAV_LINKS = [
 // Data, Local storage
 
 // export const DATA_SOURCE = 'localStorage';
-export const DATA_SOURCE = 'memory';
+export const DATA_SOURCE_TYPE = 'memory';

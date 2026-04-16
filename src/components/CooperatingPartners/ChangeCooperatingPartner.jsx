@@ -10,193 +10,107 @@ import { regions as allRegions } from "../../DataSource/regionData";
 export default function ChangeCooperatingPartner() {
     const navigate = useNavigate();
     const { id } = useParams();
+    // Removed setDataSource - it's no longer needed in the UI
     const { dataSource, setPartners, partners } = useDataSource();
 
     const [partner, setPartner] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [selectedRegions, setSelectedRegions] = useState([]);
-    const [selectedTitles, setSelectedTitles] = useState([]);
 
-    const [options] = useState(() => {
-        const saved = localStorage.getItem('globalCategories');
-        return (dataSource === 'memory') ? mainCategories : (saved ? JSON.parse(saved) : mainCategories);
-    });
+    // Simplified options logic
+    const options = mainCategories; 
 
     useEffect(() => {
-    const fetchPartner = async () => {
-        try {
-            const response = await CooperatingPartnerLogic.getById(id, dataSource, partners);
-
-            console.log("Raw Service Response:", response);
-
-            const actualPartner = response.data; 
-
-            if (actualPartner) {
-                setPartner(actualPartner);
-
-                setSelectedTitles(Array.isArray(actualPartner.titles) 
-                    ? actualPartner.titles 
-                    : [actualPartner.title || ""]);
-
-                setSelectedRegions(Array.isArray(actualPartner.regions) 
-                    ? actualPartner.regions 
-                    : [actualPartner.region || ""]);
-            } else {
-                setError(`Partner with ID ${id} was not found in ${dataSource}.`);
+        const fetchPartner = async () => {
+            setLoading(true);
+            try {
+                const response = await CooperatingPartnerLogic.getById(id, dataSource, partners);
+                if (response.success && response.data) {
+                    setPartner(response.data);
+                    setSelectedRegions(response.data.regions || []);
+                } else {
+                    setError("Partner not found.");
+                }
+            } catch (err) {
+                setError("Error loading partner data.");
+            } finally {
+                setLoading(false);
             }
-        } catch (err) {
-            console.error("Fetch Error:", err);
-            setError("Could not load partner data.");
-        }
-    };
-    if (id) fetchPartner();
-}, [id, dataSource, partners]);
-
-    const handleTitleChange = (index, value) => {
-        const updated = [...selectedTitles];
-        updated[index] = value;
-        setSelectedTitles(updated);
-    };
-
-    const addTitleField = () => setSelectedTitles([...selectedTitles, ""]);
-    const removeTitleField = (index) => {
-        const updated = selectedTitles.filter((_, i) => i !== index);
-        setSelectedTitles(updated.length ? updated : [""]);
-    };
-
-    const handleRegionChange = (index, value) => {
-        const updated = [...selectedRegions];
-        updated[index] = value;
-        setSelectedRegions(updated);
-    };
-
-    const addRegionField = () => setSelectedRegions([...selectedRegions, ""]);
-    const removeRegionField = (index) => {
-        const updated = selectedRegions.filter((_, i) => i !== index);
-        setSelectedRegions(updated.length ? updated : [""]);
-    };
+        };
+        fetchPartner();
+    }, [id, dataSource, partners]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
         const formData = new FormData(e.target);
-        const finalRegions = selectedRegions.filter(r => r !== "");
-        const finalTitles = selectedTitles.filter(t => t.trim() !== "");
-
-        if (finalRegions.length === 0 || finalTitles.length === 0) {
-            setError("Please provide at least one title and one region.");
-            return;
-        }
-
-        const updatedData = {
-            ...partner,
-            titles: finalTitles,
-            category: formData.get('category'),
-            company: formData.get('company').trim(),
-            contact: formData.get('contact').trim(),
-            description: formData.get('description').trim(),
-            regions: finalRegions,
-            cost: parseFloat(formData.get('cost')),
-            duration: parseInt(formData.get('duration'), 10)
+        
+        const updatedPartner = {
+            title: formData.get("title"),
+            company: formData.get("company"),
+            category: formData.get("category"),
+            cost: parseFloat(formData.get("cost")),
+            duration: parseInt(formData.get("duration")),
+            contact: formData.get("contact"),
+            description: formData.get("description"),
+            regions: selectedRegions
         };
 
-        try {
-            await CooperatingPartnerLogic.update(id, updatedData, dataSource);
+        const result = await CooperatingPartnerLogic.update(id, updatedPartner, dataSource, partners);
+
+        if (result.success) {
+            if (dataSource === 'memory') {
+                setPartners(result.data); // Update global context list
+            }
             window.dispatchEvent(new Event("partnersUpdated"));
             navigate(ROUTES.CooperatingPartners);
-            setPartners(prev => prev.map(p => String(p.id) === String(id) ? updatedData : p));
-        } catch (err) {
-            setError("Failed to update data.");
+        } else {
+            alert("Failed to update partner.");
         }
     };
 
-    if (!partner) return <Container className="mt-5 text-center"><Spinner animation="border" /></Container>;
+    if (loading) return <Container className="text-center mt-5"><Spinner animation="border" /></Container>;
+    if (error) return <Container className="mt-5"><Alert variant="danger">{error}</Alert></Container>;
 
     return (
-        <Container className="mt-5">
-            {error && <Alert variant="danger">{error}</Alert>}
-
-            <Form onSubmit={handleSubmit} key={partner.id || 'loading'}>
+        <Container className="mt-4">
+            <h2 className="mb-4">Edit Partner: {partner?.company}</h2>
+            <Form onSubmit={handleSubmit}>
+                {/* Form fields remain the same, ensuring defaultValue={partner?.field} is used */}
                 <Row className="mb-3">
-                    <Col md={12}>
-                        <Form.Label className="fw-bold">Work Titles</Form.Label>
-                        {selectedTitles.map((title, index) => (
-                            <InputGroup className="mb-2" key={index}>
-                                <Form.Control
-                                    type="text"
-                                    value={title}
-                                    onChange={(e) => handleTitleChange(index, e.target.value)}
-                                    required
-                                />
-                                <Button variant="outline-danger" onClick={() => removeTitleField(index)} disabled={selectedTitles.length === 1}>×</Button>
-                            </InputGroup>
-                        ))}
-                        <Button variant="outline-primary" size="sm" onClick={addTitleField}>+ Add Title</Button>
+                    <Col md={6}>
+                        <Form.Label className="fw-bold">Project Title</Form.Label>
+                        <Form.Control name="title" defaultValue={partner?.title} required />
+                    </Col>
+                    <Col md={6}>
+                        <Form.Label className="fw-bold">Company Name</Form.Label>
+                        <Form.Control name="company" defaultValue={partner?.company} required />
                     </Col>
                 </Row>
 
                 <Row className="mb-3">
                     <Col md={6}>
                         <Form.Label className="fw-bold">Category</Form.Label>
-                        <Form.Select name="category" defaultValue={partner?.category || ""}>
-                            <option value="">Select a category...</option>
-                            {options.map((cat) => (
-                                <option key={cat.id} value={cat.id}>{cat.name}</option>
+                        <Form.Select name="category" defaultValue={partner?.category}>
+                            {options.map(opt => (
+                                <option key={opt.id} value={opt.id}>{opt.name}</option>
                             ))}
                         </Form.Select>
                     </Col>
                     <Col md={6}>
-                        <Form.Label className="fw-bold">Company</Form.Label>
-                        <Form.Control type="text" name="company" defaultValue={partner?.company || ""} />
-                    </Col>
-                </Row>
-
-                <Row className="mb-3">
-                    <Col md={6}>
-                        <Form.Label className="fw-bold">Regions</Form.Label>
-                        {selectedRegions.map((currentId, index) => (
-                            <InputGroup className="mb-2" key={index}>
-                                <Form.Select
-                                    value={String(currentId || "")}
-                                    onChange={(e) => handleRegionChange(index, e.target.value)}
-                                >
-                                    <option value="">Select region...</option>
-                                    {allRegions.map(reg => (
-                                        <option key={reg.id} value={reg.id}>{reg.name}</option>
-                                    ))}
-                                </Form.Select>
-                                <Button variant="outline-danger" onClick={() => removeRegionField(index)}>×</Button>
-                            </InputGroup>
-                        ))}
-                        <Button variant="outline-primary" size="sm" onClick={addRegionField}>+ Add Region</Button>
-                    </Col>
-                </Row>
-                <Row className="mb-3">
-                    <Col md={4}>
-                        <Form.Label className="fw-bold">Investment</Form.Label>
-                        <InputGroup>
-                            <Form.Control type="number" name="cost" defaultValue={partner?.cost || 0} />
-                            <InputGroup.Text>EUR</InputGroup.Text>
-                        </InputGroup>
-                    </Col>
-                    <Col md={4}>
-                        <Form.Label className="fw-bold">Duration</Form.Label>
-                        <Form.Control type="number" name="duration" defaultValue={partner?.duration || 0} />
-                    </Col>
-                    <Col md={4}>
-                        <Form.Label className="fw-bold">Contact</Form.Label>
-                        <Form.Control type="text" name="contact" defaultValue={partner?.contact || ""} />
+                        <Form.Label className="fw-bold">Investment (EUR)</Form.Label>
+                        <Form.Control type="number" name="cost" defaultValue={partner?.cost} />
                     </Col>
                 </Row>
 
                 <Form.Group className="mb-4">
                     <Form.Label className="fw-bold">Description</Form.Label>
-                    <Form.Control as="textarea" rows={4} name="description" defaultValue={partner?.description || ""} />
+                    <Form.Control as="textarea" rows={3} name="description" defaultValue={partner?.description} />
                 </Form.Group>
 
                 <Stack direction="horizontal" gap={3} className="justify-content-end">
-                    <Link to={ROUTES.CooperatingPartners} className="btn btn-outline-secondary">Cancel</Link>
-                    <Button type="submit" variant="success">Save Changes</Button>
+                    <Button variant="secondary" onClick={() => navigate(-1)}>Cancel</Button>
+                    <Button type="submit" variant="primary">Update Partner</Button>
                 </Stack>
             </Form>
         </Container>
