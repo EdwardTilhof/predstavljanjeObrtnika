@@ -9,3 +9,9 @@ npm install react-router-dom
 npm install react-icons
 
 npm install bootstrap-icons
+
+npm install uuid
+
+
+// if animation comes from lottie files
+npm install @lottiefiles/dotlottie-react

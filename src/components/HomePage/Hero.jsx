@@ -1,11 +1,11 @@
 import { Row, Col, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { ROUTES } from '../../Constants';
 
 import { HERO_CONTENT } from './ConstantsHome'; 
-import { ROUTES } from '../../constants'; 
 
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import HomeAnimation from '../Assets/Home element.lottie';
+import HomeAnimation from '../../assets/Home element.lottie';
 
 export default function Hero() {
   return (
@@ -14,7 +14,7 @@ export default function Hero() {
         <h1 className="display-3 fw-bold mb-3">{HERO_CONTENT.title}</h1>
         <p className="lead mb-4 text-secondary">{HERO_CONTENT.subtitle}</p>
         
-        <Button as={Link} to={ROUTES.ourProjects} variant="primary" size="lg" className="px-4 py-2 shadow">
+        <Button as={Link} to={ROUTES.OUR_PROJECTS} variant="primary" size="lg" className="px-4 py-2 shadow">
           {HERO_CONTENT.buttonText}
         </Button>
       </Col>

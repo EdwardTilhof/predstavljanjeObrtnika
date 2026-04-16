@@ -1,4 +1,3 @@
-// src/components/Home/Features.jsx
 import { Row, Col } from 'react-bootstrap';
 import { FEATURE_LIST } from './ConstantsHome';
 
