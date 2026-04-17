@@ -15,9 +15,9 @@ const generateGalleryItems = (count) => {
   const details = [
     "Close-up of the reinforced steel bars before pouring concrete.",
     "Checking the alignment of the primary support beams.",
-    "Final inspection of the plumbing system in the main bathroom.",
-    "A wide-angle shot of the living area after the first coat of paint.",
-    "Installation of the double-glazed windows completed ahead of schedule.",
+    "Final inspection of the plumbing system in the main bathroom.Final inspection of the plumbing system in the main bathroom.Final inspection of the plumbing system in the main bathroom.Final inspection of the plumbing system in the main bathroom.Final inspection of the plumbing system in the main bathroom.",
+    "A wide-angle shot of the living area after the first coat of paint.Final inspection of the plumbing system in the main bathroom.Final inspection of the plumbing system in the main bathroom.Final inspection of the plumbing system in the main bathroom.Final inspection of the plumbing system in the main bathroom.",
+    "Installation of the double-glazed windows completed ahead of schedule.Final inspection of the plumbing system in the main bathroom.Final inspection of the plumbing system in the main bathroom.Final inspection of the plumbing system in the main bathroom.",
     "View from the rooftop showing the newly installed solar panel array."
   ];
 

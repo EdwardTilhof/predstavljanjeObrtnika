@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
+import { regions } from "../../../../dataRepository/locations/RegionsData";
 
 const AddEditModalProjectsMain = ({ show, onHide, onSave, data, setData, editMode }) => {
     return (
@@ -49,22 +50,27 @@ const AddEditModalProjectsMain = ({ show, onHide, onSave, data, setData, editMod
                         <Col md={4}>
                             <Form.Group className="mb-3">
                                 <Form.Label>Location</Form.Label>
-                                <Form.Control
-                                    type="text"
+                                <Form.Select
                                     value={data.location || ''}
                                     onChange={(e) => setData({ ...data, location: e.target.value })}
-                                    placeholder="e.g. Zagreb"
-                                />
+                                >
+                                    <option value="">Select a region...</option>
+                                    {regions.map((region) => (
+                                        <option key={region.id} value={region.name}>
+                                            {region.name}
+                                        </option>
+                                    ))}
+                                </Form.Select>
                             </Form.Group>
                         </Col>
+
                         <Col md={4}>
                             <Form.Group className="mb-3">
                                 <Form.Label>Date</Form.Label>
                                 <Form.Control
-                                    type="text"
+                                    type="date"
                                     value={data.date || ''}
                                     onChange={(e) => setData({ ...data, date: e.target.value })}
-                                    placeholder="xx/xx/xxxx"
                                 />
                             </Form.Group>
                         </Col>

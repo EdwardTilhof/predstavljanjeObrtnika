@@ -24,7 +24,7 @@ const DataEditor = () => {
                                 <CategoryManager />
                             </div>
                         </Tab>
-                        <Tab eventKey="regions" title="📍 Operating Regions">
+                        <Tab eventKey="regions" title="📍 List of Regions">
                             <div className="py-3">
                                 <RegionManager />
                             </div>

@@ -1,12 +1,13 @@
 import { createUniqueId } from "../UUIDGenerator";
+import { regions } from "../../dataRepository/locations/RegionsData";
 
 const generateMockProjects = (count) => {
   console.log(`[ProjectCardData] Initializing generation of ${count} randomized projects...`);
-  
+
   const cities = ["Zagreb", "Split", "Osijek", "Rijeka", "Zadar", "Dubrovnik", "Pula", "Varaždin", "Šibenik"];
   const projectTypes = ["Apartment Building", "Luxury Villa", "Commercial Plaza", "Eco Home", "Industrial Warehouse", "Boutique Hotel", "Public Park", "Tech Hub", "Renovated Loft", "Solar Farm"];
   const adjectives = ["Modern", "Sustainable", "Premium", "Heritage", "Smart", "Coastal", "Urban", "Minimalist"];
-  
+
   const descriptions = [
     "A state-of-the-art facility focused on energy efficiency and modern design aesthetics.",
     "Breathtaking views combined with high-end materials and smart home integration.",
@@ -18,8 +19,7 @@ const generateMockProjects = (count) => {
   const data = Array.from({ length: count }, (_, i) => {
     const type = projectTypes[Math.floor(Math.random() * projectTypes.length)];
     const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
-    const city = cities[Math.floor(Math.random() * cities.length)];
-    
+    const randomRegion = regions[Math.floor(Math.random() * regions.length)].name;
     // Generate a random date in 2023 or 2024
     const year = Math.random() > 0.5 ? 2023 : 2024;
     const month = Math.floor(Math.random() * 12) + 1;
@@ -29,10 +29,10 @@ const generateMockProjects = (count) => {
       id: createUniqueId('ourprojectscard'),
       title: `${adj} ${type} ${100 + i}`,
       text: descriptions[Math.floor(Math.random() * descriptions.length)],
-      location: city,
+      location: randomRegion,
       date: `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`,
       investment: Math.floor(Math.random() * 450000) + 5000, // Range 5k to 455k
-      image: `https://placehold.co/600x400?text=${city}+${type.replace(/\s/g, '+')}`,
+      image: `https://placehold.co/600x400?text=${randomRegion}+${type.replace(/\s/g, '+')}`,
       link: ""
     };
   });
