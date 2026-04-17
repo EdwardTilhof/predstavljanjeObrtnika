@@ -1,7 +1,7 @@
 import React, { useState, Suspense, useEffect } from "react";
 import './App.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import "./colorsAndDesign/CardDesign.css";
+import './colorsAndDesign/OurProjects.css';
 
 import { Container } from "react-bootstrap";
 import { Route, Routes } from "react-router-dom";

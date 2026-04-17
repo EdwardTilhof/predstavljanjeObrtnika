@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Pagination } from 'react-bootstrap';
 import { createUniqueId } from '../../../dataRepository/UUIDGenerator';
 import DeleteConfirmationModal from '../../crossPageComponents/modal/DeleteConfirmationModal';
 import { PLACEHOLDER_IMAGE } from '../../Constants';
@@ -28,44 +28,54 @@ const ExpandableDescription = ({ text }) => {
                 }}>
                     {text}
                 </span>
+                {text.length > 60 && (
+                    <button
+                        onClick={() => setIsExpanded(!isExpanded)}
+                        className="btn btn-link p-0 ms-1 fw-bold"
+                        style={{ fontSize: '0.7rem', textDecoration: 'none' }}
+                    >
+                        {isExpanded ? 'Less' : 'More'}
+                    </button>
+                )}
             </Card.Text>
-            {text.length > 30 && (
-                <button
-                    onClick={() => setIsExpanded(!isExpanded)}
-                    className="btn btn-link p-0"
-                    style={{ fontSize: '0.7rem', textDecoration: 'none', fontWeight: 'bold', display: 'block' }}
-                >
-                    {isExpanded ? 'Show Less' : 'Read More'}
-                </button>
-            )}
         </div>
     );
 };
 
 const ProjectGallery = () => {
-    const { projectId } = useParams();
+    const { id } = useParams();
+    const storageKey = `gallery_data_${id}`;
+
+    // State
     const [images, setImages] = useState([]);
-    const project = PROJECT_CARD_DATA.find(p => p.id === projectId);
-    // Modal States
+    const [projectTitle, setProjectTitle] = useState("Project Gallery");
     const [showFormModal, setShowFormModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [editMode, setEditMode] = useState(false);
-
-    // Data States
-    const [currentImage, setCurrentImage] = useState({ id: '', url: '', title: '', description: '' });
+    const [currentImage, setCurrentImage] = useState({ url: '', title: '', description: '' });
     const [targetId, setTargetId] = useState(null);
-
-    const storageKey = `gallery_data_${projectId}`;
+    
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 6;
 
     useEffect(() => {
-        const saved = localStorage.getItem(storageKey);
-        if (saved) {
-            setImages(JSON.parse(saved));
-        } else {
-            // Use mock data if storage is empty
-            setImages(MOCK_GALLERY_DATA);
+    const saved = localStorage.getItem(storageKey);
+    
+    if (saved) {
+        setImages(JSON.parse(saved));
+    } else {
+        const mockData = MOCK_GALLERY_DATA[id] || MOCK_GALLERY_DATA["default"] || [];
+        setImages(mockData);
+        
+        if (mockData.length > 0) {
+            localStorage.setItem(storageKey, JSON.stringify(mockData));
         }
-    }, [projectId, storageKey]);
+    }
+
+    const project = PROJECT_CARD_DATA.find(p => p.id === id);
+    if (project) setProjectTitle(project.title);
+}, [id, storageKey]);
 
     const saveAndPersist = (newList) => {
         setImages(newList);
@@ -73,7 +83,7 @@ const ProjectGallery = () => {
     };
 
     const handleOpenAdd = () => {
-        setCurrentImage({ id: '', url: '', title: '', description: '' });
+        setCurrentImage({ url: '', title: '', description: '' });
         setEditMode(false);
         setShowFormModal(true);
     };
@@ -88,8 +98,8 @@ const ProjectGallery = () => {
         if (editMode) {
             saveAndPersist(images.map(img => img.id === currentImage.id ? currentImage : img));
         } else {
-            const newImg = { ...currentImage, id: createUniqueId('ourprojectscard') };
-            saveAndPersist([...images, newImg]);
+            const newImage = { ...currentImage, id: createUniqueId('gallery-img') };
+            saveAndPersist([...images, newImage]);
         }
         setShowFormModal(false);
     };
@@ -99,42 +109,84 @@ const ProjectGallery = () => {
         setShowDeleteModal(false);
     };
 
+    // --- Pagination Logic ---
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = images.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(images.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+        window.scrollTo(0, 0);
+    };
+
     return (
-        <Container className="mt-4">
+        <Container className="py-4">
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h2>Project Gallery: {project ? project.title : 'Gallery'}</h2>
+                <div>
+                    <h2 className="mb-0">{projectTitle}</h2>
+                    <small className="text-muted">Project ID: {id}</small>
+                </div>
                 <Button variant="primary" onClick={handleOpenAdd}>+ Add Image</Button>
             </div>
 
             <Row>
-                {images.map((img) => (
-                    <Col key={img.id} xs="auto" className="mb-4 d-flex align-items-stretch">
-                        <Card className="shadow-sm border">
-                            <Card.Img
-                                variant="top"
-                                src={img.url || PLACEHOLDER_IMAGE}
-                                className=""
-                            />
-                            <Card.Body className="p-2 d-flex flex-column">
-                                <Card.Title className="small fw-bold mb-1 text-truncate" style={{ height: '1rem' }}>
-                                    {img.title || "Untitled"}
-                                </Card.Title>
-
-                                <ExpandableDescription text={img.description} />
-
-                                <div className="d-flex gap-1 justify-content-center border-top pt-2 mt-auto">
-                                    <Button variant="outline-secondary" size="sm" className="p-1" onClick={() => handleOpenEdit(img)}>
-                                        <i className="bi bi-pencil" style={{ fontSize: '0.8rem' }}></i>
-                                    </Button>
-                                    <Button variant="outline-danger" size="sm" className="p-1" onClick={() => { setTargetId(img.id); setShowDeleteModal(true); }}>
-                                        <i className="bi bi-trash" style={{ fontSize: '0.8rem' }}></i>
-                                    </Button>
-                                </div>
-                            </Card.Body>
-                        </Card>
+                {currentItems.length > 0 ? (
+                    currentItems.map((img) => (
+                        <Col key={img.id} xs={12} sm={6} md={4} className="mb-4">
+                            <Card className="h-100 shadow-sm border-0">
+                                <Card.Img
+                                    variant="top"
+                                    src={img.url || PLACEHOLDER_IMAGE}
+                                    className="uniform-gallery-img"
+                                />
+                                <Card.Body className="d-flex flex-column p-3">
+                                    <Card.Title className="h6 text-truncate">{img.title || "Untitled"}</Card.Title>
+                                    <ExpandableDescription text={img.description} />
+                                    
+                                    <div className="d-flex justify-content-end gap-2 border-top pt-2 mt-auto">
+                                        <Button variant="outline-secondary" size="sm" className="p-1" onClick={() => handleOpenEdit(img)}>
+                                            <i className="bi bi-pencil" style={{ fontSize: '0.8rem' }}></i>
+                                        </Button>
+                                        <Button variant="outline-danger" size="sm" className="p-1" onClick={() => { setTargetId(img.id); setShowDeleteModal(true); }}>
+                                            <i className="bi bi-trash" style={{ fontSize: '0.8rem' }}></i>
+                                        </Button>
+                                    </div>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    ))
+                ) : (
+                    <Col className="text-center py-5">
+                        <p className="text-muted">No images in this gallery yet.</p>
                     </Col>
-                ))}
+                )}
             </Row>
+
+            {/* Pagination UI */}
+            {totalPages > 1 && (
+                <div className="d-flex justify-content-center mt-4">
+                    <Pagination>
+                        <Pagination.Prev 
+                            onClick={() => handlePageChange(currentPage - 1)} 
+                            disabled={currentPage === 1} 
+                        />
+                        {[...Array(totalPages)].map((_, index) => (
+                            <Pagination.Item
+                                key={index + 1}
+                                active={index + 1 === currentPage}
+                                onClick={() => handlePageChange(index + 1)}
+                            >
+                                {index + 1}
+                            </Pagination.Item>
+                        ))}
+                        <Pagination.Next 
+                            onClick={() => handlePageChange(currentPage + 1)} 
+                            disabled={currentPage === totalPages} 
+                        />
+                    </Pagination>
+                </div>
+            )}
 
             {/* Modals */}
             <AddEditModalProjectGallery
@@ -151,7 +203,7 @@ const ProjectGallery = () => {
                 show={showDeleteModal}
                 onHide={() => setShowDeleteModal(false)}
                 onConfirm={confirmDelete}
-                itemName={images.find(i => i.id === targetId)?.title}
+                itemName={images.find(i => i.id === targetId)?.title || "this image"}
             />
         </Container>
     );

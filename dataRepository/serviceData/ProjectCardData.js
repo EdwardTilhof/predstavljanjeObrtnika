@@ -1,34 +1,44 @@
-import { createUniqueId} from "../UUIDGenerator";
+import { createUniqueId } from "../UUIDGenerator";
 
-export const PROJECT_CARD_DATA = [
-  {
-    id:  createUniqueId('ourprojectscard'),
-    title: "Apartman building 205",
-    text: "seven story building",
-    location: "Zagreb",
-    date: "xx/xx/xxxx",
-    investment: 3000,
-    image: "https://placehold.co/120x240",
-    link: ""
-  },
-  {
-    id:  createUniqueId('ourprojectscard'),
-    title: "Hotel silvanija",
-    text: "where guests can enjoy the sea",
-    location: "Split",
-    date: "xx/xx/xxxx",
-    investment: 5000,
-    image: "https://placehold.co/400x600",
-    link: ""
-  },
-  {
-    id:  createUniqueId('ourprojectscard'),
-    title: "Tech building of the future",
-    text: "Exo friendly self efficient one family home.",
-    location: "Split",
-    date: "xx/xx/xxxx",
-    investment: 3000,
-    image: "https://placehold.co/100x120",
-    link: ""
-  },
-];
+const generateMockProjects = (count) => {
+  console.log(`[ProjectCardData] Initializing generation of ${count} randomized projects...`);
+  
+  const cities = ["Zagreb", "Split", "Osijek", "Rijeka", "Zadar", "Dubrovnik", "Pula", "Varaždin", "Šibenik"];
+  const projectTypes = ["Apartment Building", "Luxury Villa", "Commercial Plaza", "Eco Home", "Industrial Warehouse", "Boutique Hotel", "Public Park", "Tech Hub", "Renovated Loft", "Solar Farm"];
+  const adjectives = ["Modern", "Sustainable", "Premium", "Heritage", "Smart", "Coastal", "Urban", "Minimalist"];
+  
+  const descriptions = [
+    "A state-of-the-art facility focused on energy efficiency and modern design aesthetics.",
+    "Breathtaking views combined with high-end materials and smart home integration.",
+    "Strategically located infrastructure designed to support high-traffic commercial activities.",
+    "A blend of traditional architecture and modern technology for maximum comfort.",
+    "Optimized industrial space with advanced logistics support and reinforced structural integrity."
+  ];
+
+  const data = Array.from({ length: count }, (_, i) => {
+    const type = projectTypes[Math.floor(Math.random() * projectTypes.length)];
+    const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+    const city = cities[Math.floor(Math.random() * cities.length)];
+    
+    // Generate a random date in 2023 or 2024
+    const year = Math.random() > 0.5 ? 2023 : 2024;
+    const month = Math.floor(Math.random() * 12) + 1;
+    const day = Math.floor(Math.random() * 28) + 1;
+
+    return {
+      id: createUniqueId('ourprojectscard'),
+      title: `${adj} ${type} ${100 + i}`,
+      text: descriptions[Math.floor(Math.random() * descriptions.length)],
+      location: city,
+      date: `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`,
+      investment: Math.floor(Math.random() * 450000) + 5000, // Range 5k to 455k
+      image: `https://placehold.co/600x400?text=${city}+${type.replace(/\s/g, '+')}`,
+      link: ""
+    };
+  });
+
+  console.log("[ProjectCardData] Randomized generation complete.");
+  return data;
+};
+
+export const PROJECT_CARD_DATA = generateMockProjects(40);

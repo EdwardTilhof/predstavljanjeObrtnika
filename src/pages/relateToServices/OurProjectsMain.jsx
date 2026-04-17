@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Col, Container, Row, Button } from "react-bootstrap";
+import { Col, Container, Row, Button, Pagination } from "react-bootstrap";
 import OurProjectCardStyle01 from "../../components/services/OurProjects/OurProjectCard";
 import { PROJECT_CARD_DATA } from "../../../dataRepository/serviceData/ProjectCardData";
 import { createUniqueId } from "../../../dataRepository/UUIDGenerator";
@@ -13,6 +13,8 @@ export default function OurProjectsMain() {
   const [editMode, setEditMode] = useState(false);
   const [currentProject, setCurrentProject] = useState({ title: '', text: '', location: '', date: '', investment: '', image: '' });
   const [targetId, setTargetId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const projectsPerPage = 6;
 
   const storageKey = 'main_projects_data';
 
@@ -43,7 +45,11 @@ export default function OurProjectsMain() {
       saveAndPersist(projects.map(p => p.id === currentProject.id ? currentProject : p));
     } else {
       const newId = createUniqueId('ourprojectscard');
-      const newProject = { ...currentProject, id: newId, link: `/ourProjects/gallery/${newId}` };
+      const newProject = { 
+        ...currentProject, 
+        id: newId, 
+        link: `/ourProjects/gallery/${newId}` 
+      };
       saveAndPersist([...projects, newProject]);
     }
     setShowFormModal(false);
@@ -54,24 +60,45 @@ export default function OurProjectsMain() {
     setShowDeleteModal(false);
   };
 
+  // Pagination logic
+  const indexOfLastProject = currentPage * projectsPerPage;
+  const indexOfFirstProject = indexOfLastProject - projectsPerPage;
+  const currentProjects = projects.slice(indexOfFirstProject, indexOfLastProject);
+  const totalPages = Math.ceil(projects.length / projectsPerPage);
+
   return (
-    <Container className="mt-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
+    <Container className="py-4">
+      <div className="d-flex justify-content-between mb-4">
         <h2>Our Projects</h2>
-        <Button variant="primary" onClick={handleOpenAdd}>+ Add New Project</Button>
+        <Button onClick={handleOpenAdd}>+ New Project</Button>
       </div>
 
-      <Row className="Row-Card01">
-        {projects.map((item) => (
-          <Col key={item.id} xs={12} md={6} lg={4} className="mb-4">
+      <Row className="g-4">
+        {currentProjects.map((item) => (
+          <Col key={item.id} xs={12} md={6} lg={4}>
             <OurProjectCardStyle01
               {...item}
+              link={item.link || `/ourProjects/gallery/${item.id}`} 
               onEdit={() => handleOpenEdit(item)}
               onDelete={() => { setTargetId(item.id); setShowDeleteModal(true); }}
             />
           </Col>
         ))}
       </Row>
+
+      {totalPages > 1 && (
+        <Pagination className="justify-content-center mt-5">
+          {[...Array(totalPages)].map((_, i) => (
+            <Pagination.Item 
+              key={i + 1} 
+              active={i + 1 === currentPage} 
+              onClick={() => setCurrentPage(i + 1)}
+            >
+              {i + 1}
+            </Pagination.Item>
+          ))}
+        </Pagination>
+      )}
 
       <AddEditModalProjectsMain
         show={showFormModal}
