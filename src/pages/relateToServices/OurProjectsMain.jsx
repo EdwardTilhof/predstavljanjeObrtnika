@@ -74,7 +74,7 @@ export default function OurProjectsMain() {
   return (
     <Container className="py-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>Our Projects</h2>
+        <h2 className="dynamic-text">Our Projects</h2>
         <Button onClick={handleOpenAdd} variant="primary">+ New Project</Button>
       </div>
 

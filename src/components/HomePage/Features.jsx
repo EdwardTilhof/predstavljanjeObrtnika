@@ -5,7 +5,7 @@ export default function Features() {
   return (
     <Row className="py-5 rounded-4 px-3" style={{ backgroundColor: 'var(--bs-tertiary-bg)' }}>
       <Col xs={12} className="text-center mb-5">
-        <h2 className="fw-bold text-uppercase tracking-wider">Why Choose Us</h2>
+        <h2 className="fw-bold text-uppercase tracking-wider dynamic-text">Why Choose Us</h2>
       </Col>
       
       {FEATURE_LIST.map((feature) => (
