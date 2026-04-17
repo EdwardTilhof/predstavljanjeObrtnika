@@ -113,7 +113,7 @@ const ProjectGallery = () => {
                             <Card.Img
                                 variant="top"
                                 src={img.url || PLACEHOLDER_IMAGE}
-                                className="uniform-gallery-img"
+                                className="project-card-img"
                             />
                             <Card.Body className="p-2 d-flex flex-column">
                                 <Card.Title className="small fw-bold mb-1 text-truncate" style={{ height: '1rem' }}>
