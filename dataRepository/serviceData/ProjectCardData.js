@@ -9,8 +9,8 @@ const generateMockProjects = (count) => {
   const adjectives = ["Modern", "Sustainable", "Premium", "Heritage", "Smart", "Coastal", "Urban", "Minimalist"];
 
   const descriptions = [
-    "A state-of-the-art facility focused on energy efficiency and modern design aesthetics.",
-    "Breathtaking views combined with high-end materials and smart home integration.",
+    "A state-of-the-art facility focused on energy efficiency and modern design aesthetics. A state-of-the-art facility focused on energy efficiency and modern design aesthetics.A state-of-the-art facility focused on energy efficiency and modern design aesthetics.",
+    "Breathtaking views combined with high-end materials and smart home integration.A state-of-the-art facility focused on energy efficiency and modern design aesthetics.",
     "Strategically located infrastructure designed to support high-traffic commercial activities.",
     "A blend of traditional architecture and modern technology for maximum comfort.",
     "Optimized industrial space with advanced logistics support and reinforced structural integrity."

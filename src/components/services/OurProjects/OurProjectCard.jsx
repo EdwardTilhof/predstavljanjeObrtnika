@@ -27,22 +27,26 @@ function OurProjectCardStyle01({ title, text, location, date, investment, image,
       <Card.Body className="d-flex flex-column">
         <Card.Title className="text-truncate" title={title}>{title}</Card.Title>
         <div style={{ minHeight: isExpanded ? 'auto' : reservedHeight }} className="flex-grow-1">
-          <Card.Text className="mb-0" style={{ fontSize: '0.9rem', lineHeight: '1.2rem' }}>
-            <span style={isExpanded ? {} : {
-                display: '-webkit-box',
-                WebkitLineClamp: 3,
-                WebkitBoxOrient: 'vertical',
-                overflow: 'hidden'
-            }}>
-                {text || "No description provided."}
-            </span>
-          </Card.Text>
-          {text && text.length > 50 && (
-            <button onClick={() => setIsExpanded(!isExpanded)} className="btn btn-link p-0 fw-bold small text-decoration-none">
-                {isExpanded ? 'Show Less' : 'Read More'}
-            </button>
-          )}
-        </div>
+  <Card.Text className="mb-0" style={{ fontSize: '0.9rem', lineHeight: '1.2rem' }}>
+    <span style={isExpanded ? {} : {
+        display: '-webkit-box',
+        WebkitLineClamp: 3,
+        WebkitBoxOrient: 'vertical',
+        overflow: 'hidden'
+    }}>
+        {text || "No description provided."}
+    </span>
+  </Card.Text>
+
+  {text && text.trim().length > 100 && (
+    <button 
+        onClick={() => setIsExpanded(!isExpanded)} 
+        className="btn btn-link p-0 fw-bold small text-decoration-none"
+    >
+        {isExpanded ? 'Show Less' : 'Read More'}
+    </button>
+  )}
+</div>
       </Card.Body>
       <ListGroup className="list-group-flush">
         <ListGroup.Item><i className="bi bi-geo-alt me-2"></i>{location}</ListGroup.Item>

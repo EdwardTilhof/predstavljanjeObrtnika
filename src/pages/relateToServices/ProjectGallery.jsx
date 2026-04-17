@@ -28,7 +28,7 @@ const ExpandableDescription = ({ text }) => {
                 }}>
                     {text}
                 </span>
-                {text.length > 60 && (
+                {text.trim().length > 100 && (
                     <button
                         onClick={() => setIsExpanded(!isExpanded)}
                         className="btn btn-link p-0 ms-1 fw-bold"
