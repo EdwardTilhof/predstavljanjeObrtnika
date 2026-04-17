@@ -6,9 +6,13 @@ import AddEditModal from '../../components/services/OurProjects/AddEditModalProj
 import DeleteConfirmationModal from '../../crossPageComponents/modal/DeleteConfirmationModal';
 import { PLACEHOLDER_IMAGE } from '../../Constants';
 
+// mock data import
+import { MOCK_GALLERY_DATA } from '../../../dataRepository/serviceData/ProjectGalleryData';
+
+
 const ExpandableDescription = ({ text }) => {
     const [isExpanded, setIsExpanded] = useState(false);
-    const collapsedHeight = '2.4rem';
+    const collapsedHeight = '3.6rem';
 
     if (!text) return <div style={{ minHeight: collapsedHeight }} className="text-muted small italic">No description</div>;
 
@@ -24,7 +28,7 @@ const ExpandableDescription = ({ text }) => {
                     {text}
                 </span>
             </Card.Text>
-            {text.length > 35 && (
+            {text.length > 30 && (
                 <button
                     onClick={() => setIsExpanded(!isExpanded)}
                     className="btn btn-link p-0"
@@ -54,8 +58,13 @@ const ProjectGallery = () => {
 
     useEffect(() => {
         const saved = localStorage.getItem(storageKey);
-        setImages(saved ? JSON.parse(saved) : []);
-    }, [projectId, storageKey]);
+        if (saved) {
+        setImages(JSON.parse(saved));
+    } else {
+        // Use mock data if storage is empty
+        setImages(MOCK_GALLERY_DATA); 
+    }
+}, [projectId, storageKey]);
 
     const saveAndPersist = (newList) => {
         setImages(newList);
@@ -99,7 +108,7 @@ const ProjectGallery = () => {
             <Row>
                 {images.map((img) => (
                     <Col key={img.id} xs="auto" className="mb-4 d-flex align-items-stretch">
-                        <Card className="shadow-sm border" style={{ width: '120px' }}>
+                        <Card className="shadow-sm border">
                             <Card.Img
                                 variant="top"
                                 src={img.url || PLACEHOLDER_IMAGE}
