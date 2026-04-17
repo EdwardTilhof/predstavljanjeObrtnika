@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { createUniqueId } from '../../../dataRepository/UUIDGenerator';
-import AddEditModal from '../../components/services/OurProjects/AddEditModalProjectGallery';
 import DeleteConfirmationModal from '../../crossPageComponents/modal/DeleteConfirmationModal';
 import { PLACEHOLDER_IMAGE } from '../../Constants';
 
 // mock data import
 import { MOCK_GALLERY_DATA } from '../../../dataRepository/serviceData/ProjectGalleryData';
+import AddEditModalProjectGallery from '../../components/services/OurProjects/AddEditModalProjectGallery';
+import { PROJECT_CARD_DATA } from '../../../dataRepository/serviceData/ProjectCardData';
 
 
 const ExpandableDescription = ({ text }) => {
@@ -44,7 +45,7 @@ const ExpandableDescription = ({ text }) => {
 const ProjectGallery = () => {
     const { projectId } = useParams();
     const [images, setImages] = useState([]);
-
+    const project = PROJECT_CARD_DATA.find(p => p.id === projectId);
     // Modal States
     const [showFormModal, setShowFormModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -59,12 +60,12 @@ const ProjectGallery = () => {
     useEffect(() => {
         const saved = localStorage.getItem(storageKey);
         if (saved) {
-        setImages(JSON.parse(saved));
-    } else {
-        // Use mock data if storage is empty
-        setImages(MOCK_GALLERY_DATA); 
-    }
-}, [projectId, storageKey]);
+            setImages(JSON.parse(saved));
+        } else {
+            // Use mock data if storage is empty
+            setImages(MOCK_GALLERY_DATA);
+        }
+    }, [projectId, storageKey]);
 
     const saveAndPersist = (newList) => {
         setImages(newList);
@@ -101,7 +102,7 @@ const ProjectGallery = () => {
     return (
         <Container className="mt-4">
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h2>Project Gallery</h2>
+                <h2>Project Gallery: {project ? project.title : 'Gallery'}</h2>
                 <Button variant="primary" onClick={handleOpenAdd}>+ Add Image</Button>
             </div>
 
@@ -136,7 +137,7 @@ const ProjectGallery = () => {
             </Row>
 
             {/* Modals */}
-            <AddEditModal
+            <AddEditModalProjectGallery
                 show={showFormModal}
                 onHide={() => setShowFormModal(false)}
                 onSave={handleSave}
