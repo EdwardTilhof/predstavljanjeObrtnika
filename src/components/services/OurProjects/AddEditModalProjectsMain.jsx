@@ -41,7 +41,7 @@ const AddEditModalProjectsMain = ({ show, onHide, onSave, data, setData, editMod
                             rows={2}
                             value={data.text || ''}
                             onChange={(e) => setData({ ...data, text: e.target.value })}
-                            placeholder="Briefly describe the building..."
+                            placeholder="Briefly describe the project..."
                         />
                     </Form.Group>
 
