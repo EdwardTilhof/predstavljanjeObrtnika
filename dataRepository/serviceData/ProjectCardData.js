@@ -30,7 +30,7 @@ const generateMockProjects = (count) => {
       title: `${adj} ${type} ${100 + i}`,
       text: descriptions[Math.floor(Math.random() * descriptions.length)],
       location: randomRegion,
-      date: `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`,
+      date: `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`,
       investment: Math.floor(Math.random() * 450000) + 5000, // Range 5k to 455k
       image: `https://placehold.co/600x400?text=${randomRegion}+${type.replace(/\s/g, '+')}`,
       link: ""
