@@ -32,7 +32,6 @@ function NavBarMain({ theme, toggleTheme }) {
             {/* Standard Links */}
             <Nav.Link as={Link} to={ROUTES.HOME}>Home</Nav.Link>
             <Nav.Link as={Link} to={ROUTES.OUR_PROJECTS}>Our Projects</Nav.Link>
-            <Nav.Link as={Link} to={ROUTES.dataEditor}>Add or edit data</Nav.Link>
 
             {/* Partners Dropdown */}
             <NavDropdown
@@ -40,10 +39,14 @@ function NavBarMain({ theme, toggleTheme }) {
               id="partners-nav-dropdown"
               className="justify-content-center"
             >
-              <NavDropdown.Item as={Link} to={ROUTES.CooperatingPartners}>
+              <NavDropdown.Item as={Link} to={ROUTES.CooperatingPartners} 
+              className="fw-normal centered-dropdown-item text-center"> 
                 Overview
               </NavDropdown.Item>
-
+              <NavDropdown.Item as={Link} to={ROUTES.dataEditor} 
+              className="fw-normal centered-dropdown-item text-center">
+                Add or edit data
+              </NavDropdown.Item>
             </NavDropdown>
 
             <Nav.Link
