@@ -5,7 +5,7 @@ import { useState } from "react";
 
 function OurProjectCardStyle01({ title, text, location, date, investment, image, link, onEdit, onDelete }) {
  const [isExpanded, setIsExpanded] = useState(false);
- const reservedHeight = '3.6rem';
+ const reservedHeight = '5.4rem';
  
  return (
     <Card className="shadow-sm project-card-fixed">
