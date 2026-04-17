@@ -29,7 +29,7 @@
   --feature-border: #dee2e6;
 
   /*Text style colors*/
-  --heading-color: #007bff;
+  --heading-color: #0066ff;
 }
 
 /* Dark Theme */
@@ -51,7 +51,7 @@
   --feature-border: #333333;
 
   /*Text style colors*/
-  --heading-color: #3786ff;
+  --heading-color: #7594c2;
 
   --bs-body-bg: var(--bg-color);
   --bs-body-color: var(--text-color);
