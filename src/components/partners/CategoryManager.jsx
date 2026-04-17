@@ -73,7 +73,6 @@ const CategoryManager = () => {
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>ID</th>
                         <th className="text-end">Actions</th>
                     </tr>
                 </thead>
@@ -91,7 +90,6 @@ const CategoryManager = () => {
                                     <strong>{cat.name}</strong>
                                 )}
                             </td>
-                            <td><small className="text-muted">{cat.id}</small></td>
                             <td className="text-end">
                                 {editId === cat.id ? (
                                     <>

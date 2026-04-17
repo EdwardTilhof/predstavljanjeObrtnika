@@ -78,7 +78,6 @@ const RegionManager = () => {
                 <thead className="table-light">
                     <tr>
                         <th>Region Name</th>
-                        <th>ID (UUID)</th>
                         <th className="text-end">Actions</th>
                     </tr>
                 </thead>
@@ -97,7 +96,6 @@ const RegionManager = () => {
                                     <strong>{reg.name}</strong>
                                 )}
                             </td>
-                            <td><small className="text-muted">{reg.id}</small></td>
                             <td className="text-end">
                                 {editId === reg.id ? (
                                     <>
@@ -113,11 +111,11 @@ const RegionManager = () => {
                                 ) : (
                                     <>
                                         <Button variant="outline-primary" size="sm" className="me-2"
-                                            onClick={() => startEdit(cat)}>
+                                            onClick={() => startEdit(reg)}>
                                             <i className="bi bi-pencil"></i>
                                         </Button>
                                         <Button variant="outline-danger" size="sm"
-                                            onClick={() => handleDeleteClick(cat)}>
+                                            onClick={() => handleDeleteClick(reg)}>
                                             <i className="bi bi-trash"></i>
                                         </Button>
                                     </>

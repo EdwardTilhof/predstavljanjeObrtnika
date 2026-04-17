@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Table, Badge, Button, Stack } from "react-bootstrap";
+import { Table, Badge, Button, Stack, Row, Col, Card } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { ROUTES, DATA_SOURCE } from "../../Constants";
 import CooperatingPartnerLogic from "../../components/partners/CooperatingPartnersLogic";
@@ -11,6 +11,9 @@ import { regions as defaultRegions } from "../../../dataRepository/locations/Reg
 
 // Modal component for delete confirmation
 import DeleteConfirmationModal from "../../crossPageComponents/modal/DeleteConfirmationModal";
+
+// hook imports and other cross page imports can go here (e.g. useBreakpoint if needed for responsive design)
+import useBreakpoint from "../../crossPageComponents/hooks/useBreakpoint"; //
 
 const CooperatingPartnersMain = ({ selectedCategory }) => {
   const navigate = useNavigate();
@@ -63,75 +66,90 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
     ? partners.filter((p) => String(p.category) === String(selectedCategory))
     : partners;
 
+  /*  Determine if we should show mobile grid (xs and sm) 
+      or desktop table (md and above)
+      place other responsive logic constants here as needed 
+      (e.g. conditional rendering of columns, buttons, etc.)
+*/
+const breakpoint = useBreakpoint(); 
+const isMobile = breakpoint === 'xs' || breakpoint === 'sm'; //
+
+const renderPartnerCard = (cp) => (
+    <Col xs={12} key={cp.id} className="mb-3">
+      <Card className="shadow-sm border">
+        <Card.Body>
+          <div className="d-flex justify-content-between align-items-start mb-2">
+            <h5 className="mb-0 text-primary">{cp.company}</h5>
+            <Badge bg="info" text="dark">
+              {allCategories.find(c => String(c.id) === String(cp.category))?.name || "Uncategorized"}
+            </Badge>
+          </div>
+          <p className="fw-bold mb-1">{cp.titles?.join(", ") || cp.title || "N/A"}</p>
+          <hr />
+          <Row className="small text-muted">
+            <Col xs={6}><strong>Region:</strong> {cp.regions?.map(id => allRegions.find(r => String(r.id) === String(id))?.name).filter(Boolean).join(", ") || "N/A"}</Col>
+            <Col xs={6}><strong>Investment:</strong> {cp.cost} EUR</Col>
+            <Col xs={6} className="mt-2"><strong>Duration:</strong> {cp.duration} days</Col>
+            <Col xs={6} className="mt-2"><strong>Contact:</strong> {cp.contact}</Col>
+          </Row>
+          <Stack direction="horizontal" gap={2} className="mt-3 justify-content-end">
+            <Link to={ROUTES.changeCooperatingPartner.replace(':id', cp.id)} className="btn btn-secondary btn-sm">Edit</Link>
+            <Button variant="outline-danger" size="sm" onClick={() => { setTargetPartner(cp); setShowModal(true); }}>Remove</Button>
+          </Stack>
+        </Card.Body>
+      </Card>
+    </Col>
+  );
+
   return (
     <div className="mt-4">
-      <Table hover responsive className="shadow-sm border align-middle">
-        <thead className="table-dark">
-          <tr>
-            <th>Work title</th>
-            <th>Category</th>
-            <th>Provider</th>
-            <th>Region</th>
-            <th>Investment</th>
-            <th>Duration</th>
-            <th>Contact</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
+      {isMobile ? (
+        /* MOBILE GRID VIEW */
+        <Row>
           {filteredPartners.length > 0 ? (
-            filteredPartners.map((cp) => (
+            filteredPartners.map(renderPartnerCard)
+          ) : (
+            <Col className="text-center py-4 text-muted">No partners found.</Col>
+          )}
+        </Row>
+      ) : (
+        /* DESKTOP TABLE VIEW */
+        <Table hover responsive className="shadow-sm border align-middle">
+          <thead className="table-dark">
+            <tr>
+              <th>Work title</th>
+              <th>Category</th>
+              <th>Provider</th>
+              <th>Region</th>
+              <th>Investment</th>
+              <th>Duration</th>
+              <th>Contact</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredPartners.map((cp) => (
               <tr key={cp.id}>
                 <td className="fw-bold">{cp.titles?.join(", ") || cp.title || "N/A"}</td>
-                
-                {/* DYNAMIC CATEGORY LOOKUP */}
-                <td>
-                  <Badge bg="info" text="dark">
-                    {allCategories.find(c => String(c.id) === String(cp.category))?.name || "Uncategorized"}
-                  </Badge>
-                </td>
-
+                <td><Badge bg="info" text="dark">{allCategories.find(c => String(c.id) === String(cp.category))?.name || "Uncategorized"}</Badge></td>
                 <td>{cp.company}</td>
-
-                {/* DYNAMIC REGION LOOKUP (Handles arrays and IDs) */}
-                <td>
-                  {cp.regions && cp.regions.length > 0 
-                    ? cp.regions.map(regId => 
-                        allRegions.find(r => String(r.id) === String(regId))?.name
-                      ).filter(Boolean).join(", ") 
-                    : "N/A"}
-                </td>
-
+                <td>{cp.regions?.map(id => allRegions.find(r => String(r.id) === String(id))?.name).filter(Boolean).join(", ") || "N/A"}</td>
                 <td>{cp.cost} EUR</td>
                 <td>{cp.duration} days</td>
                 <td>{cp.contact}</td>
-
                 <td>
                   <Stack direction="horizontal" gap={2}>
-                    <Link 
-                      to={ROUTES.changeCooperatingPartner.replace(':id', cp.id)} 
-                      className="btn btn-secondary btn-sm"
-                    >
-                      Edit
-                    </Link>
-                    <Button 
-                      variant="outline-danger" 
-                      size="sm" 
-                      onClick={() => { setTargetPartner(cp); setShowModal(true); }}
-                    >
-                      Remove
-                    </Button>
+                    <Link to={ROUTES.changeCooperatingPartner.replace(':id', cp.id)} className="btn btn-secondary btn-sm">Edit</Link>
+                    <Button variant="outline-danger" size="sm" onClick={() => { setTargetPartner(cp); setShowModal(true); }}>Remove</Button>
                   </Stack>
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr><td colSpan="8" className="text-center text-muted py-4">No partners found.</td></tr>
-          )}
-        </tbody>
-      </Table>
-      
-      <Button variant="primary" onClick={() => navigate(ROUTES.newCooperatingPartner)}>
+            ))}
+          </tbody>
+        </Table>
+      )}
+
+      <Button variant="primary" className="mt-3" onClick={() => navigate(ROUTES.newCooperatingPartner)}>
         Add New Partner
       </Button>
 

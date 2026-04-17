@@ -14,8 +14,16 @@ const PartnerFormUI = ({
     isEdit = false
 }) => {
 
-    {/*Update array section */ }
+    /* Update array section */
     const updateArray = (key, index, value) => {
+        if (key === 'regions') {
+            const isDuplicate = formData[key].some((item, i) => i !== index && item === value);
+            if (isDuplicate && value !== "") {
+                alert("This region has already been added.");
+                return;
+            }
+        }
+
         const newArray = [...formData[key]];
         newArray[index] = value;
         setFormData({ ...formData, [key]: newArray });
@@ -83,7 +91,19 @@ const PartnerFormUI = ({
                             required
                         >
                             <option value="">Select region...</option>
-                            {regions.map(reg => <option key={reg.id} value={reg.id}>{reg.name}</option>)}
+                            {regions.map(reg => {
+                                const isSelected = formData.regions.includes(String(reg.id)) && r !== String(reg.id);
+
+                                return (
+                                    <option
+                                        key={reg.id}
+                                        value={reg.id}
+                                        disabled={isSelected}
+                                    >
+                                        {reg.name} {isSelected ? "(Already selected)" : ""}
+                                    </option>
+                                );
+                            })}
                         </Form.Select>
                         <Button variant="outline-danger" onClick={() => removeField('regions', i)}>×</Button>
                     </InputGroup>
