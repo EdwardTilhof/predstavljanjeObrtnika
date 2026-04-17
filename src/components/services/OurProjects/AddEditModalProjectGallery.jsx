@@ -2,7 +2,7 @@ import React from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { PLACEHOLDER_IMAGE } from "../../../Constants";
 
-const AddEditModal = ({ show, onHide, onSave, data, setData, editMode, title }) => {
+const AddEditModalProjectGallery = ({ show, onHide, onSave, data, setData, editMode, title }) => {
     return (
         <Modal show={show} onHide={onHide} centered>
             <Modal.Header closeButton>
@@ -10,7 +10,7 @@ const AddEditModal = ({ show, onHide, onSave, data, setData, editMode, title }) 
             </Modal.Header>
             <Modal.Body>
                 <Form>
-                    {/* Preview matching your CSS */}
+                    {/* Uniform CSS */}
                     <div className="text-center mb-3">
                         <p className="small text-muted">Preview:</p>
                         <img
@@ -59,4 +59,4 @@ const AddEditModal = ({ show, onHide, onSave, data, setData, editMode, title }) 
     );
 };
 
-export default AddEditModal;
+export default AddEditModalProjectGallery;
