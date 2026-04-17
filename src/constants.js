@@ -9,11 +9,15 @@ export const COMPANY_CID = "xxxx-xxxx-xxxx";
 // date and time formats
 export const CURRENT_YEAR = new Date().getFullYear();
 
+// placeholder for cards
+export const PLACEHOLDER_IMAGE = "https://placehold.co/120x240";
+
 export const ROUTES = {
     HOME: "/",
     ABOUT: "/about",
     // routes related to services
     OUR_PROJECTS: "/ourProjects",
+    PROJECT_GALLERY: "/ourProjects/gallery/:projectId",
     // Partner Routes
     CooperatingPartners: "/partners",
     newCooperatingPartner: "/partners/new",

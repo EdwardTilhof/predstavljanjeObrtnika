@@ -1,4 +1,4 @@
-import { createUniqueId} from "../../../../dataRepository/UUIDGenerator"
+import { createUniqueId} from "../UUIDGenerator";
 
 export const PROJECT_CARD_DATA = [
   {
@@ -8,8 +8,8 @@ export const PROJECT_CARD_DATA = [
     location: "Zagreb",
     date: "xx/xx/xxxx",
     investment: 3000,
-    image: "https://placehold.co/100x120",
-    link: "#"
+    image: "https://placehold.co/120x240",
+    link: ""
   },
   {
     id:  createUniqueId('ourprojectscard'),
@@ -18,8 +18,8 @@ export const PROJECT_CARD_DATA = [
     location: "Split",
     date: "xx/xx/xxxx",
     investment: 5000,
-    image: "https://placehold.co/100x120",
-    link: "#"
+    image: "https://placehold.co/400x600",
+    link: ""
   },
   {
     id:  createUniqueId('ourprojectscard'),
@@ -29,6 +29,6 @@ export const PROJECT_CARD_DATA = [
     date: "xx/xx/xxxx",
     investment: 3000,
     image: "https://placehold.co/100x120",
-    link: "#"
+    link: ""
   },
 ];

@@ -37,7 +37,7 @@ export const createUniqueId = (category) => {
 // import { createUniqueId } from './dataRepository/UUIDGenerator.js';
 
 // const newRegionId = createUniqueId('region');
-// const newDesignId = createUniqueId('ourprojectscard');
+// const newProjectId = createUniqueId('ourprojectscard');
 
 // console.log(newRegionId); // reg_...
-// console.log(newDesignId); // oPCard_...
+// console.log(newProjectId); // oPCard_...

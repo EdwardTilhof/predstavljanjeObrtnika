@@ -1,0 +1,24 @@
+/* Universal standard for gallery thumbnails */
+.uniform-gallery-img {
+    width: 120px;
+    height: 240px; 
+    object-fit: cover; 
+    object-position: center;
+    border-radius: 4px;
+}
+
+/* Standard for main project cards */
+.project-card-img {
+    width: 100%;
+    height: 240px; /* Fixed height for consistency */
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Ensure cards in a row match height even if text differs */
+.project-card-fixed {
+    width: 18rem;
+    height: 100%; 
+    display: flex;
+    flex-direction: column;
+}

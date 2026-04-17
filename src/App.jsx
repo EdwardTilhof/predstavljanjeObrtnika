@@ -1,6 +1,7 @@
 import React, { useState, Suspense, useEffect } from "react";
 import './App.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import "./colorsAndDesign/CardDesign.css";
 
 import { Container } from "react-bootstrap";
 import { Route, Routes } from "react-router-dom";
@@ -9,8 +10,14 @@ import NavBarMain from './crossPageComponents/navBar/NavBarMain';
 import AboutUsFooter from "./crossPageComponents/footers/AboutUsFooter";
 import { ROUTES } from "./Constants";
 
+//Home page
 import Home from "./pages/Home";
+
+// Our Projects imports
 import OurProjectsMain from "./pages/relateToServices/OurProjectsMain";
+import ProjectGallery from "./pages/relateToServices/ProjectGallery";
+
+// Partner related imports
 import CooperatingPartnersMain from "./pages/relateToPartners/CooperatingPartnersMain";
 import AddPartnerPage from "./pages/relateToPartners/addPartnerPage";
 import EditPartnerPage from "./pages/relateToPartners/editPartnerPage";
@@ -47,8 +54,10 @@ function App() {
           <Suspense fallback={<div className="text-center mt-5">Loading...</div>}>
             <Routes>
               <Route path={ROUTES.HOME} element={<Home />} />
-              <Route path={ROUTES.OUR_PROJECTS} element={<OurProjectsMain />} />
               
+              {/* Our Projects Route */}
+              <Route path={ROUTES.OUR_PROJECTS} element={<OurProjectsMain />} />
+              <Route path={ROUTES.PROJECT_GALLERY} element={<ProjectGallery />} />
               {/* Added Partner Routes */}
               <Route path={ROUTES.CooperatingPartners} element={<CooperatingPartnersMain />} />
               <Route path={ROUTES.newCooperatingPartner} element={<AddPartnerPage />} />
