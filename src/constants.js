@@ -17,7 +17,7 @@ export const ROUTES = {
     ABOUT: "/about",
     // routes related to services
     OUR_PROJECTS: "/ourProjects",
-    PROJECT_GALLERY: "/ourProjects/gallery/:projectId",
+    PROJECT_GALLERY: "/ourProjects/gallery/:id",
     // Partner Routes
     CooperatingPartners: "/partners",
     newCooperatingPartner: "/partners/new",

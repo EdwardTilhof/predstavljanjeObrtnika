@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Col, Container, Row, Button, Pagination } from "react-bootstrap";
 import OurProjectCardStyle01 from "../../components/services/OurProjects/OurProjectCard";
 import { PROJECT_CARD_DATA } from "../../../dataRepository/serviceData/ProjectCardData";
-import { createUniqueId } from "../../../dataRepository/UUIDGenerator";
 import AddEditModalProjectsMain from '../../components/services/OurProjects/AddEditModalProjectsMain';
 import DeleteConfirmationModal from '../../crossPageComponents/modal/DeleteConfirmationModal';
 
@@ -20,23 +19,37 @@ export default function OurProjectsMain() {
 
   useEffect(() => {
     const saved = localStorage.getItem(storageKey);
-    setProjects(saved ? JSON.parse(saved) : PROJECT_CARD_DATA); //
+    let data = [];
+
+    if (saved) {
+      data = JSON.parse(saved);
+    } else {
+      // If no data exists, use mock data and save it immediately to lock the IDs
+      data = PROJECT_CARD_DATA;
+      localStorage.setItem(storageKey, JSON.stringify(data));
+    }
+
+    // Sort by date: Newest first
+    const sortedData = [...data].sort((a, b) => new Date(b.date) - new Date(a.date));
+    setProjects(sortedData);
   }, []);
 
   const saveAndPersist = (newList) => {
-    setProjects(newList);
-    localStorage.setItem(storageKey, JSON.stringify(newList));
+    // Keep list sorted when adding/editing
+    const sorted = [...newList].sort((a, b) => new Date(b.date) - new Date(a.date));
+    setProjects(sorted);
+    localStorage.setItem(storageKey, JSON.stringify(sorted));
   };
 
   const handleOpenAdd = () => {
-    setCurrentProject({ title: '', text: '', location: '', date: '', investment: '', image: '' });
     setEditMode(false);
+    setCurrentProject({ title: '', text: '', location: '', date: '', investment: '', image: '' });
     setShowFormModal(true);
   };
 
   const handleOpenEdit = (project) => {
-    setCurrentProject(project);
     setEditMode(true);
+    setCurrentProject({ ...project });
     setShowFormModal(true);
   };
 
@@ -44,13 +57,8 @@ export default function OurProjectsMain() {
     if (editMode) {
       saveAndPersist(projects.map(p => p.id === currentProject.id ? currentProject : p));
     } else {
-      const newId = createUniqueId('ourprojectscard');
-      const newProject = { 
-        ...currentProject, 
-        id: newId, 
-        link: `/ourProjects/gallery/${newId}` 
-      };
-      saveAndPersist([...projects, newProject]);
+      const newProject = { ...currentProject, id: Date.now().toString() };
+      saveAndPersist([newProject, ...projects]);
     }
     setShowFormModal(false);
   };
@@ -60,17 +68,14 @@ export default function OurProjectsMain() {
     setShowDeleteModal(false);
   };
 
-  // Pagination logic
-  const indexOfLastProject = currentPage * projectsPerPage;
-  const indexOfFirstProject = indexOfLastProject - projectsPerPage;
-  const currentProjects = projects.slice(indexOfFirstProject, indexOfLastProject);
   const totalPages = Math.ceil(projects.length / projectsPerPage);
+  const currentProjects = projects.slice((currentPage - 1) * projectsPerPage, currentPage * projectsPerPage);
 
   return (
-    <Container className="py-4">
-      <div className="d-flex justify-content-between mb-4">
+    <Container className="py-5">
+      <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>Our Projects</h2>
-        <Button onClick={handleOpenAdd}>+ New Project</Button>
+        <Button onClick={handleOpenAdd} variant="primary">+ New Project</Button>
       </div>
 
       <Row className="g-4">
@@ -113,7 +118,7 @@ export default function OurProjectsMain() {
         show={showDeleteModal}
         onHide={() => setShowDeleteModal(false)}
         onConfirm={confirmDelete}
-        itemName={projects.find(p => p.id === targetId)?.title}
+        itemName={projects.find(p => p.id === targetId)?.title || "this project"}
       />
     </Container>
   );
