@@ -6,6 +6,8 @@ import CooperatingPartnerLogic from "../../components/partners/CooperatingPartne
 import { useDataSource } from "../../dataSource/DataSourceContext";
 import DeleteConfirmationModal from "../../crossPageComponents/modal/DeleteConfirmationModal";
 import { ROLE_RANKS } from "../../Permissions/PermissonsConst";
+import { mainCategories } from "../../../dataRepository/partnersData/PartnersData";
+import { regions as defaultRegions } from "../../../dataRepository/locations/RegionsData";
 
 const CooperatingPartnersMain = ({ selectedCategory }) => {
   const navigate = useNavigate();
@@ -20,11 +22,35 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
   const userRole = localStorage.getItem('user_role') || 'GUEST';
   const userRank = ROLE_RANKS[userRole];
 
-  useEffect(() => {
+  const loadData = useCallback(async () => {
+    const result = await CooperatingPartnerLogic.getAll('localStorage');
+    if (result.success) {
+      setPartners(result.data);
+    }
     const savedCats = localStorage.getItem('globalCategories');
     const savedRegs = localStorage.getItem('globalRegions');
     if (savedCats) setAllCategories(JSON.parse(savedCats));
     if (savedRegs) setAllRegions(JSON.parse(savedRegs));
+  }, [setPartners]);
+
+  useEffect(() => {
+    loadData();
+    window.addEventListener("partnersUpdated", loadData);
+    return () => window.removeEventListener("partnersUpdated", loadData);
+  }, [loadData]);
+
+  useEffect(() => {
+    const savedCats = localStorage.getItem('globalCategories');
+    const savedRegs = localStorage.getItem('globalRegions');
+
+    const parsedCats = savedCats ? JSON.parse(savedCats) : [];
+    const parsedRegs = savedRegs ? JSON.parse(savedRegs) : [];
+
+    const mergedCats = [...new Map([...mainCategories, ...parsedCats].map(item => [item.id, item])).values()];
+    const mergedRegs = [...new Map([...defaultRegions, ...parsedRegs].map(item => [item.id, item])).values()];
+
+    setAllCategories(mergedCats);
+    setAllRegions(mergedRegs);
   }, []);
 
   const confirmDelete = async () => {
@@ -36,29 +62,31 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
       }
     }
   };
+  const displayPartners = selectedCategory
+    ? partners.filter(p => String(p.category) === String(selectedCategory))
+    : partners;
 
-  const filteredPartners = selectedCategory === "All" 
-    ? partners 
+  const filteredPartners = selectedCategory === "All"
+    ? partners
     : partners.filter(p => String(p.category) === String(selectedCategory));
 
   return (
     <>
-      <Table striped bordered hover responsive className="shadow-sm mt-3">
+      <Table hover responsive className="mt-4">
         <thead>
           <tr>
-            <th>Service</th>
+            <th>Partner Name</th>
             <th>Category</th>
             <th>Company</th>
             <th>Regions</th>
             <th>Cost</th>
             <th>Duration</th>
             <th>Contact</th>
-            {/* Header must match body logic */}
             {userRank >= ROLE_RANKS.MODERATOR && <th>Actions</th>}
           </tr>
         </thead>
         <tbody>
-          {filteredPartners.map((cp) => (
+          {displayPartners.map((cp) => (
             <tr key={cp.id}>
               <td className="fw-bold">{cp.titles?.join(", ") || cp.title || "N/A"}</td>
               <td>
@@ -73,7 +101,7 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
               <td>{cp.cost} EUR</td>
               <td>{cp.duration} days</td>
               <td>{cp.contact}</td>
-              
+
               {userRank >= ROLE_RANKS.MODERATOR && (
                 <td>
                   <Stack direction="horizontal" gap={2}>

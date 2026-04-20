@@ -7,6 +7,7 @@ import { PLACEHOLDER_IMAGE } from '../../Constants';
 import { MOCK_GALLERY_DATA } from '../../../dataRepository/serviceData/ProjectGalleryData';
 import AddEditModalProjectGallery from '../../components/services/OurProjects/AddEditModalProjectGallery';
 import { PROJECT_CARD_DATA } from '../../../dataRepository/serviceData/ProjectCardData';
+import { ROLE_RANKS } from '../../Permissions/PermissonsConst';
 
 const ExpandableDescription = ({ text }) => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -37,13 +38,15 @@ const ExpandableDescription = ({ text }) => {
 const ProjectGallery = () => {
     const { id } = useParams();
     const [images, setImages] = useState([]);
+    const [projectTitle, setProjectTitle] = useState("");
     const [showFormModal, setShowFormModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [currentImage, setCurrentImage] = useState({});
     const [editMode, setEditMode] = useState(false);
     const [targetImageId, setTargetImageId] = useState(null);
+    const [targetId, setTargetId] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 8;
+    const imagesPerPage = 8;
 
     const currentRole = localStorage.getItem('user_role') || 'GUEST';
     const userRank = ROLE_RANKS[currentRole];
@@ -77,7 +80,6 @@ const ProjectGallery = () => {
             } catch (e) { console.error("Error parsing projects", e); }
         }
 
-        // Use strict string comparison for IDs
         const foundProject = allProjects.find(p => String(p.id) === String(id));
         setProjectTitle(foundProject ? foundProject.title : "Project Gallery");
 
@@ -99,8 +101,14 @@ const ProjectGallery = () => {
     };
 
     const confirmDelete = () => {
-        saveAndPersist(images.filter(img => img.id !== targetId));
+        const updatedImages = images.filter(img => img.id !== targetId);
+        setImages(updatedImages);
+        const allGalleries = JSON.parse(localStorage.getItem('project_galleries') || '{}');
+        allGalleries[id] = updatedImages;
+        localStorage.setItem('project_galleries', JSON.stringify(allGalleries));
+
         setShowDeleteModal(false);
+        setTargetId(null);
     };
 
     const totalPages = Math.ceil(images.length / imagesPerPage);
@@ -126,7 +134,15 @@ const ProjectGallery = () => {
                                     <Button size="sm" variant="light" className="me-1 shadow-sm" onClick={() => { setEditMode(true); setCurrentImage(img); setShowFormModal(true); }}>
                                         <i className="bi bi-pencil"></i>
                                     </Button>
-                                    <Button size="sm" variant="light" className="shadow-sm" onClick={() => { setTargetImageId(img.id); setShowDeleteModal(true); }}>
+                                    <Button
+                                        variant="light"
+                                        size="sm"
+                                        className="shadow-sm"
+                                        onClick={() => {
+                                            setTargetId(img.id);
+                                            setShowDeleteModal(true);
+                                        }}
+                                    >
                                         <i className="bi bi-trash text-danger"></i>
                                     </Button>
                                 </div>

@@ -2,11 +2,11 @@ import { createUniqueId } from "../../../dataRepository/UUIDGenerator";
 import { CooperatingPartnersData } from "../../../dataRepository/partnersData/PartnersData";
 import { DATA_SOURCE } from "../../Constants";
 
-const STORAGE_KEY = 'my_app_CooperatingPartners';
+const STORAGE_KEY = 'my_app_CooperatingPartners'; 
 
 const _getLocalData = () => {
     const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : [];
+    return saved ? JSON.parse(saved) : CooperatingPartnersData; 
 };
 
 const CooperatingPartnerLogic = {

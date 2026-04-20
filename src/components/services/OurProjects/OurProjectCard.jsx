@@ -14,15 +14,23 @@ function OurProjectCardStyle01({ title, text, location, date, investment, image,
     <Card className="shadow-sm project-card-fixed">
       {/* Action Overlay */}
       {userRank >= ROLE_RANKS.MODERATOR && (
-        <div className="d-flex justify-content-end gap-2 p-2 position-absolute w-100" style={{ zIndex: 10 }}>
-          <button className="btn btn-light btn-sm shadow-sm" onClick={props.onEdit}>
-            <i className="bi bi-pencil text-primary"></i>
-          </button>
-          <button className="btn btn-light btn-sm shadow-sm" onClick={props.onDelete}>
-            <i className="bi bi-trash text-danger"></i>
-          </button>
-        </div>
-      )}
+  <div className="d-flex justify-content-end gap-2 p-2 position-absolute w-100" style={{ zIndex: 10 }}>
+    <button 
+      className="btn btn-light btn-sm shadow-sm" 
+      onClick={onEdit}  
+      title="Edit"
+    >
+      <i className="bi bi-pencil text-primary"></i>
+    </button>
+    <button 
+      className="btn btn-light btn-sm shadow-sm" 
+      onClick={onDelete} 
+      title="Delete"
+    >
+      <i className="bi bi-trash text-danger"></i>
+    </button>
+  </div>
+)}
 
       <Card.Img
         variant="top"

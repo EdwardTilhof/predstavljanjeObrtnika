@@ -23,120 +23,157 @@ const PartnerFormUI = ({
                 return;
             }
         }
-
         const newArray = [...formData[key]];
         newArray[index] = value;
         setFormData({ ...formData, [key]: newArray });
     };
 
-    const addField = (key) => setFormData({ ...formData, [key]: [...formData[key], ""] });
+    const addField = (key) => {
+        setFormData({ ...formData, [key]: [...formData[key], ""] });
+    };
 
     const removeField = (key, index) => {
         const newArray = formData[key].filter((_, i) => i !== index);
         setFormData({ ...formData, [key]: newArray.length ? newArray : [""] });
     };
 
-    return (
+    return(
         <Form onSubmit={onSubmit} className="shadow p-4 rounded custom-card border bg-white">
-            <h3 className="mb-4">{title}</h3>
+            <h2 className="mb-4 text-primary">{title}</h2>
+
             {error && <Alert variant="danger">{error}</Alert>}
 
             {/* Work Titles Section */}
-            <Form.Group className="mb-3">
-                <Form.Label className="fw-bold">Work Titles</Form.Label>
-                {formData?.titles?.map((t, i) => (
-                    <InputGroup className="mb-2" key={i}>
+            <Form.Group className="mb-4">
+                <Form.Label className="fw-bold">Partner Titles / Services</Form.Label>
+                {formData.titles.map((t, index) => (
+                    <InputGroup className="mb-2" key={`title-${index}`}>
                         <Form.Control
+                            placeholder="e.g. Senior Software Architect"
                             value={t}
-                            onChange={(e) => updateArray('titles', i, e.target.value)}
-                            placeholder="e.g. Web Development"
+                            onChange={(e) => updateArray('titles', index, e.target.value)}
                             required
                         />
-                        <Button variant="outline-danger" onClick={() => removeField('titles', i)} disabled={formData.titles.length === 1}>×</Button>
+                        {formData.titles.length > 1 && (
+                            <Button variant="outline-danger" onClick={() => removeField('titles', index)}>
+                                <i className="bi bi-dash-lg"></i>
+                            </Button>
+                        )}
                     </InputGroup>
                 ))}
-                <Button variant="outline-primary" size="sm" onClick={() => addField('titles')}>+ Add Title</Button>
+                <Button variant="outline-primary" size="sm" onClick={() => addField('titles')}>
+                    + Add Another Title
+                </Button>
             </Form.Group>
 
             <Row className="mb-3">
                 <Col md={6}>
-                    <Form.Label className="fw-bold">Category</Form.Label>
-                    <Form.Select
-                        value={formData.category}
-                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                        required
-                    >
-                        <option value="">Select category...</option>
-                        {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
-                    </Form.Select>
+                    <Form.Group className="mb-4">
+                        <Form.Label className="fw-bold">Main Category</Form.Label>
+                        <Form.Select
+                            value={formData.category}
+                            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                            required
+                        >
+                            <option value="">Select Category...</option>
+                            {categories.map(cat => (
+                                <option key={cat.id} value={cat.id}>{cat.name}</option>
+                            ))}
+                        </Form.Select>
+                    </Form.Group>
                 </Col>
                 <Col md={6}>
-                    <Form.Label className="fw-bold">Company Name</Form.Label>
-                    <Form.Control
-                        value={formData.company}
-                        onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                        required
-                    />
+                    <Form.Group className="mb-4">
+                        <Form.Label className="fw-bold">Company Name</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="e.g. Tech Solutions Ltd."
+                            value={formData.company}
+                            onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                            required
+                        />
+                    </Form.Group>
                 </Col>
             </Row>
 
             {/* Regions Section */}
-            <Form.Group className="mb-3">
+            <Form.Group className="mb-4">
                 <Form.Label className="fw-bold">Operating Regions</Form.Label>
-                {formData?.regions?.map((r, i) => (
-                    <InputGroup className="mb-2" key={i}>
-                        <Form.Select
-                            value={r}
-                            onChange={(e) => updateArray('regions', i, e.target.value)}
-                            required
-                        >
-                            <option value="">Select region...</option>
-                            {regions.map(reg => {
-                                const isSelected = formData.regions.includes(String(reg.id)) && r !== String(reg.id);
-
-                                return (
-                                    <option
-                                        key={reg.id}
-                                        value={reg.id}
-                                        disabled={isSelected}
-                                    >
-                                        {reg.name} {isSelected ? "(Already selected)" : ""}
-                                    </option>
-                                );
-                            })}
-                        </Form.Select>
-                        <Button variant="outline-danger" onClick={() => removeField('regions', i)}>×</Button>
-                    </InputGroup>
-                ))}
-                <Button variant="outline-primary" size="sm" onClick={() => addField('regions')}>+ Add Region</Button>
+                <Row>
+                    {formData.regions.map((regId, index) => (
+                        <Col md={4} key={`region-${index}`} className="mb-2">
+                            <InputGroup>
+                                <Form.Select
+                                    value={regId}
+                                    onChange={(e) => updateArray('regions', index, e.target.value)}
+                                    required
+                                >
+                                    <option value="">Select Region...</option>
+                                    {regions.map(r => (
+                                        <option key={r.id} value={r.id}>{r.name}</option>
+                                    ))}
+                                </Form.Select>
+                                {formData.regions.length > 1 && (
+                                    <Button variant="outline-danger" onClick={() => removeField('regions', index)}>
+                                        <i className="bi bi-trash"></i>
+                                    </Button>
+                                )}
+                            </InputGroup>
+                        </Col>
+                    ))}
+                </Row>
+                <Button variant="outline-primary" size="sm" onClick={() => addField('regions')}>
+                    + Add Region
+                </Button>
             </Form.Group>
 
-            <Row className="mb-3">
-
-                <Col md={4}><Form.Label>Investment (EUR)</Form.Label>
-                    <Form.Control placeholder="e.g. 5000.00"
-                        type="number" value={formData.cost}
-                        onChange={(e) => setFormData({ ...formData, cost: e.target.value })} /></Col>
-
-                <Col md={4}><Form.Label>Duration (Wks)</Form.Label>
-                    <Form.Control placeholder="e.g. 12"
-                        type="number" value={formData.duration}
-                        onChange={(e) => setFormData({ ...formData, duration: e.target.value })} /></Col>
-
-                <Col md={4}><Form.Label>Contact</Form.Label>
-                    <Form.Control placeholder="e.g. john.doe@example.com"
-                        type="text" value={formData.contact}
-                        onChange={(e) => setFormData({ ...formData, contact: e.target.value })} /></Col>
+            <Row className="mb-4">
+                <Col md={4}>
+                    <Form.Label className="fw-bold">Cost (EUR)</Form.Label>
+                    <Form.Control
+                        type="number"
+                        placeholder="3000"
+                        value={formData.cost}
+                        onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
+                    />
+                </Col>
+                <Col md={4}>
+                    <Form.Label className="fw-bold">Duration (Days)</Form.Label>
+                    <Form.Control
+                        type="number"
+                        placeholder="30"
+                        value={formData.duration}
+                        onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                    />
+                </Col>
+                <Col md={4}>
+                    <Form.Label className="fw-bold">Contact Info</Form.Label>
+                    <Form.Control
+                        type="text"
+                        placeholder="email or phone"
+                        value={formData.contact}
+                        onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+                    />
+                </Col>
             </Row>
 
             <Form.Group className="mb-4">
-                <Form.Label className="fw-bold">Description</Form.Label>
-                <Form.Control as="textarea" rows={3} value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
+                <Form.Label className="fw-bold">Project Description</Form.Label>
+                <Form.Control
+                    as="textarea"
+                    rows={4}
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                />
             </Form.Group>
 
             <Stack direction="horizontal" gap={3} className="justify-content-end">
-                <Link to={ROUTES.CooperatingPartners} className="btn btn-outline-secondary">Cancel</Link>
-                <Button type="submit" variant="primary" className="px-4">{isEdit ? "Save Changes" : "Add Partner"}</Button>
+                <Link to={ROUTES.CooperatingPartners} className="btn btn-outline-secondary px-4">
+                    Cancel
+                </Link>
+                <Button type="submit" variant="primary" className="px-5">
+                    {isEdit ? "Update Partner" : "Create Partner"}
+                </Button>
             </Stack>
         </Form>
     );
