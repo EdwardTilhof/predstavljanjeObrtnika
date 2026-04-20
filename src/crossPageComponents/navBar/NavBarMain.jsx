@@ -1,10 +1,22 @@
 import { Container, Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { COMPANY_NAME, ROUTES } from '../../Constants';
+import { logout } from "../../Permissions/AuthService";
+import { ROLE_RANKS } from "../../Permissions/PermissonsConst";
 
 function NavBarMain({ theme, toggleTheme }) {
-  // Fix 1: Define the missing variable
+  const navigate = useNavigate();
   const GITHUB_URL_VET = "https://github.com/EdwardTilhof";
+
+  // Get current user info from localStorage
+  const currentRole = localStorage.getItem('user_role') || 'GUEST';
+  const userName = localStorage.getItem('user_name') || 'Guest';
+  const userRank = ROLE_RANKS[currentRole];
+
+  const handleLogout = () => {
+    logout();
+    navigate(ROUTES.HOME);
+  };
 
   return (
     <Navbar expand="lg" className="bg-body-tertiary custom-navbar-padding">
@@ -24,28 +36,39 @@ function NavBarMain({ theme, toggleTheme }) {
             {theme === 'light' ? '🌙' : '☀️'}
           </Button>
 
+          {/* AUTH SECTION */}
+          {currentRole === 'GUEST' ? (
+            <Button as={Link} to={ROUTES.LOGIN} variant="outline-primary" size="sm" className="me-2">
+              Login
+            </Button>
+          ) : (
+            <NavDropdown title={`Hi, ${userName}`} id="user-dropdown" align="end">
+               <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+            </NavDropdown>
+          )}
+
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
         </div>
 
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto align-items-center">
-            {/* Standard Links */}
             <Nav.Link as={Link} to={ROUTES.HOME}>Home</Nav.Link>
             <Nav.Link as={Link} to={ROUTES.OUR_PROJECTS}>Our Projects</Nav.Link>
-            <Nav.Link as={Link} to={ROUTES.dataEditor}>Add or edit data
-            </Nav.Link>
 
-            {/* Partners Dropdown */}
-            <NavDropdown
-              title="Partners"
-              id="partners-nav-dropdown"
-              className="justify-content-center"
-            >
-              <NavDropdown.Item as={Link} to={ROUTES.CooperatingPartners}
-                className="fw-normal centered-dropdown-item text-center">
+            {/* PROTECTED LINK: Only Moderator (4) and Admin (5) */}
+            {userRank >= ROLE_RANKS.MODERATOR && (
+              <Nav.Link as={Link} to={ROUTES.dataEditor}>Add or edit data</Nav.Link>
+            )}
+
+            {/* PROTECTED LINK: Only Admin (5) */}
+            {userRank >= ROLE_RANKS.ADMIN && (
+              <Nav.Link as={Link} to="/admin" className="text-danger fw-bold">Admin Page</Nav.Link>
+            )}
+
+            <NavDropdown title="Partners" id="partners-nav-dropdown">
+              <NavDropdown.Item as={Link} to={ROUTES.CooperatingPartners} className="text-center">
                 Overview
               </NavDropdown.Item>
-
             </NavDropdown>
 
             <Nav.Link

@@ -25,8 +25,12 @@ import EditPartnerPage from "./pages/relateToPartners/editPartnerPage";
 
 // Data editor imports
 import DataEditor from "./pages/DataEditor";
-import RegionManager from "../src/components/partners/RegionManager";
+import RegionManager from "../dataRepository/locations/RegionManager";
 import CategoryManager from "../src/components/partners/CategoryManager";
+import AdminPage from "./pages/relateToAuth/AdminPage";
+import LoginPage from "./pages/relateToAuth/LoginPage";
+import RegistrationPage from "./pages/relateToAuth/RegisterPage";
+import { ROLE_RANKS } from "./Permissions/PermissonsConst";
 
 function App() {
   const isDevelopment =
@@ -46,6 +50,9 @@ function App() {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
+  const userRole = localStorage.getItem('user_role') || 'GUEST';
+  const isAdmin = ROLE_RANKS[userRole] >= ROLE_RANKS.ADMIN;
+
   return (
     <DataSourceProvider>
       <Container className={`MainContainer ${isDevelopment ? 'dev-mode' : ''}`} fluid>
@@ -55,7 +62,7 @@ function App() {
           <Suspense fallback={<div className="text-center mt-5">Loading...</div>}>
             <Routes>
               <Route path={ROUTES.HOME} element={<Home />} />
-              
+
               {/* Our Projects Route */}
               <Route path={ROUTES.OUR_PROJECTS} element={<OurProjectsMain />} />
               <Route path={ROUTES.PROJECT_GALLERY} element={<ProjectGallery />} />
@@ -68,6 +75,13 @@ function App() {
               <Route path={ROUTES.dataEditor} element={<DataEditor />} />
               <Route path={ROUTES.regionEditor} element={<RegionManager />} />
               <Route path={ROUTES.categoryEditor} element={<CategoryManager />} />
+
+              {/* Authentication Routes */}
+              <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+              <Route path={ROUTES.REGISTRATION} element={<RegistrationPage />} />
+
+              {/* Admin Route */}
+              <Route path={ROUTES.ADMIN} element={isAdmin ? <AdminPage /> : <LoginPage />} />
             </Routes>
           </Suspense>
         </main>

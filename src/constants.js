@@ -26,7 +26,12 @@ export const ROUTES = {
     // Data Editor and other routes dependant of the editor
     dataEditor: "/dataEditor",
     regionEditor: "/dataEditor/regions",
-    categoryEditor: "/dataEditor/categories"
+    categoryEditor: "/dataEditor/categories",
+
+    // Authentication and Admin routes
+    LOGIN: "/login",
+    REGISTRATION: "/register",
+    ADMIN: "/admin",
 };
 
 export const NAV_LINKS = [
@@ -35,6 +40,9 @@ export const NAV_LINKS = [
     { name: "Our Projects", path: ROUTES.OUR_PROJECTS },
     { name: "Partners", path: ROUTES.CooperatingPartners },
     { name: "Data Editor", path: ROUTES.dataEditor },
+    { name: "Admin", path: ROUTES.admin },
+    { name: "Login", path: ROUTES.login },
+    { name: "Registration", path: ROUTES.registration }
 ];
 
 export const DATA_SOURCE = 'localStorage';

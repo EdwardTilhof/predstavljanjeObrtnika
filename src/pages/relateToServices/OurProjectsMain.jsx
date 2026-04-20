@@ -4,6 +4,7 @@ import OurProjectCardStyle01 from "../../components/services/OurProjects/OurProj
 import { PROJECT_CARD_DATA } from "../../../dataRepository/serviceData/ProjectCardData";
 import AddEditModalProjectsMain from '../../components/services/OurProjects/AddEditModalProjectsMain';
 import DeleteConfirmationModal from '../../crossPageComponents/modal/DeleteConfirmationModal';
+import { ROLE_RANKS } from '../../Permissions/PermissonsConst'; 
 
 export default function OurProjectsMain() {
   const [projects, setProjects] = useState([]);
@@ -14,6 +15,8 @@ export default function OurProjectsMain() {
   const [targetId, setTargetId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const projectsPerPage = 6;
+  const currentRole = localStorage.getItem('user_role') || 'GUEST';
+  const userRank = ROLE_RANKS[currentRole];
 
   const storageKey = 'main_projects_data';
 
@@ -75,7 +78,9 @@ export default function OurProjectsMain() {
     <Container className="py-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2 className="dynamic-text">Our Projects</h2>
-        <Button onClick={handleOpenAdd} variant="primary">+ New Project</Button>
+        {userRank >= ROLE_RANKS.MODERATOR && (
+          <Button onClick={handleOpenAdd} variant="primary">+ New Project</Button>
+        )}
       </div>
 
       <Row className="g-4">

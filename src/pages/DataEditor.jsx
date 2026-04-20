@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Tabs, Tab, Row, Col, Card } from 'react-bootstrap';
 
 import CategoryManager from '../components/partners/CategoryManager'; 
-import RegionManager from '../components/partners/RegionManager';
+import RegionManager from '../../dataRepository/locations/RegionManager';
 
 const DataEditor = () => {
     return (

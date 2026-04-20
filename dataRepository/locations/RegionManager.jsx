@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Form, InputGroup } from 'react-bootstrap';
-import { createUniqueId } from "../../../dataRepository/UUIDGenerator";
-import { regions as defaultRegions } from "../../../dataRepository/locations/RegionsData";
+import { createUniqueId } from "../UUIDGenerator";
+import { regions as defaultRegions } from "./RegionsData";
 // Path updated as per your instruction
-import DeleteConfirmationModal from "../../crossPageComponents/modal/DeleteConfirmationModal";
+import DeleteConfirmationModal from "../../src/crossPageComponents/modal/DeleteConfirmationModal";
 
 const RegionManager = () => {
     const [regions, setRegions] = useState([]);

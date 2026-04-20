@@ -25,14 +25,10 @@ const ExpandableDescription = ({ text }) => {
                     {text}
                 </span>
             </Card.Text>
-            {text.length > 80 && (
-                <button 
-                    onClick={() => setIsExpanded(!isExpanded)} 
-                    className="btn btn-link p-0 fw-bold" 
-                    style={{ fontSize: '0.7rem', textDecoration: 'none' }}
-                >
-                    {isExpanded ? 'Less' : 'More'}
-                </button>
+            {text.length > 60 && (
+                <Button variant="link" className="p-0 m-0 text-decoration-none extra-small-btn" onClick={() => setIsExpanded(!isExpanded)}>
+                    {isExpanded ? 'Show less' : 'Read more'}
+                </Button>
             )}
         </div>
     );
@@ -40,16 +36,17 @@ const ExpandableDescription = ({ text }) => {
 
 const ProjectGallery = () => {
     const { id } = useParams();
-    const [projectTitle, setProjectTitle] = useState('Project Gallery');
     const [images, setImages] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
     const [showFormModal, setShowFormModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [currentImage, setCurrentImage] = useState({});
     const [editMode, setEditMode] = useState(false);
-    const [currentImage, setCurrentImage] = useState({ url: '', title: '', description: '' });
-    const [targetId, setTargetId] = useState(null);
+    const [targetImageId, setTargetImageId] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 8;
 
-    const imagesPerPage = 8;
+    const currentRole = localStorage.getItem('user_role') || 'GUEST';
+    const userRank = ROLE_RANKS[currentRole];
     const storageKey = `gallery_images_${id}`;
 
     useEffect(() => {
@@ -112,27 +109,31 @@ const ProjectGallery = () => {
     return (
         <Container className="py-5">
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h2 className="mb-0">{projectTitle}</h2>
-                <Button variant="primary" onClick={() => { setEditMode(false); setCurrentImage({ url: '', title: '', description: '' }); setShowFormModal(true); }}>
-                    + Add Image
-                </Button>
+                <h2>Project Gallery</h2>
+                {userRank >= ROLE_RANKS.MODERATOR && (
+                    <Button onClick={() => { setEditMode(false); setCurrentImage({}); setShowFormModal(true); }}>
+                        Add Image
+                    </Button>
+                )}
             </div>
 
             <Row className="g-4">
-                {currentImages.map((img) => (
+                {images.map((img) => (
                     <Col key={img.id} xs={12} sm={6} md={4} lg={3}>
-                        <Card className="h-100 shadow-sm border-0 position-relative">
-                            <div className="position-absolute top-0 end-0 p-2 d-flex gap-1" style={{ zIndex: 10 }}>
-                                <Button size="sm" variant="light" className="shadow-sm p-1" onClick={() => { setEditMode(true); setCurrentImage(img); setShowFormModal(true); }}>
-                                    <i className="bi bi-pencil text-primary"></i>
-                                </Button>
-                                <Button size="sm" variant="light" className="shadow-sm p-1" onClick={() => { setTargetId(img.id); setShowDeleteModal(true); }}>
-                                    <i className="bi bi-trash text-danger"></i>
-                                </Button>
-                            </div>
+                        <Card className="h-100 shadow-sm border-0 position-relative gallery-card">
+                            {userRank >= ROLE_RANKS.MODERATOR && (
+                                <div className="position-absolute top-0 end-0 p-2" style={{ zIndex: 10 }}>
+                                    <Button size="sm" variant="light" className="me-1 shadow-sm" onClick={() => { setEditMode(true); setCurrentImage(img); setShowFormModal(true); }}>
+                                        <i className="bi bi-pencil"></i>
+                                    </Button>
+                                    <Button size="sm" variant="light" className="shadow-sm" onClick={() => { setTargetImageId(img.id); setShowDeleteModal(true); }}>
+                                        <i className="bi bi-trash text-danger"></i>
+                                    </Button>
+                                </div>
+                            )}
                             <Card.Img variant="top" src={img.url || PLACEHOLDER_IMAGE} style={{ height: '180px', objectFit: 'cover' }} />
                             <Card.Body className="p-3">
-                                <Card.Title className="text-truncate h6 mb-2" title={img.title}>{img.title}</Card.Title>
+                                <Card.Title className="text-truncate h6 mb-2">{img.title}</Card.Title>
                                 <ExpandableDescription text={img.description} />
                             </Card.Body>
                         </Card>
