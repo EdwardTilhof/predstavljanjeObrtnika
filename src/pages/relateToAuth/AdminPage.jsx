@@ -9,7 +9,7 @@ const AdminPage = () => {
         <p>Only people with the ADMIN rank can see this page.</p>
         <div className="stats-grid">
           <div className="card">Total Users: 150</div>
-          <div className="card">Revenue: $5,000</div>
+          <div className="card">"wishfull thinking" = Revenue: $5,000 </div>
         </div>
       </div>
     </RoleCheck>
