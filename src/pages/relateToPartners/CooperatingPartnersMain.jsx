@@ -1,36 +1,35 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Table, Badge, Button, Stack, Row, Col, Card } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react";
+
 import { ROUTES, DATA_SOURCE } from "../../Constants";
 import CooperatingPartnerLogic from "../../components/partners/CooperatingPartnersLogic";
 import { useDataSource } from "../../dataSource/DataSourceContext";
-
-// Import defaults
 import { mainCategories } from "../../../dataRepository/partnersData/PartnersData";
 import { regions as defaultRegions } from "../../../dataRepository/locations/RegionsData";
 
-// Modal component for delete confirmation
 import DeleteConfirmationModal from "../../crossPageComponents/modal/DeleteConfirmationModal";
-
-// hook imports and other cross page imports can go here (e.g. useBreakpoint if needed for responsive design)
-import useBreakpoint from "../../crossPageComponents/hooks/useBreakpoint"; //
+import useBreakpoint from "../../crossPageComponents/hooks/useBreakpoint";
 
 const CooperatingPartnersMain = ({ selectedCategory }) => {
+  const { user, isLoaded } = useUser();
+
+  const isDevAdmin = localStorage.getItem("dev_admin") === "true";
+  const isEditor = isDevAdmin || (isLoaded && (user?.publicMetadata?.role === 'admin' || user?.publicMetadata?.role === 'editor'));
+
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [targetPartner, setTargetPartner] = useState(null);
   const { partners, setPartners } = useDataSource();
 
-  // --- NEW STATE FOR DYNAMIC DATA ---
   const [allCategories, setAllCategories] = useState([]);
   const [allRegions, setAllRegions] = useState([]);
 
   useEffect(() => {
-    // Load Categories from storage or use defaults
     const savedCats = localStorage.getItem('globalCategories');
     setAllCategories(savedCats ? JSON.parse(savedCats) : mainCategories);
 
-    // Load Regions from storage or use defaults
     const savedRegs = localStorage.getItem('globalRegions');
     setAllRegions(savedRegs ? JSON.parse(savedRegs) : defaultRegions);
   }, []);
@@ -66,15 +65,10 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
     ? partners.filter((p) => String(p.category) === String(selectedCategory))
     : partners;
 
-  /*  Determine if we should show mobile grid (xs and sm) 
-      or desktop table (md and above)
-      place other responsive logic constants here as needed 
-      (e.g. conditional rendering of columns, buttons, etc.)
-*/
-const breakpoint = useBreakpoint(); 
-const isMobile = breakpoint === 'xs' || breakpoint === 'sm'; //
+  const breakpoint = useBreakpoint();
+  const isMobile = breakpoint === 'xs' || breakpoint === 'sm';
 
-const renderPartnerCard = (cp) => (
+  const renderPartnerCard = (cp) => (
     <Col xs={12} key={cp.id} className="mb-3">
       <Card className="shadow-sm border">
         <Card.Body>
@@ -92,10 +86,13 @@ const renderPartnerCard = (cp) => (
             <Col xs={6} className="mt-2"><strong>Duration:</strong> {cp.duration} days</Col>
             <Col xs={6} className="mt-2"><strong>Contact:</strong> {cp.contact}</Col>
           </Row>
-          <Stack direction="horizontal" gap={2} className="mt-3 justify-content-end">
-            <Link to={ROUTES.changeCooperatingPartner.replace(':id', cp.id)} className="btn btn-secondary btn-sm">Edit</Link>
-            <Button variant="outline-danger" size="sm" onClick={() => { setTargetPartner(cp); setShowModal(true); }}>Remove</Button>
-          </Stack>
+
+          {isEditor && (
+            <Stack direction="horizontal" gap={2} className="mt-3 justify-content-end">
+              <Link to={ROUTES.changeCooperatingPartner.replace(':id', cp.id)} className="btn btn-secondary btn-sm">Edit</Link>
+              <Button variant="outline-danger" size="sm" onClick={() => { setTargetPartner(cp); setShowModal(true); }}>Remove</Button>
+            </Stack>
+          )}
         </Card.Body>
       </Card>
     </Col>
@@ -104,27 +101,23 @@ const renderPartnerCard = (cp) => (
   return (
     <div className="mt-4">
       {isMobile ? (
-        /* MOBILE GRID VIEW */
         <Row>
-          {filteredPartners.length > 0 ? (
-            filteredPartners.map(renderPartnerCard)
-          ) : (
+          {filteredPartners.length > 0 ? filteredPartners.map(renderPartnerCard) : (
             <Col className="text-center py-4 text-muted">No partners found.</Col>
           )}
         </Row>
       ) : (
-        /* DESKTOP TABLE VIEW */
         <Table hover responsive className="shadow-sm border align-middle">
           <thead className="table-dark">
             <tr>
               <th>Work title</th>
               <th>Category</th>
-              <th>Provider</th>
-              <th>Region</th>
-              <th>Investment</th>
+              <th>Company</th>
+              <th>Regions</th>
+              <th>Cost</th>
               <th>Duration</th>
               <th>Contact</th>
-              <th>Action</th>
+              {isEditor && <th>Action</th>}
             </tr>
           </thead>
           <tbody>
@@ -137,21 +130,25 @@ const renderPartnerCard = (cp) => (
                 <td>{cp.cost} EUR</td>
                 <td>{cp.duration} days</td>
                 <td>{cp.contact}</td>
-                <td>
-                  <Stack direction="horizontal" gap={2}>
-                    <Link to={ROUTES.changeCooperatingPartner.replace(':id', cp.id)} className="btn btn-secondary btn-sm">Edit</Link>
-                    <Button variant="outline-danger" size="sm" onClick={() => { setTargetPartner(cp); setShowModal(true); }}>Remove</Button>
-                  </Stack>
-                </td>
+                {isEditor && (
+                  <td>
+                    <Stack direction="horizontal" gap={2}>
+                      <Link to={ROUTES.changeCooperatingPartner.replace(':id', cp.id)} className="btn btn-secondary btn-sm">Edit</Link>
+                      <Button variant="outline-danger" size="sm" onClick={() => { setTargetPartner(cp); setShowModal(true); }}>Remove</Button>
+                    </Stack>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
         </Table>
       )}
 
-      <Button variant="primary" className="mt-3" onClick={() => navigate(ROUTES.newCooperatingPartner)}>
-        Add New Partner
-      </Button>
+      {isEditor && (
+        <Button variant="primary" className="mt-3" onClick={() => navigate(ROUTES.newCooperatingPartner)}>
+          Add New Partner
+        </Button>
+      )}
 
       <DeleteConfirmationModal
         show={showModal}

@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Col, Container, Row, Button, Pagination } from "react-bootstrap";
-import OurProjectCardStyle01 from "../../components/services/OurProjects/OurProjectCard";
-import { PROJECT_CARD_DATA } from "../../../dataRepository/serviceData/ProjectCardData";
-import AddEditModalProjectsMain from '../../components/services/OurProjects/AddEditModalProjectsMain';
+import OurProjectCardStyle01 from "../../components/projects/OurProjects/OurProjectCard";
+import { PROJECT_CARD_DATA } from "../../../dataRepository/projectData/ProjectCardData";
+import AddEditModalProjectsMain from '../../components/projects/OurProjects/AddEditModalProjectsMain';
 import DeleteConfirmationModal from '../../crossPageComponents/modal/DeleteConfirmationModal';
+import { useUser } from "@clerk/clerk-react";
 
 export default function OurProjectsMain() {
+const { user, isLoaded } = useUser(); 
+const isDevAdmin = localStorage.getItem("dev_admin") === "true";
+const isEditor = isDevAdmin || (isLoaded && (user?.publicMetadata?.role === 'admin' || user?.publicMetadata?.role === 'editor'));
+
   const [projects, setProjects] = useState([]);
   const [showFormModal, setShowFormModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -75,7 +80,9 @@ export default function OurProjectsMain() {
     <Container className="py-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2 className="dynamic-text">Our Projects</h2>
-        <Button onClick={handleOpenAdd} variant="primary">+ New Project</Button>
+        {isEditor && (
+          <Button onClick={handleOpenAdd} variant="primary">+ New Project</Button>
+        )}
       </div>
 
       <Row className="g-4">
@@ -83,9 +90,9 @@ export default function OurProjectsMain() {
           <Col key={item.id} xs={12} md={6} lg={4}>
             <OurProjectCardStyle01
               {...item}
-              link={item.link || `/ourProjects/gallery/${item.id}`} 
-              onEdit={() => handleOpenEdit(item)}
-              onDelete={() => { setTargetId(item.id); setShowDeleteModal(true); }}
+              link={item.link || `/ourProjects/gallery/${item.id}`}
+              onEdit={isEditor ? () => handleOpenEdit(item) : null}
+              onDelete={isEditor ? () => { setTargetId(item.id); setShowDeleteModal(true); } : null}
             />
           </Col>
         ))}
@@ -94,9 +101,9 @@ export default function OurProjectsMain() {
       {totalPages > 1 && (
         <Pagination className="justify-content-center mt-5">
           {[...Array(totalPages)].map((_, i) => (
-            <Pagination.Item 
-              key={i + 1} 
-              active={i + 1 === currentPage} 
+            <Pagination.Item
+              key={i + 1}
+              active={i + 1 === currentPage}
               onClick={() => setCurrentPage(i + 1)}
             >
               {i + 1}

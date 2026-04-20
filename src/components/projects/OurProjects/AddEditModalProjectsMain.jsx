@@ -1,8 +1,14 @@
 import React from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import { regions } from "../../../../dataRepository/locations/RegionsData";
+import { useUser } from "@clerk/clerk-react";
 
 const AddEditModalProjectsMain = ({ show, onHide, onSave, data, setData, editMode }) => {
+    const { user, isLoaded } = useUser();
+
+    const isDevAdmin = localStorage.getItem("dev_admin") === "true";
+    const isEditor = isDevAdmin || (isLoaded && (user?.publicMetadata?.role === 'admin' || user?.publicMetadata?.role === 'editor'));
+
     return (
         <Modal show={show} onHide={onHide} centered size="lg">
             <Modal.Header closeButton>
@@ -88,9 +94,13 @@ const AddEditModalProjectsMain = ({ show, onHide, onSave, data, setData, editMod
                     </Row>
                 </Form>
             </Modal.Body>
-            <Modal.Footer>
+           <Modal.Footer>
                 <Button variant="secondary" onClick={onHide}>Cancel</Button>
-                <Button variant="primary" onClick={onSave}>
+                <Button
+                    variant="primary"
+                    onClick={onSave}
+                    disabled={!isEditor} 
+                >
                     {editMode ? "Update Project" : "Create Project"}
                 </Button>
             </Modal.Footer>

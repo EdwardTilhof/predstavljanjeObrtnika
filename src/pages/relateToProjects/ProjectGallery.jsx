@@ -4,9 +4,10 @@ import { Container, Row, Col, Card, Button, Pagination } from 'react-bootstrap';
 import { createUniqueId } from '../../../dataRepository/UUIDGenerator';
 import DeleteConfirmationModal from '../../crossPageComponents/modal/DeleteConfirmationModal';
 import { PLACEHOLDER_IMAGE } from '../../Constants';
-import { MOCK_GALLERY_DATA } from '../../../dataRepository/serviceData/ProjectGalleryData';
-import AddEditModalProjectGallery from '../../components/services/OurProjects/AddEditModalProjectGallery';
-import { PROJECT_CARD_DATA } from '../../../dataRepository/serviceData/ProjectCardData';
+import { MOCK_GALLERY_DATA } from '../../../dataRepository/projectData/ProjectGalleryData';
+import AddEditModalProjectGallery from '../../components/projects/OurProjects/AddEditModalProjectGallery';
+import { PROJECT_CARD_DATA } from '../../../dataRepository/projectData/ProjectCardData';
+import { useUser } from "@clerk/clerk-react";
 
 const ExpandableDescription = ({ text }) => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -26,9 +27,9 @@ const ExpandableDescription = ({ text }) => {
                 </span>
             </Card.Text>
             {text.length > 80 && (
-                <button 
-                    onClick={() => setIsExpanded(!isExpanded)} 
-                    className="btn btn-link p-0 fw-bold" 
+                <button
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="btn btn-link p-0 fw-bold"
                     style={{ fontSize: '0.7rem', textDecoration: 'none' }}
                 >
                     {isExpanded ? 'Less' : 'More'}
@@ -39,7 +40,12 @@ const ExpandableDescription = ({ text }) => {
 };
 
 const ProjectGallery = () => {
+
     const { id } = useParams();
+    const { isLoaded, user } = useUser();
+    const isDevAdmin = localStorage.getItem("dev_admin") === "true";
+    const isEditor = isDevAdmin || (isLoaded && (user?.publicMetadata?.role === 'admin' || user?.publicMetadata?.role === 'editor'));
+
     const [projectTitle, setProjectTitle] = useState('Project Gallery');
     const [images, setImages] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -112,24 +118,29 @@ const ProjectGallery = () => {
     return (
         <Container className="py-5">
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h2 className="mb-0">{projectTitle}</h2>
-                <Button variant="primary" onClick={() => { setEditMode(false); setCurrentImage({ url: '', title: '', description: '' }); setShowFormModal(true); }}>
-                    + Add Image
-                </Button>
+                <h2 className="fw-bold">Project Gallery</h2>
+                {/* 2. Now isEditor is defined, so this won't crash */}
+                {isEditor && (
+                    <Button onClick={() => { setEditMode(false); setCurrentImage({}); setShowFormModal(true); }}>
+                        + Add Image
+                    </Button>
+                )}
             </div>
 
             <Row className="g-4">
                 {currentImages.map((img) => (
                     <Col key={img.id} xs={12} sm={6} md={4} lg={3}>
                         <Card className="h-100 shadow-sm border-0 position-relative">
-                            <div className="position-absolute top-0 end-0 p-2 d-flex gap-1" style={{ zIndex: 10 }}>
-                                <Button size="sm" variant="light" className="shadow-sm p-1" onClick={() => { setEditMode(true); setCurrentImage(img); setShowFormModal(true); }}>
-                                    <i className="bi bi-pencil text-primary"></i>
-                                </Button>
-                                <Button size="sm" variant="light" className="shadow-sm p-1" onClick={() => { setTargetId(img.id); setShowDeleteModal(true); }}>
-                                    <i className="bi bi-trash text-danger"></i>
-                                </Button>
-                            </div>
+                            {isEditor && (
+                                <div className="position-absolute top-0 end-0 p-2 d-flex gap-1" style={{ zIndex: 10 }}>
+                                    <Button size="sm" variant="light" className="shadow-sm p-1" onClick={() => { setEditMode(true); setCurrentImage(img); setShowFormModal(true); }}>
+                                        <i className="bi bi-pencil text-primary"></i>
+                                    </Button>
+                                    <Button size="sm" variant="light" className="shadow-sm p-1" onClick={() => { setTargetId(img.id); setShowDeleteModal(true); }}>
+                                        <i className="bi bi-trash text-danger"></i>
+                                    </Button>
+                                </div>
+                            )}
                             <Card.Img variant="top" src={img.url || PLACEHOLDER_IMAGE} style={{ height: '180px', objectFit: 'cover' }} />
                             <Card.Body className="p-3">
                                 <Card.Title className="text-truncate h6 mb-2" title={img.title}>{img.title}</Card.Title>

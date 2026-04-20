@@ -15,9 +15,16 @@ export const PLACEHOLDER_IMAGE = "https://placehold.co/120x240";
 export const ROUTES = {
     HOME: "/",
     ABOUT: "/about",
-    // routes related to services
+    
+    // Auth Routes
+    LOGIN: "/login",
+    REGISTER: "/register",
+    ADMIN: "/admin",
+
+    // routes related to projects
     OUR_PROJECTS: "/ourProjects",
     PROJECT_GALLERY: "/ourProjects/gallery/:id",
+    
     // Partner Routes
     CooperatingPartners: "/partners",
     newCooperatingPartner: "/partners/new",
@@ -35,7 +42,8 @@ export const NAV_LINKS = [
     { name: "Our Projects", path: ROUTES.OUR_PROJECTS },
     { name: "Partners", path: ROUTES.CooperatingPartners },
     { name: "Data Editor", path: ROUTES.dataEditor },
+    // Only show Admin in the nav if you want it visible by default
+    { name: "Admin", path: ROUTES.ADMIN }, 
 ];
 
 export const DATA_SOURCE = 'localStorage';
-// export const DATA_SOURCE = 'memory';
