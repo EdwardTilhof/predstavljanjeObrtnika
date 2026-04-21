@@ -4,10 +4,12 @@ import { Container, Row, Col, Card, Button, Pagination } from 'react-bootstrap';
 import { createUniqueId } from '../../../dataRepository/UUIDGenerator';
 import DeleteConfirmationModal from '../../crossPageComponents/modal/DeleteConfirmationModal';
 import { PLACEHOLDER_IMAGE } from '../../Constants';
-import { MOCK_GALLERY_DATA } from '../../../dataRepository/serviceData/ProjectGalleryData';
 import AddEditModalProjectGallery from '../../components/services/OurProjects/AddEditModalProjectGallery';
 import { PROJECT_CARD_DATA } from '../../../dataRepository/serviceData/ProjectCardData';
 import { ROLE_RANKS } from '../../Permissions/PermissonsConst';
+
+import { MOCK_GALLERY_DATA } from '../../../dataRepository/serviceData/ProjectGalleryDataGen';
+
 
 const ExpandableDescription = ({ text }) => {
     const [isExpanded, setIsExpanded] = useState(false);

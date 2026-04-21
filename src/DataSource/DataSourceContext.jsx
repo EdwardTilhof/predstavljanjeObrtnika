@@ -4,7 +4,7 @@ import { DATA_SOURCE } from '../Constants';
 const DataSourceContext = createContext();
 
 export const DataSourceProvider = ({ children }) => {
-  const [partners, setPartners] = useState([]);
+const [partners, setPartners] = useState([]);
 
   return (
     <DataSourceContext.Provider value={{ dataSource: DATA_SOURCE, partners, setPartners }}>

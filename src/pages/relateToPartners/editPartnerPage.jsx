@@ -21,29 +21,31 @@ const EditPartnerPage = () => {
     const [dynamicCategories, setDynamicCategories] = useState([]);
     const [dynamicRegions, setDynamicRegions] = useState([]);
 
-    useEffect(() => {
-        const load = async () => {
-            // 1. Load Dynamic Lists from LocalStorage
-            const savedCats = localStorage.getItem('globalCategories');
-            const savedRegs = localStorage.getItem('globalRegions');
-            setDynamicCategories(savedCats ? JSON.parse(savedCats) : staticCategories);
-            setDynamicRegions(savedRegs ? JSON.parse(savedRegs) : staticRegions);
+   useEffect(() => {
+    const load = async () => {
+        const savedCats = localStorage.getItem('globalCategories');
+        const savedRegs = localStorage.getItem('globalRegions');
+        
+        // Use the same merged logic as the Main page
+        const mergedCats = [...new Map([...staticCategories, ...(savedCats ? JSON.parse(savedCats) : [])].map(item => [String(item.id), item])).values()];
+        const mergedRegs = [...new Map([...staticRegions, ...(savedRegs ? JSON.parse(savedRegs) : [])].map(item => [String(item.id), item])).values()];
+        
+        setDynamicCategories(mergedCats);
+        setDynamicRegions(mergedRegs);
 
-            // 2. Load Partner Data
-            const res = await CooperatingPartnerLogic.getById(id, DATA_SOURCE, partners);
-            if (res.success) {
-                setFormData({
-                    ...res.data,
-                    titles: res.data.titles || [res.data.title || ""],
-                    regions: res.data.regions || [""]
-                });
-            } else {
-                setError("Partner not found.");
-            }
-            setLoading(false);
-        };
-        load();
-    }, [id, partners]);
+        const res = await CooperatingPartnerLogic.getById(id, DATA_SOURCE, partners);
+        if (res.success) {
+            setFormData({
+                ...res.data,
+                // Ensure array fields exist
+                titles: res.data.titles || [res.data.title || ""],
+                regions: res.data.regions || [""]
+            });
+        }
+        setLoading(false);
+    };
+    load();
+}, [id, partners]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

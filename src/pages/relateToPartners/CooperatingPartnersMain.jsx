@@ -1,11 +1,13 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { Table, Badge, Button, Stack } from "react-bootstrap";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
+import { Table, Badge, Button, Stack, Pagination, Form, Row, Col } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "../../Constants";
 import CooperatingPartnerLogic from "../../components/partners/CooperatingPartnersLogic";
 import { useDataSource } from "../../dataSource/DataSourceContext";
 import DeleteConfirmationModal from "../../crossPageComponents/modal/DeleteConfirmationModal";
 import { ROLE_RANKS } from "../../Permissions/PermissonsConst";
+
+// Data Defaults
 import { mainCategories } from "../../../dataRepository/partnersData/PartnersData";
 import { regions as defaultRegions } from "../../../dataRepository/locations/RegionsData";
 
@@ -15,10 +17,16 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
   const [targetPartner, setTargetPartner] = useState(null);
   const { partners, setPartners } = useDataSource();
 
+  // Data States
   const [allCategories, setAllCategories] = useState([]);
   const [allRegions, setAllRegions] = useState([]);
 
-  // Get User Rank
+  // UI States: Filtering, Sorting, Pagination
+  const [selectedRegion, setSelectedRegion] = useState("All");
+  const [sortConfig, setSortConfig] = useState({ key: 'company', direction: 'asc' });
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
   const userRole = localStorage.getItem('user_role') || 'GUEST';
   const userRank = ROLE_RANKS[userRole];
 
@@ -27,10 +35,16 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
     if (result.success) {
       setPartners(result.data);
     }
-    const savedCats = localStorage.getItem('globalCategories');
-    const savedRegs = localStorage.getItem('globalRegions');
-    if (savedCats) setAllCategories(JSON.parse(savedCats));
-    if (savedRegs) setAllRegions(JSON.parse(savedRegs));
+
+    // Fetch and Merge Categories
+    const savedCats = JSON.parse(localStorage.getItem('globalCategories') || "[]");
+    const mergedCats = [...new Map([...mainCategories, ...savedCats].map(item => [item.id, item])).values()];
+    setAllCategories(mergedCats);
+
+    // Fetch and Merge Regions
+    const savedRegs = JSON.parse(localStorage.getItem('globalRegions') || "[]");
+    const mergedRegs = [...new Map([...defaultRegions, ...savedRegs].map(item => [item.id, item])).values()];
+    setAllRegions(mergedRegs);
   }, [setPartners]);
 
   useEffect(() => {
@@ -39,19 +53,58 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
     return () => window.removeEventListener("partnersUpdated", loadData);
   }, [loadData]);
 
-  useEffect(() => {
-    const savedCats = localStorage.getItem('globalCategories');
-    const savedRegs = localStorage.getItem('globalRegions');
+  const handleSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') direction = 'desc';
+    setSortConfig({ key, direction });
+  };
 
-    const parsedCats = savedCats ? JSON.parse(savedCats) : [];
-    const parsedRegs = savedRegs ? JSON.parse(savedRegs) : [];
+  // --- Filtering & Sorting Logic ---
 
-    const mergedCats = [...new Map([...mainCategories, ...parsedCats].map(item => [item.id, item])).values()];
-    const mergedRegs = [...new Map([...defaultRegions, ...parsedRegs].map(item => [item.id, item])).values()];
+  const filteredPartners = useMemo(() => {
+    return partners.filter(p => {
+        const categoryMatch = selectedCategory === "All" || String(p.category) === String(selectedCategory);
+        const regionMatch = selectedRegion === "All" || p.regions?.some(rId => String(rId) === String(selectedRegion));
+        return categoryMatch && regionMatch;
+    });
+}, [partners, selectedCategory, selectedRegion]);
 
-    setAllCategories(mergedCats);
-    setAllRegions(mergedRegs);
-  }, []);
+
+  const processedData = useMemo(() => {
+    let filtered = Array.isArray(partners) ? [...partners] : [];
+
+    // Filter by Category
+    if (selectedCategory && selectedCategory !== "All") {
+      filtered = filtered.filter(p => String(p.category) === String(selectedCategory));
+    }
+
+    // Filter by Region 
+    if (selectedRegion !== "All") {
+      filtered = filtered.filter(p => p.regions?.includes(selectedRegion));
+    }
+
+    // Sort the result
+    filtered.sort((a, b) => {
+      let aVal = a[sortConfig.key] || "";
+      let bVal = b[sortConfig.key] || "";
+
+      // Specific logic for sorting by Category Name instead of ID
+      if (sortConfig.key === 'category') {
+        aVal = allCategories.find(c => String(c.id) === String(a.category))?.name || "";
+        bVal = allCategories.find(c => String(c.id) === String(b.category))?.name || "";
+      }
+
+      if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    return filtered;
+  }, [partners, selectedCategory, selectedRegion, sortConfig, allCategories]);
+
+  // --- Pagination Logic ---
+  const totalPages = Math.ceil(processedData.length / itemsPerPage);
+  const paginatedData = processedData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const confirmDelete = async () => {
     if (targetPartner) {
@@ -62,58 +115,115 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
       }
     }
   };
-  const displayPartners = selectedCategory
-    ? partners.filter(p => String(p.category) === String(selectedCategory))
-    : partners;
-
-  const filteredPartners = selectedCategory === "All"
-    ? partners
-    : partners.filter(p => String(p.category) === String(selectedCategory));
 
   return (
     <>
-      <Table hover responsive className="mt-4">
-        <thead>
+      <Row className="mb-3">
+        <Col md={4}>
+          <Form.Group>
+            <Form.Label className="small fw-bold">Filter by Region</Form.Label>
+            <Form.Select
+              value={selectedRegion}
+              onChange={(e) => { setSelectedRegion(e.target.value); setCurrentPage(1); }}
+            >
+              <option value="All">All Regions</option>
+              {allRegions.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+            </Form.Select>
+          </Form.Group>
+        </Col>
+      </Row>
+
+      <Table hover responsive className="shadow-sm border">
+        <thead className="table-light">
           <tr>
-            <th>Partner Name</th>
-            <th>Category</th>
-            <th>Company</th>
+            <th onClick={() => handleSort('company')} style={{ cursor: 'pointer' }}>
+              Company {sortConfig.key === 'company' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+            </th>
+            <th onClick={() => handleSort('category')} style={{ cursor: 'pointer' }}>
+              Category {sortConfig.key === 'category' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+            </th>
             <th>Regions</th>
-            <th>Cost</th>
-            <th>Duration</th>
+            <th onClick={() => handleSort('cost')} style={{ cursor: 'pointer' }}>
+              Cost {sortConfig.key === 'cost' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+            </th>
             <th>Contact</th>
             {userRank >= ROLE_RANKS.MODERATOR && <th>Actions</th>}
           </tr>
         </thead>
         <tbody>
-          {displayPartners.map((cp) => (
-            <tr key={cp.id}>
-              <td className="fw-bold">{cp.titles?.join(", ") || cp.title || "N/A"}</td>
-              <td>
-                <Badge bg="info" text="dark">
-                  {allCategories.find(c => String(c.id) === String(cp.category))?.name || "Uncategorized"}
-                </Badge>
-              </td>
-              <td>{cp.company}</td>
-              <td>
-                {cp.regions?.map(id => allRegions.find(r => String(r.id) === String(id))?.name).filter(Boolean).join(", ") || "N/A"}
-              </td>
-              <td>{cp.cost} EUR</td>
-              <td>{cp.duration} days</td>
-              <td>{cp.contact}</td>
+          {paginatedData.map((cp) => {
+            // Find Category Name
+            const categoryObj = allCategories.find(c => String(c.id) === String(cp.category));
+            const categoryName = categoryObj ? categoryObj.name : "Uncategorized";
 
-              {userRank >= ROLE_RANKS.MODERATOR && (
+            // Find Region Names and clean up empty strings
+            const regionNames = (cp.regions || [])
+              .filter(id => id && String(id).trim() !== "")
+              .map(id => allRegions.find(r => String(r.id) === String(id))?.name)
+              .filter(Boolean)
+              .join(", ");
+
+            return (
+              <tr key={cp.id}>
+                <td>{cp.company}</td>
                 <td>
-                  <Stack direction="horizontal" gap={2}>
-                    <Link to={ROUTES.changeCooperatingPartner.replace(':id', cp.id)} className="btn btn-secondary btn-sm">Edit</Link>
-                    <Button variant="outline-danger" size="sm" onClick={() => { setTargetPartner(cp); setShowModal(true); }}>Remove</Button>
-                  </Stack>
+                  <Badge bg="info" text="dark">
+                    {allCategories.find(c => String(c.id).trim() === String(cp.category).trim())?.name || "Uncategorized"}
+                  </Badge>
                 </td>
-              )}
-            </tr>
-          ))}
+
+                <td>
+                  {cp.regions?.map(regionId => {
+                    const found = allRegions.find(r => String(r.id).trim() === String(regionId).trim());
+                    return found ? found.name : null;
+                  }).filter(Boolean).join(", ") || "Global / N/A"}
+                </td>
+                <td>{cp.cost} EUR</td>
+                <td>{cp.contact}</td>
+
+                {userRank >= ROLE_RANKS.MODERATOR && (
+                  <td>
+                    <Stack direction="horizontal" gap={2}>
+                      <Link
+                        to={ROUTES.changeCooperatingPartner.replace(':id', cp.id)}
+                        className="btn btn-outline-secondary btn-sm"
+                      >
+                        Edit
+                      </Link>
+                      <Button
+                        variant="outline-danger"
+                        size="sm"
+                        onClick={() => { setTargetPartner(cp); setShowModal(true); }}
+                      >
+                        Remove
+                      </Button>
+                    </Stack>
+                  </td>
+                )}
+              </tr>
+            );
+          })}
         </tbody>
       </Table>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <Pagination className="justify-content-center mt-4">
+          <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1} />
+          <Pagination.Prev onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} />
+          {[...Array(totalPages)].map((_, idx) => (
+            <Pagination.Item
+              key={idx + 1}
+              active={idx + 1 === currentPage}
+              onClick={() => setCurrentPage(idx + 1)}
+            >
+              {idx + 1}
+            </Pagination.Item>
+          ))}
+          <Pagination.Next onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} />
+          <Pagination.Last onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} />
+        </Pagination>
+      )}
 
       {userRank >= ROLE_RANKS.MODERATOR && (
         <Button variant="primary" className="mt-3" onClick={() => navigate(ROUTES.newCooperatingPartner)}>
