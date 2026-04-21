@@ -15,3 +15,6 @@ npm install uuid
 
 // if animation comes from lottie files
 npm install @lottiefiles/dotlottie-react
+
+// for pdf rendering instal the following
+npm install @react-pdf/renderer --save

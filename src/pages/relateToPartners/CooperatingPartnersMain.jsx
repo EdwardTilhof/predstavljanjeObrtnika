@@ -11,6 +11,10 @@ import { ROLE_RANKS } from "../../Permissions/PermissonsConst";
 import { mainCategories } from "../../../dataRepository/partnersData/PartnersData";
 import { regions as defaultRegions } from "../../../dataRepository/locations/RegionsData";
 
+// PDF Imports
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import PartnerPdfTemplate from "../../crossPageComponents/pdfRenderer/PartnerPdfTemplate";
+
 const CooperatingPartnersMain = ({ selectedCategory }) => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
@@ -23,7 +27,7 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
 
   // UI States: Filtering, Sorting, Pagination
   const [selectedRegion, setSelectedRegion] = useState("All");
-  const [sortConfig, setSortConfig] = useState({ key: 'company', direction: 'asc' });
+  const [sortConfig, setSortConfig] = useState({ key: 'original', direction: 'asc' });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -160,68 +164,95 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
               Duration {sortConfig.key === 'duration' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
             </th>
             <th>Contact</th>
-            {userRank >= ROLE_RANKS.MODERATOR && <th>Actions</th>}
+            {userRank >= ROLE_RANKS.USER && <th>Actions</th>}
           </tr>
         </thead>
         <tbody>
-          {paginatedData.map((cp) => {
-            // Find Category Name
-            const categoryObj = allCategories.find(c => String(c.id) === String(cp.category));
-            const categoryName = categoryObj ? categoryObj.name : "Uncategorized";
+          {paginatedData.map((partner) => {
+            // 1. Resolve Category Name (converting ID to String)
+            const categoryName = allCategories.find(
+              (cat) => String(cat.id) === String(partner.category)
+            )?.name || "N/A";
 
-            // Find Region Names and clean up empty strings
-            const regionNames = (cp.regions || [])
-              .filter(id => id && String(id).trim() !== "")
-              .map(id => allRegions.find(r => String(r.id) === String(id))?.name)
-              .filter(Boolean)
-              .join(", ");
+            // 2. Resolve Region Names (converting array of IDs to array of Strings)
+            const regionNames = partner.regions
+              ?.map((regId) => allRegions.find((r) => String(r.id) === String(regId))?.name)
+              .filter(Boolean) || ["Global"];
 
             return (
-              <tr key={cp.id}>
-                <td>{partners.indexOf(cp) + 1}</td>
-                <td>{cp.company}</td>
+              <tr key={partner.id}>
+                <td>{partners.indexOf(partner) + 1}</td>
+                <td>{partner.company}</td>
+                <td>{categoryName}</td>
                 <td>
-                  <Badge bg="info" text="dark">
-                    {allCategories.find(c => String(c.id).trim() === String(cp.category).trim())?.name || "Uncategorized"}
-                  </Badge>
+                  {regionNames.map((name, i) => (
+                    <Badge key={i} bg="info" className="me-1">{name}</Badge>
+                  ))}
                 </td>
-
+                <td>${partner.cost}</td>
+                <td>{partner.duration} mo</td>
+                <td>{partner.contact}</td>
                 <td>
-                  {cp.regions?.map(regionId => {
-                    const found = allRegions.find(r => String(r.id).trim() === String(regionId).trim());
-                    return found ? found.name : null;
-                  }).filter(Boolean).join(", ") || "Global / N/A"}
-                </td>
-                <td>{cp.cost} EUR</td>
-                <td>{cp.duration > 0 ? `${cp.duration} Wks` : "N/A"}</td>
-                <td>{cp.contact}</td>
-
-                {userRank >= ROLE_RANKS.MODERATOR && (
-                  <td>
-                    <Stack direction="horizontal" gap={2}>
-                      <Link
-                        to={ROUTES.changeCooperatingPartner.replace(':id', cp.id)}
-                        className="btn btn-outline-secondary btn-sm"
-                      >
-                        Edit
-                      </Link>
+                  <Stack direction="horizontal" gap={2}>
+                    {userRank === ROLE_RANKS.GUEST && (
                       <Button
-                        variant="outline-danger"
+                        as={Link}
+                        to={ROUTES.LOGIN}
+                        variant="outline-primary"
                         size="sm"
-                        onClick={() => { setTargetPartner(cp); setShowModal(true); }}
                       >
-                        Remove
+                        Login to view PDF
                       </Button>
-                    </Stack>
-                  </td>
-                )}
+                    )}
+                    {/* PDF Render logic */}
+                    {userRank >= ROLE_RANKS.USER && (
+                      <PDFDownloadLink
+                        document={
+                          <PartnerPdfTemplate
+                            partner={partner}
+                            categoryName={categoryName}
+                            regionNames={regionNames}
+                          />
+                        }
+                        fileName={`${partner.company}_Profile.pdf`}
+                        style={{ textDecoration: 'none' }}
+                      >
+                        {({ loading }) => (
+                          <Button variant="outline-success" size="sm" disabled={loading}>
+                            {loading ? "..." : <i className="bi bi-file-pdf"></i>}
+                          </Button>
+                        )}
+                      </PDFDownloadLink>
+                    )}
+                    {userRank >= ROLE_RANKS.MODERATOR && (
+                      <>
+                        <Button
+                          variant="outline-primary"
+                          size="sm"
+                          onClick={() => navigate(`${ROUTES.editCooperatingPartner}/${partner.id}`)}
+                        >
+                          <i className="bi bi-pencil"></i>
+                        </Button>
+                        <Button
+                          variant="outline-danger"
+                          size="sm"
+                          onClick={() => {
+                            setTargetPartner(partner);
+                            setShowModal(true);
+                          }}
+                        >
+                          <i className="bi bi-trash"></i>
+                        </Button>
+                      </>
+                    )}
+                  </Stack>
+                </td>
               </tr>
             );
           })}
         </tbody>
       </Table>
 
-      {/* Pagination Controls */}
       {/* Pagination Controls */}
       {totalPages > 1 && (
         <Pagination className="justify-content-center mt-4">
