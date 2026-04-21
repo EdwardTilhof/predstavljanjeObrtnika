@@ -63,11 +63,11 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
 
   const filteredPartners = useMemo(() => {
     return partners.filter(p => {
-        const categoryMatch = selectedCategory === "All" || String(p.category) === String(selectedCategory);
-        const regionMatch = selectedRegion === "All" || p.regions?.some(rId => String(rId) === String(selectedRegion));
-        return categoryMatch && regionMatch;
+      const categoryMatch = selectedCategory === "All" || String(p.category) === String(selectedCategory);
+      const regionMatch = selectedRegion === "All" || p.regions?.some(rId => String(rId) === String(selectedRegion));
+      return categoryMatch && regionMatch;
     });
-}, [partners, selectedCategory, selectedRegion]);
+  }, [partners, selectedCategory, selectedRegion]);
 
 
   const processedData = useMemo(() => {
@@ -85,6 +85,12 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
 
     // Sort the result
     filtered.sort((a, b) => {
+      if (sortConfig.key === 'original') { // Original order based on the default list
+        const indexA = partners.indexOf(a);
+        const indexB = partners.indexOf(b);
+        return sortConfig.direction === 'asc' ? indexA - indexB : indexB - indexA;
+      }
+
       let aVal = a[sortConfig.key] || "";
       let bVal = b[sortConfig.key] || "";
 
@@ -96,6 +102,7 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
 
       if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
       if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+      if (aVal === bVal) { return sortConfig.direction === 'asc' ? 0 : 0; }
       return 0;
     });
 
@@ -136,6 +143,9 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
       <Table hover responsive className="shadow-sm border">
         <thead className="table-light">
           <tr>
+            <th onClick={() => handleSort('original')} style={{ cursor: 'pointer' }}>
+              Index {sortConfig.key === 'original' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+            </th>
             <th onClick={() => handleSort('company')} style={{ cursor: 'pointer' }}>
               Company {sortConfig.key === 'company' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
             </th>
@@ -168,6 +178,7 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
 
             return (
               <tr key={cp.id}>
+                <td>{partners.indexOf(cp) + 1}</td>
                 <td>{cp.company}</td>
                 <td>
                   <Badge bg="info" text="dark">
@@ -212,65 +223,65 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
 
       {/* Pagination Controls */}
       {/* Pagination Controls */}
-{totalPages > 1 && (
-  <Pagination className="justify-content-center mt-4">
-    <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1} />
-    <Pagination.Prev onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} />
+      {totalPages > 1 && (
+        <Pagination className="justify-content-center mt-4">
+          <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1} />
+          <Pagination.Prev onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} />
 
-    {(() => {
-      const items = [];
-      const leftSide = 1;
-      const rightSide = totalPages;
-      
-      // Determine the range of pages to show around the current page
-      // Show 1 neighbor on each side of the current page
-      let startPage = Math.max(1, currentPage - 1);
-      let endPage = Math.min(totalPages, currentPage + 1);
+          {(() => {
+            const items = [];
+            const leftSide = 1;
+            const rightSide = totalPages;
 
-      // Always show the first page
-      items.push(
-        <Pagination.Item key={1} active={1 === currentPage} onClick={() => setCurrentPage(1)}>
-          1
-        </Pagination.Item>
-      );
+            // Determine the range of pages to show around the current page
+            // Show 1 neighbor on each side of the current page
+            let startPage = Math.max(1, currentPage - 1);
+            let endPage = Math.min(totalPages, currentPage + 1);
 
-      // Add ellipsis if current range is far from the start
-      if (startPage > 2) {
-        items.push(<Pagination.Ellipsis key="start-ellipsis" disabled />);
-      }
+            // Always show the first page
+            items.push(
+              <Pagination.Item key={1} active={1 === currentPage} onClick={() => setCurrentPage(1)}>
+                1
+              </Pagination.Item>
+            );
 
-      // Add pages in the middle range
-      for (let i = startPage; i <= endPage; i++) {
-        if (i !== 1 && i !== totalPages) {
-          items.push(
-            <Pagination.Item key={i} active={i === currentPage} onClick={() => setCurrentPage(i)}>
-              {i}
-            </Pagination.Item>
-          );
-        }
-      }
+            // Add ellipsis if current range is far from the start
+            if (startPage > 2) {
+              items.push(<Pagination.Ellipsis key="start-ellipsis" disabled />);
+            }
 
-      // Add ellipsis if current range is far from the end
-      if (endPage < totalPages - 1) {
-        items.push(<Pagination.Ellipsis key="end-ellipsis" disabled />);
-      }
+            // Add pages in the middle range
+            for (let i = startPage; i <= endPage; i++) {
+              if (i !== 1 && i !== totalPages) {
+                items.push(
+                  <Pagination.Item key={i} active={i === currentPage} onClick={() => setCurrentPage(i)}>
+                    {i}
+                  </Pagination.Item>
+                );
+              }
+            }
 
-      // Always show the last page
-      if (totalPages > 1) {
-        items.push(
-          <Pagination.Item key={totalPages} active={totalPages === currentPage} onClick={() => setCurrentPage(totalPages)}>
-            {totalPages}
-          </Pagination.Item>
-        );
-      }
+            // Add ellipsis if current range is far from the end
+            if (endPage < totalPages - 1) {
+              items.push(<Pagination.Ellipsis key="end-ellipsis" disabled />);
+            }
 
-      return items;
-    })()}
+            // Always show the last page
+            if (totalPages > 1) {
+              items.push(
+                <Pagination.Item key={totalPages} active={totalPages === currentPage} onClick={() => setCurrentPage(totalPages)}>
+                  {totalPages}
+                </Pagination.Item>
+              );
+            }
 
-    <Pagination.Next onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} />
-    <Pagination.Last onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} />
-  </Pagination>
-)}
+            return items;
+          })()}
+
+          <Pagination.Next onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} />
+          <Pagination.Last onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} />
+        </Pagination>
+      )}
 
       {userRank >= ROLE_RANKS.MODERATOR && (
         <Button variant="primary" className="mt-3" onClick={() => navigate(ROUTES.newCooperatingPartner)}>
