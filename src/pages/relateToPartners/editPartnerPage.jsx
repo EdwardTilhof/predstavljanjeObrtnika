@@ -33,14 +33,17 @@ const EditPartnerPage = () => {
         setDynamicCategories(mergedCats);
         setDynamicRegions(mergedRegs);
 
-        const res = await CooperatingPartnerLogic.getById(id, DATA_SOURCE, partners);
+        // Fetch using explicit 'localStorage' string to stay consistent with the app's standard flow
+        const res = await CooperatingPartnerLogic.getById(id, 'localStorage', partners);
         if (res.success) {
             setFormData({
                 ...res.data,
                 // Ensure array fields exist
-                titles: res.data.titles || [res.data.title || ""],
+                titles: res.data.titles || (res.data.title ? [res.data.title] : [""]),
                 regions: res.data.regions || [""]
             });
+        } else {
+            setError("Partner not found.");
         }
         setLoading(false);
     };
@@ -49,11 +52,17 @@ const EditPartnerPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const result = await CooperatingPartnerLogic.update(id, formData, DATA_SOURCE, partners);
+        
+        // Update local storage
+        const result = await CooperatingPartnerLogic.update(id, formData, 'localStorage');
+        
         if (result.success) {
-            if (DATA_SOURCE === 'memory') setPartners(result.data);
-            else window.dispatchEvent(new Event("partnersUpdated"));
+            // Because update logic returns the whole list, we push that directly into global state
+            setPartners(result.data); 
+            window.dispatchEvent(new Event("partnersUpdated"));
             navigate(ROUTES.CooperatingPartners);
+        } else {
+            setError("Failed to update partner.");
         }
     };
 

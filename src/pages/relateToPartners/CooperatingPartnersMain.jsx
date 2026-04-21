@@ -146,6 +146,9 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
             <th onClick={() => handleSort('cost')} style={{ cursor: 'pointer' }}>
               Cost {sortConfig.key === 'cost' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
             </th>
+            <th onClick={() => handleSort('duration')} style={{ cursor: 'pointer' }}>
+              Duration {sortConfig.key === 'duration' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+            </th>
             <th>Contact</th>
             {userRank >= ROLE_RANKS.MODERATOR && <th>Actions</th>}
           </tr>
@@ -179,6 +182,7 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
                   }).filter(Boolean).join(", ") || "Global / N/A"}
                 </td>
                 <td>{cp.cost} EUR</td>
+                <td>{cp.duration > 0 ? `${cp.duration} Wks` : "N/A"}</td>
                 <td>{cp.contact}</td>
 
                 {userRank >= ROLE_RANKS.MODERATOR && (

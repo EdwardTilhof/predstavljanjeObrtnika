@@ -3,11 +3,11 @@ import { regions } from "../locations/RegionsData";
 
 const osijekId = regions.find(region => region.name === "Osijek")?.id;
 
-// 1. Generate unique IDs for the Work Sectors
-const idIT = createUniqueId('worksector');
-const idDesign = createUniqueId('worksector');
-const idInfra = createUniqueId('worksector'); 
-const idMarketing = createUniqueId('worksector');
+// 1. Use hardcoded, stable IDs for static data so they don't regenerate on refresh
+const idIT = 'worksector_it';
+const idDesign = 'worksector_design';
+const idInfra = 'worksector_infra'; 
+const idMarketing = 'worksector_marketing';
 
 export const mainCategories = [
   { id: idIT, name: "IT & Software" },
@@ -16,11 +16,10 @@ export const mainCategories = [
   { id: idMarketing, name: "Marketing" }
 ];
 
-// 2. Generate data for the partners
 export const CooperatingPartnersData = [
   {
     id: createUniqueId('ourProjectsCard'),
-    title: ["Web Development"],
+    titles: ["Web Development"],
     category: idIT, 
     company: "TechFlow Solutions",
     cost: 2500.0,
@@ -31,7 +30,7 @@ export const CooperatingPartnersData = [
   },
   {
     id: createUniqueId('ourProjectsCard'),
-    title: ["UI/UX Design"],
+    titles: ["UI/UX Design"],
     category: idDesign, 
     company: "PixelPerfect Studio",
     cost: 1200.0,
@@ -42,7 +41,7 @@ export const CooperatingPartnersData = [
   },
   {
     id: createUniqueId('ourProjectsCard'),
-    title: ["Cloud Architecture"],
+    titles: ["Cloud Architecture"],
     category: idInfra, 
     company: "SkyHigh Cloud",
     cost: 5000.0,
@@ -53,7 +52,7 @@ export const CooperatingPartnersData = [
   },
   {
     id: createUniqueId('ourProjectsCard'),
-    title: ["SEO Optimization"],
+    titles: ["SEO Optimization"],
     category: idMarketing, 
     company: "RankBoosters",
     cost: 800.0,
