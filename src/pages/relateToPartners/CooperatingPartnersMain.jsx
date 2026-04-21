@@ -211,23 +211,66 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
       </Table>
 
       {/* Pagination Controls */}
-      {totalPages > 1 && (
-        <Pagination className="justify-content-center mt-4">
-          <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1} />
-          <Pagination.Prev onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} />
-          {[...Array(totalPages)].map((_, idx) => (
-            <Pagination.Item
-              key={idx + 1}
-              active={idx + 1 === currentPage}
-              onClick={() => setCurrentPage(idx + 1)}
-            >
-              {idx + 1}
+      {/* Pagination Controls */}
+{totalPages > 1 && (
+  <Pagination className="justify-content-center mt-4">
+    <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1} />
+    <Pagination.Prev onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} />
+
+    {(() => {
+      const items = [];
+      const leftSide = 1;
+      const rightSide = totalPages;
+      
+      // Determine the range of pages to show around the current page
+      // Show 1 neighbor on each side of the current page
+      let startPage = Math.max(1, currentPage - 1);
+      let endPage = Math.min(totalPages, currentPage + 1);
+
+      // Always show the first page
+      items.push(
+        <Pagination.Item key={1} active={1 === currentPage} onClick={() => setCurrentPage(1)}>
+          1
+        </Pagination.Item>
+      );
+
+      // Add ellipsis if current range is far from the start
+      if (startPage > 2) {
+        items.push(<Pagination.Ellipsis key="start-ellipsis" disabled />);
+      }
+
+      // Add pages in the middle range
+      for (let i = startPage; i <= endPage; i++) {
+        if (i !== 1 && i !== totalPages) {
+          items.push(
+            <Pagination.Item key={i} active={i === currentPage} onClick={() => setCurrentPage(i)}>
+              {i}
             </Pagination.Item>
-          ))}
-          <Pagination.Next onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} />
-          <Pagination.Last onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} />
-        </Pagination>
-      )}
+          );
+        }
+      }
+
+      // Add ellipsis if current range is far from the end
+      if (endPage < totalPages - 1) {
+        items.push(<Pagination.Ellipsis key="end-ellipsis" disabled />);
+      }
+
+      // Always show the last page
+      if (totalPages > 1) {
+        items.push(
+          <Pagination.Item key={totalPages} active={totalPages === currentPage} onClick={() => setCurrentPage(totalPages)}>
+            {totalPages}
+          </Pagination.Item>
+        );
+      }
+
+      return items;
+    })()}
+
+    <Pagination.Next onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} />
+    <Pagination.Last onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} />
+  </Pagination>
+)}
 
       {userRank >= ROLE_RANKS.MODERATOR && (
         <Button variant="primary" className="mt-3" onClick={() => navigate(ROUTES.newCooperatingPartner)}>

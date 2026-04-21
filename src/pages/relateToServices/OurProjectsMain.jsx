@@ -27,7 +27,6 @@ export default function OurProjectsMain() {
     if (saved) {
       data = JSON.parse(saved);
     } else {
-      // If no data exists, use mock data and save it immediately to lock the IDs
       data = PROJECT_CARD_DATA;
       localStorage.setItem(storageKey, JSON.stringify(data));
     }
@@ -38,7 +37,6 @@ export default function OurProjectsMain() {
   }, []);
 
   const saveAndPersist = (newList) => {
-    // Keep list sorted when adding/editing
     const sorted = [...newList].sort((a, b) => new Date(b.date) - new Date(a.date));
     setProjects(sorted);
     localStorage.setItem(storageKey, JSON.stringify(sorted));
@@ -96,19 +94,66 @@ export default function OurProjectsMain() {
         ))}
       </Row>
 
-      {totalPages > 1 && (
-        <Pagination className="justify-content-center mt-5">
-          {[...Array(totalPages)].map((_, i) => (
-            <Pagination.Item 
-              key={i + 1} 
-              active={i + 1 === currentPage} 
-              onClick={() => setCurrentPage(i + 1)}
-            >
-              {i + 1}
+      {/* Pagination Controls */}
+{totalPages > 1 && (
+  <Pagination className="justify-content-center mt-4">
+    <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1} />
+    <Pagination.Prev onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} />
+
+    {(() => {
+      const items = [];
+      const leftSide = 1;
+      const rightSide = totalPages;
+      
+      // Determine the range of pages to show around the current page
+      // Show 1 neighbor on each side of the current page
+      let startPage = Math.max(1, currentPage - 1);
+      let endPage = Math.min(totalPages, currentPage + 1);
+
+      // Always show the first page
+      items.push(
+        <Pagination.Item key={1} active={1 === currentPage} onClick={() => setCurrentPage(1)}>
+          1
+        </Pagination.Item>
+      );
+
+      // Add ellipsis if current range is far from the start
+      if (startPage > 2) {
+        items.push(<Pagination.Ellipsis key="start-ellipsis" disabled />);
+      }
+
+      // Add pages in the middle range
+      for (let i = startPage; i <= endPage; i++) {
+        if (i !== 1 && i !== totalPages) {
+          items.push(
+            <Pagination.Item key={i} active={i === currentPage} onClick={() => setCurrentPage(i)}>
+              {i}
             </Pagination.Item>
-          ))}
-        </Pagination>
-      )}
+          );
+        }
+      }
+
+      // Add ellipsis if current range is far from the end
+      if (endPage < totalPages - 1) {
+        items.push(<Pagination.Ellipsis key="end-ellipsis" disabled />);
+      }
+
+      // Always show the last page
+      if (totalPages > 1) {
+        items.push(
+          <Pagination.Item key={totalPages} active={totalPages === currentPage} onClick={() => setCurrentPage(totalPages)}>
+            {totalPages}
+          </Pagination.Item>
+        );
+      }
+
+      return items;
+    })()}
+
+    <Pagination.Next onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} />
+    <Pagination.Last onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} />
+  </Pagination>
+)}
 
       <AddEditModalProjectsMain
         show={showFormModal}
