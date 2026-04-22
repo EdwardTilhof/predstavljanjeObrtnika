@@ -28,7 +28,7 @@ export const CooperatingPartnersData = [
     contact: "contact@techflow.com",
     regions: [osijekId],
     description: "Custom web applications built with modern technologies.",
-    importanceValue: 1
+    importanceValue: 2
   },
   {
     companyImage: `https://placehold.co/600x400?text=PixelPerfect+Studio`,
@@ -41,7 +41,7 @@ export const CooperatingPartnersData = [
     contact: "design@pixelperfect.io",
     regions: [osijekId],
     description: "Beautiful and intuitive user interfaces designed for optimal user experience.",
-    importanceValue: 1
+    importanceValue: 2
   },
   {
     companyImage: `https://placehold.co/600x400?text=SkyHigh+Cloud`,
@@ -54,7 +54,7 @@ export const CooperatingPartnersData = [
     contact: "support@skyhigh.com",
     regions: [osijekId],
     description: "Scalable and secure cloud infrastructure setup.",
-    importanceValue: 1
+    importanceValue: 2
   },
   {
     companyImage: `https://placehold.co/600x400?text=RankBoosters`,
@@ -67,6 +67,6 @@ export const CooperatingPartnersData = [
     contact: "hello@rankboosters.net",
     regions: [osijekId],
     description: "Strategic search engine optimization.",
-    importanceValue: 1
+    importanceValue: 2
   }
 ];

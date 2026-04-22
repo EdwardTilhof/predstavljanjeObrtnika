@@ -29,7 +29,7 @@ export const generatePartnerItems = (count) => {
       contact: contacts[Math.floor(Math.random() * contacts.length)],
       regions: randomRegions,
       description: "Automatically generated partner description for testing purposes.",
-      importanceValue: Math.floor(Math.random() * 5) + 1
+      importanceValue: Math.floor(Math.random() * 50) + 2
     };
   });
 

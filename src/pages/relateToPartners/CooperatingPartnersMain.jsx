@@ -165,6 +165,11 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
             </th>
             <th>Contact</th>
             {userRank >= ROLE_RANKS.GUEST && <th>Actions</th>}
+            {userRank >= ROLE_RANKS.MODERATOR &&
+              <th onClick={() => handleSort('importanceValue')} style={{ cursor: 'pointer' }}>
+                importanceValue {sortConfig.key === 'importanceValue' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+              </th>
+            }
           </tr>
         </thead>
         <tbody>
@@ -190,7 +195,7 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
                   ))}
                 </td>
                 <td>${partner.cost}</td>
-                <td>{partner.duration} mo</td>
+                <td>{partner.duration} wks</td>
                 <td>{partner.contact}</td>
                 <td>
                   <Stack direction="horizontal" gap={2}>
@@ -246,6 +251,9 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
                     )}
                   </Stack>
                 </td>
+                {userRank >= ROLE_RANKS.MODERATOR &&
+                <td>{partner.importanceValue}</td>
+          }
               </tr>
             );
           })}
