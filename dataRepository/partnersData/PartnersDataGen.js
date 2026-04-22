@@ -11,11 +11,15 @@ export const generatePartnerItems = (count) => {
 
   const data = Array.from({ length: count }, (_, i) => {
     const category = mainCategories[Math.floor(Math.random() * mainCategories.length)];
-    const randomRegions = Array.from({ length: Math.floor(Math.random() * 3) + 1 }, () => 
+    const randomRegions = Array.from({ length: Math.floor(Math.random() * 3) + 1 }, () =>
       regions[Math.floor(Math.random() * regions.length)].id
     );
 
+    const companyName = companies[Math.floor(Math.random() * companies.length)];
+    const dynamicImagePartner = `https://placehold.co/600x400?text=${companyName.replace(/\s/g, '+')}+|+${category.name.replace(/\s/g, '+')}`;
+
     return {
+      companyImage: dynamicImagePartner,
       id: createUniqueId('partner'),
       titles: [partnerNames[Math.floor(Math.random() * partnerNames.length)]],
       category: category.id,
@@ -24,7 +28,8 @@ export const generatePartnerItems = (count) => {
       duration: Math.floor(Math.random() * 24) + 1,
       contact: contacts[Math.floor(Math.random() * contacts.length)],
       regions: randomRegions,
-      description: "Automatically generated partner description for testing purposes."
+      description: "Automatically generated partner description for testing purposes.",
+      importanceValue: Math.floor(Math.random() * 5) + 1
     };
   });
 

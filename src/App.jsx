@@ -23,6 +23,10 @@ import CooperatingPartnersMain from "./pages/relateToPartners/CooperatingPartner
 import AddPartnerPage from "./pages/relateToPartners/addPartnerPage";
 import EditPartnerPage from "./pages/relateToPartners/editPartnerPage";
 
+// Advertisements
+import PartnersAdv from "./components/homePage/advertisement/PartnersAdv";
+import IndividualPartnerAdv from "./pages/relateToAdv/IndividualPartnerAdv"
+
 // Data editor imports
 import DataEditor from "./pages/DataEditor";
 import RegionManager from "../dataRepository/locations/RegionManager";
@@ -31,6 +35,7 @@ import AdminPage from "./pages/relateToAuth/AdminPage";
 import LoginPage from "./pages/relateToAuth/LoginPage";
 import RegistrationPage from "./pages/relateToAuth/RegisterPage";
 import { ROLE_RANKS } from "./Permissions/PermissonsConst";
+import RoleCheck from "./Permissions/RoleCheck";
 
 
 function App() {
@@ -62,27 +67,52 @@ function App() {
         <main>
           <Suspense fallback={<div className="text-center mt-5">Loading...</div>}>
             <Routes>
+              {/* Public Routes ("GUEST") */}
               <Route path={ROUTES.HOME} element={<Home />} />
-
-              {/* Our Projects Route */}
+            <Route path={ROUTES.PartnerDetailsAdv} element={<IndividualPartnerAdv />} />
+              // Our projects
               <Route path={ROUTES.OUR_PROJECTS} element={<OurProjectsMain />} />
               <Route path={ROUTES.PROJECT_GALLERY} element={<ProjectGallery />} />
-              {/* Added Partner Routes */}
+              
+              // Partners
               <Route path={ROUTES.CooperatingPartners} element={<CooperatingPartnersMain />} />
-              <Route path={ROUTES.newCooperatingPartner} element={<AddPartnerPage />} />
-              <Route path={ROUTES.EditPartner} element={<EditPartnerPage />} />
+              <Route path= {ROUTES.PartnersAdv} element={<PartnersAdv/>}/>
 
-              {/* Data Editor Route */}
-              <Route path={ROUTES.dataEditor} element={<DataEditor />} />
-              <Route path={ROUTES.regionEditor} element={<RegionManager />} />
-              <Route path={ROUTES.categoryEditor} element={<CategoryManager />} />
-
-              {/* Authentication Routes */}
+              // Authentication 
               <Route path={ROUTES.LOGIN} element={<LoginPage />} />
               <Route path={ROUTES.REGISTRATION} element={<RegistrationPage />} />
 
-              {/* Admin Route */}
-              <Route path={ROUTES.ADMIN} element={isAdmin ? <AdminPage /> : <LoginPage />} />
+              {/* Moderator Routes */}
+              
+              // Partner editors
+              <Route
+                path={ROUTES.newCooperatingPartner}
+                element={<RoleCheck minRole="MODERATOR"><AddPartnerPage /></RoleCheck>}
+              />
+              <Route
+                path={ROUTES.EditPartner}
+                element={<RoleCheck minRole="MODERATOR"><EditPartnerPage /></RoleCheck>}
+              />
+             
+              // Data editors
+              <Route
+                path={ROUTES.dataEditor}
+                element={<RoleCheck minRole="MODERATOR"><DataEditor /></RoleCheck>}
+              />
+              <Route
+                path={ROUTES.regionEditor}
+                element={<RoleCheck minRole="MODERATOR"><RegionManager /></RoleCheck>}
+              />
+              <Route
+                path={ROUTES.categoryEditor}
+                element={<RoleCheck minRole="MODERATOR"><CategoryManager /></RoleCheck>}
+              />
+
+              {/* Admin Route (Strict ADMIN rank) */}
+              <Route
+                path={ROUTES.ADMIN}
+                element={isAdmin ? <AdminPage /> : <LoginPage />}
+              />
             </Routes>
           </Suspense>
         </main>

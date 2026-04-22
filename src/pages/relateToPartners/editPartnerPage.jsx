@@ -38,7 +38,9 @@ const EditPartnerPage = () => {
             setFormData({
                 ...res.data,
                 titles: res.data.titles || (res.data.title ? [res.data.title] : [""]),
-                regions: res.data.regions || [""]
+                regions: res.data.regions || [""],
+                importanceValue: res.data.importanceValue || 1,
+                companyImage: res.data.companyImage || ""
             });
         } else {
             setError("Partner not found.");

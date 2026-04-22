@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Col, Form, Row, Stack, InputGroup, Alert } from "react-bootstrap";
+import { Button, Col, Form, Row, Stack, InputGroup, Alert, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { ROUTES } from "../../Constants";
 
@@ -13,6 +13,16 @@ const PartnerFormUI = ({
     regions,
     isEdit = false
 }) => {
+
+    const handleGeneratePlaceholder = () => {
+        const company = formData.company || "Company";
+        const categoryObj = categories.find(c => c.id === formData.category);
+        const categoryName = categoryObj ? categoryObj.name : "Category";
+        
+        const generatedUrl = `https://placehold.co/600x400?text=${company.replace(/\s/g, '+')}+|+${categoryName.replace(/\s/g, '+')}`;
+        
+        setFormData({ ...formData, companyImage: generatedUrl });
+    };
 
     /* Update array section */
     const updateArray = (key, index, value) => {
@@ -42,6 +52,43 @@ const PartnerFormUI = ({
             <h2 className="mb-4 text-primary">{title}</h2>
 
             {error && <Alert variant="danger">{error}</Alert>}
+
+            {/* Image Management Section */}
+            <Row className="mb-4 align-items-end">
+                <Col md={8}>
+                    <Form.Group>
+                        <Form.Label className="fw-bold">Company Logo / Image URL</Form.Label>
+                        <InputGroup>
+                            <Form.Control
+                                type="text"
+                                placeholder="https://example.com/image.png"
+                                value={formData.companyImage || ''}
+                                onChange={(e) => setFormData({ ...formData, companyImage: e.target.value })}
+                            />
+                            <Button 
+                                variant="outline-secondary" 
+                                onClick={handleGeneratePlaceholder}
+                                title="Generate placeholder based on name and category"
+                            >
+                                <i className="bi bi-magic me-2"></i>
+                                Generate
+                            </Button>
+                        </InputGroup>
+                        <Form.Text className="text-muted">
+                            Provide a company name and category click "Generate" to create a placeholder.
+                        </Form.Text>
+                    </Form.Group>
+                </Col>
+                <Col md={4} className="text-center">
+                    <div className="border rounded bg-light d-flex align-items-center justify-content-center" style={{ height: '100px', overflow: 'hidden' }}>
+                        {formData.companyImage ? (
+                            <Image src={formData.companyImage} alt="Preview" fluid style={{ maxHeight: '100%' }} />
+                        ) : (
+                            <span className="text-muted small">No Image Preview</span>
+                        )}
+                    </div>
+                </Col>
+            </Row>
 
             {/* Work Titles Section */}
             <Form.Group className="mb-4">
@@ -128,7 +175,7 @@ const PartnerFormUI = ({
             </Form.Group>
 
             <Row className="mb-4">
-                <Col md={4}>
+                <Col md={3}>
                     <Form.Label className="fw-bold">Cost (EUR)</Form.Label>
                     <Form.Control
                         type="number"
@@ -137,7 +184,7 @@ const PartnerFormUI = ({
                         onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
                     />
                 </Col>
-                <Col md={4}>
+                <Col md={3}>
                     <Form.Label className="fw-bold">Duration (Days)</Form.Label>
                     <Form.Control
                         type="number"
@@ -146,13 +193,23 @@ const PartnerFormUI = ({
                         onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
                     />
                 </Col>
-                <Col md={4}>
+                <Col md={3}>
                     <Form.Label className="fw-bold">Contact Info</Form.Label>
                     <Form.Control
                         type="text"
                         placeholder="email or phone"
                         value={formData.contact}
                         onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+                    />
+                </Col>
+                <Col md={3}>
+                    <Form.Label className="fw-bold">Importance</Form.Label>
+                    <Form.Control
+                        type="number"
+                        min="1"
+                        placeholder="1 (Lowest)"
+                        value={formData.importanceValue}
+                        onChange={(e) => setFormData({ ...formData, importanceValue: Number(e.target.value) })}
                     />
                 </Col>
             </Row>

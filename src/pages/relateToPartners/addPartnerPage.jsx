@@ -22,11 +22,13 @@ const AddPartnerPage = () => {
         titles: [""], 
         regions: [""], 
         category: "", 
-        company: "", 
+        company: "",
+        companyImage: "",
         cost: "", 
         duration: "", 
         contact: "", 
-        description: ""
+        description: "",
+        importanceValue: 1
     });
 
     const [availableCategories, setAvailableCategories] = useState([]);

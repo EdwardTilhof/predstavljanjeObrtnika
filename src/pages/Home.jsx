@@ -1,6 +1,7 @@
 import { Container } from 'react-bootstrap';
 import Hero from '../components/HomePage/Hero';
 import Features from '../components/HomePage/Features';
+import PartnersAdv from '../components/homePage/advertisement/PartnersAdv';
 
 export default function Home() {
   return (
@@ -8,6 +9,8 @@ export default function Home() {
       <Hero />
 
       <Features />
+
+      <PartnersAdv />
 
       <div className="py-5"></div>
     </Container>
