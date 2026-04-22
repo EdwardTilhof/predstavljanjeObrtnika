@@ -32,6 +32,7 @@ import LoginPage from "./pages/relateToAuth/LoginPage";
 import RegistrationPage from "./pages/relateToAuth/RegisterPage";
 import { ROLE_RANKS } from "./Permissions/PermissonsConst";
 
+
 function App() {
   const isDevelopment =
     window.location.hostname === "localhost" ||
