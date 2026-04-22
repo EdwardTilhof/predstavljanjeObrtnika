@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Table, Badge, Button, Stack, Pagination, Form, Row, Col } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { ROUTES } from "../../Constants";
+import { ROUTES } from "../../constants";
 import CooperatingPartnerLogic from "../../components/partners/CooperatingPartnersLogic";
 import { useDataSource } from "../../dataSource/DataSourceContext";
 import DeleteConfirmationModal from "../../crossPageComponents/modal/DeleteConfirmationModal";
@@ -164,7 +164,7 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
               Duration {sortConfig.key === 'duration' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
             </th>
             <th>Contact</th>
-            {userRank >= ROLE_RANKS.USER && <th>Actions</th>}
+            {userRank >= ROLE_RANKS.GUEST && <th>Actions</th>}
           </tr>
         </thead>
         <tbody>
@@ -229,8 +229,7 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
                         <Button
                           variant="outline-primary"
                           size="sm"
-                          onClick={() => navigate(`${ROUTES.editCooperatingPartner}/${partner.id}`)}
-                        >
+                          onClick={() => navigate(ROUTES.EditPartner.replace(':id', partner.id))}                        >
                           <i className="bi bi-pencil"></i>
                         </Button>
                         <Button

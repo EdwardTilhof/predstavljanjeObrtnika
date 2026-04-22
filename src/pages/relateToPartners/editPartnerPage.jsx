@@ -33,12 +33,10 @@ const EditPartnerPage = () => {
         setDynamicCategories(mergedCats);
         setDynamicRegions(mergedRegs);
 
-        // Fetch using explicit 'localStorage' string to stay consistent with the app's standard flow
         const res = await CooperatingPartnerLogic.getById(id, 'localStorage', partners);
         if (res.success) {
             setFormData({
                 ...res.data,
-                // Ensure array fields exist
                 titles: res.data.titles || (res.data.title ? [res.data.title] : [""]),
                 regions: res.data.regions || [""]
             });
@@ -57,7 +55,6 @@ const EditPartnerPage = () => {
         const result = await CooperatingPartnerLogic.update(id, formData, 'localStorage');
         
         if (result.success) {
-            // Because update logic returns the whole list, we push that directly into global state
             setPartners(result.data); 
             window.dispatchEvent(new Event("partnersUpdated"));
             navigate(ROUTES.CooperatingPartners);

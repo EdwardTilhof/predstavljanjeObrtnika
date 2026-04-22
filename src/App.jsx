@@ -9,7 +9,7 @@ import { Route, Routes } from "react-router-dom";
 import { DataSourceProvider } from "./dataSource/DataSourceContext";
 import NavBarMain from './crossPageComponents/navBar/NavBarMain';
 import AboutUsFooter from "./crossPageComponents/footers/AboutUsFooter";
-import { ROUTES } from "./Constants";
+import { ROUTES } from "./constants";
 
 //Home page
 import Home from "./pages/Home";
@@ -70,7 +70,7 @@ function App() {
               {/* Added Partner Routes */}
               <Route path={ROUTES.CooperatingPartners} element={<CooperatingPartnersMain />} />
               <Route path={ROUTES.newCooperatingPartner} element={<AddPartnerPage />} />
-              <Route path={ROUTES.changeCooperatingPartner} element={<EditPartnerPage />} />
+              <Route path={ROUTES.EditPartner} element={<EditPartnerPage />} />
 
               {/* Data Editor Route */}
               <Route path={ROUTES.dataEditor} element={<DataEditor />} />
