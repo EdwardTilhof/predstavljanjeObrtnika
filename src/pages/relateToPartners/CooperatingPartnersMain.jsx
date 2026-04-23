@@ -147,26 +147,41 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
       <Table hover responsive className="shadow-sm border">
         <thead className="table-light">
           <tr>
-            <th onClick={() => handleSort('original')} style={{ cursor: 'pointer' }}>
-              Index {sortConfig.key === 'original' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-            </th>
-            <th onClick={() => handleSort('company')} style={{ cursor: 'pointer' }}>
+
+            <th title={
+              sortConfig.key === 'original'
+                ? (sortConfig.direction === 'asc' ? 'Ascending' : 'Descending')
+                : 'Click to sort'
+            }
+              onClick={() => handleSort('company')} style={{ cursor: 'pointer' }}>
               Company {sortConfig.key === 'company' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
             </th>
-            <th onClick={() => handleSort('category')} style={{ cursor: 'pointer' }}>
+            <th title={
+              sortConfig.key === 'original'
+                ? (sortConfig.direction === 'asc' ? 'Ascending' : 'Descending')
+                : 'Click to sort'
+            }
+              onClick={() => handleSort('category')} style={{ cursor: 'pointer' }}>
               Category {sortConfig.key === 'category' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
             </th>
             <th>Regions</th>
-            <th onClick={() => handleSort('cost')} style={{ cursor: 'pointer' }}>
-              Cost {sortConfig.key === 'cost' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-            </th>
-            <th onClick={() => handleSort('duration')} style={{ cursor: 'pointer' }}>
-              Duration {sortConfig.key === 'duration' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-            </th>
             <th>Contact</th>
-            {userRank >= ROLE_RANKS.GUEST && <th>Actions</th>}
+            {userRank >= ROLE_RANKS.GUEST &&
+              <th title={
+                sortConfig.key === 'original'
+                  ? (sortConfig.direction === 'asc' ? 'Ascending' : 'Descending')
+                  : 'Click to sort'
+              }
+                onClick={() => handleSort('original')} style={{ cursor: 'pointer' }}>
+                Action {sortConfig.key === 'original' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+              </th>}
             {userRank >= ROLE_RANKS.MODERATOR &&
-              <th onClick={() => handleSort('importanceValue')} style={{ cursor: 'pointer' }}>
+              <th title={
+                sortConfig.key === 'original'
+                  ? (sortConfig.direction === 'asc' ? 'Ascending' : 'Descending')
+                  : 'Click to sort'
+              }
+                onClick={() => handleSort('importanceValue')} style={{ cursor: 'pointer' }}>
                 importanceValue {sortConfig.key === 'importanceValue' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
               </th>
             }
@@ -186,7 +201,6 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
 
             return (
               <tr key={partner.id}>
-                <td>{partners.indexOf(partner) + 1}</td>
                 <td>{partner.company}</td>
                 <td>{categoryName}</td>
                 <td>
@@ -194,8 +208,6 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
                     <Badge key={i} bg="info" className="me-1">{name}</Badge>
                   ))}
                 </td>
-                <td>${partner.cost}</td>
-                <td>{partner.duration} wks</td>
                 <td>{partner.contact}</td>
                 <td>
                   <Stack direction="horizontal" gap={2}>
@@ -252,80 +264,84 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
                   </Stack>
                 </td>
                 {userRank >= ROLE_RANKS.MODERATOR &&
-                <td>{partner.importanceValue}</td>
-          }
+                  <td>{partner.importanceValue}</td>
+                }
               </tr>
             );
           })}
         </tbody>
-      </Table>
+      </Table >
 
       {/* Pagination Controls */}
-      {totalPages > 1 && (
-        <Pagination className="justify-content-center mt-4">
-          <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1} />
-          <Pagination.Prev onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} />
+      {
+        totalPages > 1 && (
+          <Pagination className="justify-content-center mt-4">
+            <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1} />
+            <Pagination.Prev onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} />
 
-          {(() => {
-            const items = [];
-            const leftSide = 1;
-            const rightSide = totalPages;
+            {(() => {
+              const items = [];
+              const leftSide = 1;
+              const rightSide = totalPages;
 
-            // Determine the range of pages to show around the current page
-            // Show 1 neighbor on each side of the current page
-            let startPage = Math.max(1, currentPage - 1);
-            let endPage = Math.min(totalPages, currentPage + 1);
+              // Determine the range of pages to show around the current page
+              // Show 1 neighbor on each side of the current page
+              let startPage = Math.max(1, currentPage - 1);
+              let endPage = Math.min(totalPages, currentPage + 1);
 
-            // Always show the first page
-            items.push(
-              <Pagination.Item key={1} active={1 === currentPage} onClick={() => setCurrentPage(1)}>
-                1
-              </Pagination.Item>
-            );
+              // Always show the first page
+              items.push(
+                <Pagination.Item key={1} active={1 === currentPage} onClick={() => setCurrentPage(1)}>
+                  1
+                </Pagination.Item>
+              );
 
-            // Add ellipsis if current range is far from the start
-            if (startPage > 2) {
-              items.push(<Pagination.Ellipsis key="start-ellipsis" disabled />);
-            }
+              // Add ellipsis if current range is far from the start
+              if (startPage > 2) {
+                items.push(<Pagination.Ellipsis key="start-ellipsis" disabled />);
+              }
 
-            // Add pages in the middle range
-            for (let i = startPage; i <= endPage; i++) {
-              if (i !== 1 && i !== totalPages) {
+              // Add pages in the middle range
+              for (let i = startPage; i <= endPage; i++) {
+                if (i !== 1 && i !== totalPages) {
+                  items.push(
+                    <Pagination.Item key={i} active={i === currentPage} onClick={() => setCurrentPage(i)}>
+                      {i}
+                    </Pagination.Item>
+                  );
+                }
+              }
+
+              // Add ellipsis if current range is far from the end
+              if (endPage < totalPages - 1) {
+                items.push(<Pagination.Ellipsis key="end-ellipsis" disabled />);
+              }
+
+              // Always show the last page
+              if (totalPages > 1) {
                 items.push(
-                  <Pagination.Item key={i} active={i === currentPage} onClick={() => setCurrentPage(i)}>
-                    {i}
+                  <Pagination.Item key={totalPages} active={totalPages === currentPage} onClick={() => setCurrentPage(totalPages)}>
+                    {totalPages}
                   </Pagination.Item>
                 );
               }
-            }
 
-            // Add ellipsis if current range is far from the end
-            if (endPage < totalPages - 1) {
-              items.push(<Pagination.Ellipsis key="end-ellipsis" disabled />);
-            }
+              return items;
+            })()}
 
-            // Always show the last page
-            if (totalPages > 1) {
-              items.push(
-                <Pagination.Item key={totalPages} active={totalPages === currentPage} onClick={() => setCurrentPage(totalPages)}>
-                  {totalPages}
-                </Pagination.Item>
-              );
-            }
+            <Pagination.Next onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} />
+            <Pagination.Last onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} />
+          </Pagination>
+        )
+      }
 
-            return items;
-          })()}
-
-          <Pagination.Next onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} />
-          <Pagination.Last onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} />
-        </Pagination>
-      )}
-
-      {userRank >= ROLE_RANKS.MODERATOR && (
-        <Button variant="primary" className="mt-3" onClick={() => navigate(ROUTES.newCooperatingPartner)}>
-          Add New Partner
-        </Button>
-      )}
+      {
+        userRank >= ROLE_RANKS.MODERATOR && (
+          <Button variant="primary" className="mt-3" onClick={() => navigate(ROUTES.newCooperatingPartner)}>
+            Add New Partner
+          </Button>
+        )
+      }
 
       <DeleteConfirmationModal
         show={showModal}
