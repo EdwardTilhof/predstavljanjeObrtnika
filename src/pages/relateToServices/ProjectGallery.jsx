@@ -18,15 +18,12 @@ const ExpandableDescription = ({ text }) => {
 
     return (
         <div style={{ minHeight: isExpanded ? 'auto' : collapsedHeight }}>
-            <Card.Text className="text-muted mb-1" style={{ fontSize: '0.75rem', lineHeight: '1.1rem' }}>
-                <span style={isExpanded ? {} : {
-                    display: '-webkit-box',
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden'
-                }}>
-                    {text}
-                </span>
+            <Card.Text className="text-muted mb-1" 
+            style={{ fontSize: '0.75rem', lineHeight: '1.1rem' }}>
+                <span
+                    style={isExpanded ? {} : { /* ... clipping styles */ }}
+                    dangerouslySetInnerHTML={{ __html: text || "No description" }}
+                />
             </Card.Text>
             {text.length > 60 && (
                 <Button variant="link" className="p-0 m-0 text-decoration-none extra-small-btn" onClick={() => setIsExpanded(!isExpanded)}>
@@ -160,65 +157,65 @@ const ProjectGallery = () => {
             </Row>
 
             {/* Pagination Controls */}
-{totalPages > 1 && (
-  <Pagination className="justify-content-center mt-4">
-    <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1} />
-    <Pagination.Prev onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} />
+            {totalPages > 1 && (
+                <Pagination className="justify-content-center mt-4">
+                    <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1} />
+                    <Pagination.Prev onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} />
 
-    {(() => {
-      const items = [];
-      const leftSide = 1;
-      const rightSide = totalPages;
-      
-      // Determine the range of pages to show around the current page
-      // Show 1 neighbor on each side of the current page
-      let startPage = Math.max(1, currentPage - 1);
-      let endPage = Math.min(totalPages, currentPage + 1);
+                    {(() => {
+                        const items = [];
+                        const leftSide = 1;
+                        const rightSide = totalPages;
 
-      // Always show the first page
-      items.push(
-        <Pagination.Item key={1} active={1 === currentPage} onClick={() => setCurrentPage(1)}>
-          1
-        </Pagination.Item>
-      );
+                        // Determine the range of pages to show around the current page
+                        // Show 1 neighbor on each side of the current page
+                        let startPage = Math.max(1, currentPage - 1);
+                        let endPage = Math.min(totalPages, currentPage + 1);
 
-      // Add ellipsis if current range is far from the start
-      if (startPage > 2) {
-        items.push(<Pagination.Ellipsis key="start-ellipsis" disabled />);
-      }
+                        // Always show the first page
+                        items.push(
+                            <Pagination.Item key={1} active={1 === currentPage} onClick={() => setCurrentPage(1)}>
+                                1
+                            </Pagination.Item>
+                        );
 
-      // Add pages in the middle range
-      for (let i = startPage; i <= endPage; i++) {
-        if (i !== 1 && i !== totalPages) {
-          items.push(
-            <Pagination.Item key={i} active={i === currentPage} onClick={() => setCurrentPage(i)}>
-              {i}
-            </Pagination.Item>
-          );
-        }
-      }
+                        // Add ellipsis if current range is far from the start
+                        if (startPage > 2) {
+                            items.push(<Pagination.Ellipsis key="start-ellipsis" disabled />);
+                        }
 
-      // Add ellipsis if current range is far from the end
-      if (endPage < totalPages - 1) {
-        items.push(<Pagination.Ellipsis key="end-ellipsis" disabled />);
-      }
+                        // Add pages in the middle range
+                        for (let i = startPage; i <= endPage; i++) {
+                            if (i !== 1 && i !== totalPages) {
+                                items.push(
+                                    <Pagination.Item key={i} active={i === currentPage} onClick={() => setCurrentPage(i)}>
+                                        {i}
+                                    </Pagination.Item>
+                                );
+                            }
+                        }
 
-      // Always show the last page
-      if (totalPages > 1) {
-        items.push(
-          <Pagination.Item key={totalPages} active={totalPages === currentPage} onClick={() => setCurrentPage(totalPages)}>
-            {totalPages}
-          </Pagination.Item>
-        );
-      }
+                        // Add ellipsis if current range is far from the end
+                        if (endPage < totalPages - 1) {
+                            items.push(<Pagination.Ellipsis key="end-ellipsis" disabled />);
+                        }
 
-      return items;
-    })()}
+                        // Always show the last page
+                        if (totalPages > 1) {
+                            items.push(
+                                <Pagination.Item key={totalPages} active={totalPages === currentPage} onClick={() => setCurrentPage(totalPages)}>
+                                    {totalPages}
+                                </Pagination.Item>
+                            );
+                        }
 
-    <Pagination.Next onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} />
-    <Pagination.Last onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} />
-  </Pagination>
-)}
+                        return items;
+                    })()}
+
+                    <Pagination.Next onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} />
+                    <Pagination.Last onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} />
+                </Pagination>
+            )}
 
             <AddEditModalProjectGallery show={showFormModal} onHide={() => setShowFormModal(false)} onSave={handleSave} data={currentImage} setData={setCurrentImage} editMode={editMode} title="Gallery Image" />
             <DeleteConfirmationModal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} onConfirm={confirmDelete} itemName="this image" />

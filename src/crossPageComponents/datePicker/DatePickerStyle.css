@@ -1,0 +1,68 @@
+.custom-date-picker {
+    border: 2px solid #0d6efd; /* Use the Bootstrap primary blue */
+    border-radius: 8px;
+    padding: 10px;
+    color: #495057;
+    background-color: #ffffff;
+    transition: border-color 0.15s ease-in-out;
+}
+
+.custom-date-picker:focus {
+    outline: none;
+    border-color: #0a58ca;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(0.5) sepia(1) saturate(5) hue-rotate(175deg); /* Turns the icon blue */
+    padding: 5px;
+}
+
+::-webkit-datetime-edit-text, 
+::-webkit-datetime-edit-month-field, 
+::-webkit-datetime-edit-day-field, 
+::-webkit-datetime-edit-year-field {
+    color: #0d6efd;
+    font-weight: bold;
+}
+
+/* calendar from date picker */
+
+/* Change the overall popup background and border */
+.custom-calendar-popup {
+    border: 1px solid #0d6efd !important;
+    border-radius: 10px !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Change the header color (Month/Year area) */
+.react-datepicker__header {
+    background-color: #0d6efd !important;
+    border-bottom: none !important;
+    border-top-left-radius: 9px !important;
+    border-top-right-radius: 9px !important;
+}
+
+.react-datepicker__current-month, 
+.react-datepicker__day-name {
+    color: white !important;
+}
+
+/* Style the individual days */
+.react-datepicker__day {
+    color: #333;
+}
+
+/* Style the selected day */
+.react-datepicker__day--selected {
+    background-color: #0d6efd !important;
+    border-radius: 50% !important;
+}
+
+/* Style hover effects */
+.react-datepicker__day:hover {
+    background-color: #e9ecef !important;
+    border-radius: 50% !important;
+}

@@ -1,8 +1,23 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import { regions } from "../../../../dataRepository/locations/RegionsData";
+import RichTextEditorQuill from "../../../crossPageComponents/txtEditors/txtEditorQuill/EditorQuill";
+// date picker and calendar
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
+
 
 const AddEditModalProjectsMain = ({ show, onHide, onSave, data, setData, editMode }) => {
+    
+const dateInputRef = useRef(null);
+
+const handleInputClick = () => {
+    if (dateInputRef.current) {
+        dateInputRef.current.showPicker();
+    }
+};
+
     return (
         <Modal show={show} onHide={onHide} centered size="lg">
             <Modal.Header closeButton>
@@ -37,11 +52,10 @@ const AddEditModalProjectsMain = ({ show, onHide, onSave, data, setData, editMod
 
                     <Form.Group className="mb-3">
                         <Form.Label>Description (Short Text)</Form.Label>
-                        <Form.Control
-                            as="textarea"
+                        <RichTextEditorQuill
                             rows={2}
                             value={data.text || ''}
-                            onChange={(e) => setData({ ...data, text: e.target.value })}
+                            onChange={(html) => setData({ ...data, text: html })}
                             placeholder="Briefly describe the project..."
                         />
                     </Form.Group>
@@ -67,10 +81,13 @@ const AddEditModalProjectsMain = ({ show, onHide, onSave, data, setData, editMod
                         <Col md={4}>
                             <Form.Group className="mb-3">
                                 <Form.Label>Date</Form.Label>
-                                <Form.Control
-                                    type="date"
-                                    value={data.date || ''}
-                                    onChange={(e) => setData({ ...data, date: e.target.value })}
+                                <DatePicker
+                                    selected={data.date ? new Date(data.date) : null}
+                                    onChange={(date) => setData({ ...data, date: date.toISOString().split('T')[0] })}
+                                    className="form-control" 
+                                    dateFormat="yyyy-MM-dd"
+                                    placeholderText="Select a date"
+                                    calendarClassName="custom-calendar-popup" 
                                 />
                             </Form.Group>
                         </Col>

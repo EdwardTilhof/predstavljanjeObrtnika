@@ -12,9 +12,14 @@ npm install bootstrap-icons
 
 npm install uuid
 
+npm install react-datepicker
+
 
 // if animation comes from lottie files
 npm install @lottiefiles/dotlottie-react
 
 // for pdf rendering instal the following
 npm install @react-pdf/renderer --save
+
+// text editor
+npm install quill@2.0.3

@@ -1,6 +1,7 @@
 import React from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { PLACEHOLDER_IMAGE } from "../../../Constants";
+import RichTextEditorQuill from "../../../crossPageComponents/txtEditors/txtEditorQuill/EditorQuill";
 
 const AddEditModalProjectGallery = ({ show, onHide, onSave, data, setData, editMode, title }) => {
     return (
@@ -39,11 +40,10 @@ const AddEditModalProjectGallery = ({ show, onHide, onSave, data, setData, editM
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>Description</Form.Label>
-                        <Form.Control
-                            as="textarea"
+                        <RichTextEditorQuill
                             rows={3}
                             value={data.description || ''}
-                            onChange={(e) => setData({ ...data, description: e.target.value })}
+                            onChange={(html) => setData({ ...data, description: html })}
                             placeholder="Enter image description"
                         />
                     </Form.Group>

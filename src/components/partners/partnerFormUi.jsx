@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Col, Form, Row, Stack, InputGroup, Alert, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { ROUTES } from "../../Constants";
+import RichTextEditorQuill from '../../crossPageComponents/txtEditors/txtEditorQuill/EditorQuill';
 
 const PartnerFormUI = ({
     title,
@@ -18,9 +19,9 @@ const PartnerFormUI = ({
         const company = formData.company || "Company";
         const categoryObj = categories.find(c => c.id === formData.category);
         const categoryName = categoryObj ? categoryObj.name : "Category";
-        
+
         const generatedUrl = `https://placehold.co/600x400?text=${company.replace(/\s/g, '+')}+|+${categoryName.replace(/\s/g, '+')}`;
-        
+
         setFormData({ ...formData, companyImage: generatedUrl });
     };
 
@@ -47,7 +48,7 @@ const PartnerFormUI = ({
         setFormData({ ...formData, [key]: newArray.length ? newArray : [""] });
     };
 
-    return(
+    return (
         <Form onSubmit={onSubmit} className="shadow p-4 rounded custom-card border bg-white">
             <h2 className="mb-4 text-primary">{title}</h2>
 
@@ -65,8 +66,8 @@ const PartnerFormUI = ({
                                 value={formData.companyImage || ''}
                                 onChange={(e) => setFormData({ ...formData, companyImage: e.target.value })}
                             />
-                            <Button 
-                                variant="outline-secondary" 
+                            <Button
+                                variant="outline-secondary"
                                 onClick={handleGeneratePlaceholder}
                                 title="Generate placeholder based on name and category"
                             >
@@ -216,11 +217,10 @@ const PartnerFormUI = ({
 
             <Form.Group className="mb-4">
                 <Form.Label className="fw-bold">Project Description</Form.Label>
-                <Form.Control
-                    as="textarea"
-                    rows={4}
+                <RichTextEditorQuill
                     value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    onChange={(html) => setFormData({ ...formData, description: html })}
+                    rows={4}
                 />
             </Form.Group>
 

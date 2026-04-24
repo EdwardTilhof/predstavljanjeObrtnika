@@ -3,6 +3,7 @@ import './App.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './colorsAndDesign/OurProjects.css';
 import './colorsAndDesign/ColorsStyle.css';
+import './crossPageComponents/datePicker/DatePickerStyle.css'
 
 import { Container } from "react-bootstrap";
 import { Route, Routes } from "react-router-dom";
