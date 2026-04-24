@@ -16,6 +16,7 @@ const RegionManager = () => {
     // Modal States
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [itemToDelete, setItemToDelete] = useState(null);
+    const [usageList, setUsageList] = useState([]);
 
     useEffect(() => {
         const saved = localStorage.getItem('globalRegions');
@@ -47,12 +48,24 @@ const RegionManager = () => {
         setEditId(null);
     };
 
-    const handleDeleteClick = (region) => {
-        setItemToDelete(region);
-        setShowDeleteModal(true);
-    };
+   const handleDeleteClick = (reg) => {
+    setItemToDelete(reg);
+    
+    const savedPartners = JSON.parse(localStorage.getItem('my_app_CooperatingPartners') || '[]');
+    const savedProjects = JSON.parse(localStorage.getItem('projects') || '[]');
 
-    // Corrected logic: Filters the list and updates storage
+    const partnersUsing = savedPartners
+        .filter(p => p.regions && p.regions.includes(reg.id))
+        .map(p => `Partner: ${p.company}`);
+
+    const projectsUsing = savedProjects
+        .filter(proj => proj.location === reg.name)
+        .map(proj => `Project: ${proj.title}`);
+
+    setUsageList([...partnersUsing, ...projectsUsing]);
+    setShowDeleteModal(true);
+};
+
     const handleConfirmDelete = () => {
         if (itemToDelete) {
             const updated = regions.filter(r => r.id !== itemToDelete.id);
@@ -126,12 +139,12 @@ const RegionManager = () => {
                 </tbody>
             </Table>
 
-            {/* Added the Modal component here */}
             <DeleteConfirmationModal
                 show={showDeleteModal}
                 onHide={() => setShowDeleteModal(false)}
                 onConfirm={handleConfirmDelete}
                 itemName={itemToDelete?.name}
+                usageList={usageList}
             />
         </div>
     );

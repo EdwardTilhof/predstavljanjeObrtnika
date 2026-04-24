@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Form, InputGroup } from 'react-bootstrap';
 import { createUniqueId } from "../../../dataRepository/UUIDGenerator";
 import { mainCategories as defaultCategories } from "../../../dataRepository/partnersData/PartnersData";
-import DeleteConfirmationModal from "../../crossPageComponents/modal/DeleteConfirmationModal"; 
+import DeleteConfirmationModal from "../../crossPageComponents/modal/DeleteConfirmationModal";
 
 const CategoryManager = () => {
     const [categories, setCategories] = useState([]);
@@ -12,6 +12,7 @@ const CategoryManager = () => {
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [targetItem, setTargetItem] = useState(null);
+    const [usageList, setUsageList] = useState([]);
 
     useEffect(() => {
         const saved = localStorage.getItem('globalCategories');
@@ -43,10 +44,18 @@ const CategoryManager = () => {
         setEditId(null);
     };
 
-    const handleDeleteClick = (item) => {
-        setTargetItem(item);   
-        setShowDeleteModal(true); 
-    };
+    const handleDeleteClick = (cat) => {
+    setTargetItem(cat);
+    
+    const savedPartners = JSON.parse(localStorage.getItem('my_app_CooperatingPartners') || '[]');
+    
+    const usingItems = savedPartners
+        .filter(p => p.category === cat.id)
+        .map(p => `Partner: ${p.company}`);
+
+    setUsageList(usingItems);
+    setShowDeleteModal(true);
+};
 
     const handleConfirmDelete = () => {
         if (targetItem) {
@@ -65,8 +74,8 @@ const CategoryManager = () => {
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
                 />
-                <Button variant="success" 
-                onClick={handleAdd}>Add</Button>
+                <Button variant="success"
+                    onClick={handleAdd}>Add</Button>
             </InputGroup>
 
             <Table hover responsive className="align-middle">
@@ -93,23 +102,23 @@ const CategoryManager = () => {
                             <td className="text-end">
                                 {editId === cat.id ? (
                                     <>
-                                        <Button variant="primary" size="sm" className="me-2" 
-                                        onClick={handleSaveEdit}>
+                                        <Button variant="primary" size="sm" className="me-2"
+                                            onClick={handleSaveEdit}>
                                             <i className="bi bi-check-lg"></i>
                                         </Button>
-                                        <Button variant="secondary" size="sm" 
-                                        onClick={() => setEditId(null)}>
+                                        <Button variant="secondary" size="sm"
+                                            onClick={() => setEditId(null)}>
                                             <i className="bi bi-x-lg"></i>
                                         </Button>
                                     </>
                                 ) : (
                                     <>
-                                        <Button variant="outline-primary" size="sm" className="me-2" 
-                                        onClick={() => startEdit(cat)}>
+                                        <Button variant="outline-primary" size="sm" className="me-2"
+                                            onClick={() => startEdit(cat)}>
                                             <i className="bi bi-pencil"></i>
                                         </Button>
-                                        <Button variant="outline-danger" size="sm" 
-                                        onClick={() => handleDeleteClick(cat)}>
+                                        <Button variant="outline-danger" size="sm"
+                                            onClick={() => handleDeleteClick(cat)}>
                                             <i className="bi bi-trash"></i>
                                         </Button>
                                     </>
@@ -120,11 +129,12 @@ const CategoryManager = () => {
                 </tbody>
             </Table>
 
-            <DeleteConfirmationModal 
+            <DeleteConfirmationModal
                 show={showDeleteModal}
                 onHide={() => setShowDeleteModal(false)}
                 onConfirm={handleConfirmDelete}
                 itemName={targetItem?.name}
+                usageList={usageList}
             />
         </div>
     );
