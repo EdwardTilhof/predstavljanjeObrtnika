@@ -84,7 +84,7 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
       let aVal = a[sortConfig.key] || "";
       let bVal = b[sortConfig.key] || "";
 
-      // Specific logic for sorting by Category Name instead of ID
+      // Specific logic for sorting by Category Name
       if (sortConfig.key === 'category') {
         aVal = allCategories.find(c => String(c.id) === String(a.category))?.name || "";
         bVal = allCategories.find(c => String(c.id) === String(b.category))?.name || "";
@@ -183,12 +183,10 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
         </thead>
         <tbody>
           {paginatedData.map((partner) => {
-            // 1. Resolve Category Name (converting ID to String)
             const categoryName = allCategories.find(
               (cat) => String(cat.id) === String(partner.category)
             )?.name || "N/A";
 
-            // 2. Resolve Region Names (converting array of IDs to array of Strings)
             const regionNames = partner.regions
               ?.map((regId) => allRegions.find((r) => String(r.id) === String(regId))?.name)
               .filter(Boolean) || ["Global"];
@@ -278,24 +276,19 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
               const leftSide = 1;
               const rightSide = totalPages;
 
-              // Determine the range of pages to show around the current page
-              // Show 1 neighbor on each side of the current page
               let startPage = Math.max(1, currentPage - 1);
               let endPage = Math.min(totalPages, currentPage + 1);
 
-              // Always show the first page
               items.push(
                 <Pagination.Item key={1} active={1 === currentPage} onClick={() => setCurrentPage(1)}>
                   1
                 </Pagination.Item>
               );
 
-              // Add ellipsis if current range is far from the start
               if (startPage > 2) {
                 items.push(<Pagination.Ellipsis key="start-ellipsis" disabled />);
               }
 
-              // Add pages in the middle range
               for (let i = startPage; i <= endPage; i++) {
                 if (i !== 1 && i !== totalPages) {
                   items.push(
@@ -306,12 +299,10 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
                 }
               }
 
-              // Add ellipsis if current range is far from the end
               if (endPage < totalPages - 1) {
                 items.push(<Pagination.Ellipsis key="end-ellipsis" disabled />);
               }
 
-              // Always show the last page
               if (totalPages > 1) {
                 items.push(
                   <Pagination.Item key={totalPages} active={totalPages === currentPage} onClick={() => setCurrentPage(totalPages)}>

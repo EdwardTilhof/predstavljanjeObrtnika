@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import RichTextEditorQuill from "../../crossPageComponents/txtEditors/txtEditorQuill/EditorQuill";
-// date picker and calendar
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import dataFacade from "../../services/dataFacade";

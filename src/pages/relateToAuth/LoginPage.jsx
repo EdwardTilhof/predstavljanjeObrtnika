@@ -9,7 +9,7 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoginError(''); // Clear previous errors
+    setLoginError(''); 
     const success = await loginUser(username.trim(), password);
     if (success) {
       window.location.href = "/"; 

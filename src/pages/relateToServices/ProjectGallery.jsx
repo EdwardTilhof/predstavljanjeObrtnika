@@ -49,11 +49,9 @@ const ProjectGallery = () => {
     const userRank = ROLE_RANKS[currentRole] || 0;
 
     const loadData = async () => {
-        // 1. Load Images via Facade
         const galleryData = await dataFacade.getGallery(id);
         setImages(galleryData);
 
-        // 2. Load Project Title via Facade
         const allProjects = await dataFacade.getProjects();
         const foundProject = allProjects.find(p => String(p.id) === String(id));
         setProjectTitle(foundProject ? foundProject.title : "Project Gallery");
@@ -149,24 +147,19 @@ const ProjectGallery = () => {
                         const leftSide = 1;
                         const rightSide = totalPages;
 
-                        // Determine the range of pages to show around the current page
-                        // Show 1 neighbor on each side of the current page
                         let startPage = Math.max(1, currentPage - 1);
                         let endPage = Math.min(totalPages, currentPage + 1);
 
-                        // Always show the first page
                         items.push(
                             <Pagination.Item key={1} active={1 === currentPage} onClick={() => setCurrentPage(1)}>
                                 1
                             </Pagination.Item>
                         );
 
-                        // Add ellipsis if current range is far from the start
                         if (startPage > 2) {
                             items.push(<Pagination.Ellipsis key="start-ellipsis" disabled />);
                         }
 
-                        // Add pages in the middle range
                         for (let i = startPage; i <= endPage; i++) {
                             if (i !== 1 && i !== totalPages) {
                                 items.push(
@@ -177,12 +170,10 @@ const ProjectGallery = () => {
                             }
                         }
 
-                        // Add ellipsis if current range is far from the end
                         if (endPage < totalPages - 1) {
                             items.push(<Pagination.Ellipsis key="end-ellipsis" disabled />);
                         }
 
-                        // Always show the last page
                         if (totalPages > 1) {
                             items.push(
                                 <Pagination.Item key={totalPages} active={totalPages === currentPage} onClick={() => setCurrentPage(totalPages)}>

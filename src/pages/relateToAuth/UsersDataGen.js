@@ -2,8 +2,8 @@
 const generateRandomUser = (index) => ({
     id: `user-${index}`,
     username: `user${index}`,
-    password: `pass${index}`, // This will be hashed during initialization
-    role: index % 5 === 0 ? 'MODERATOR' : 'USER', // Every 5th user is a MODERATOR
+    password: `pass${index}`, 
+    role: index % 5 === 0 ? 'MODERATOR' : 'USER',
 });
 
 export const MOCK_USERS_DATA = {

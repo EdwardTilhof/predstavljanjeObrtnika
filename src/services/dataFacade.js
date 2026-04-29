@@ -1,15 +1,12 @@
-// src/services/dataFacade.js
 
 import { dataProvider } from '../dataRepository';
 
-// Define keys for different data entities
 export const DATA_KEYS = {
     PARTNERS: 'partners',
     REGIONS: 'regions',
     CATEGORIES: 'categories',
     PROJECTS: 'projects',
-    USERS: 'users', // New: Key for user data
-    // Add other data keys as needed
+    USERS: 'users', 
 };
 
 const dataFacade = {

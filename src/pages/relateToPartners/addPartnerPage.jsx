@@ -2,12 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-// 1. constants and components:
 import { ROUTES } from "../../constants"; 
 import PartnerFormUI from "../../components/partners/partnerFormUi"; 
 import CooperatingPartnerLogic from "../../components/partners/CooperatingPartnersLogic";
 
-// 2. DataRepository
 import dataFacade from "../../services/dataFacade";
 
 

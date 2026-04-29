@@ -1,4 +1,3 @@
-// src/dataRepository/localStorage/localStorageProvider.js
 
 const getItems = (key) => {
     try {
@@ -19,7 +18,6 @@ const saveItems = (key, items) => {
 };
 
 const localStorageProvider = {
-    // Generic CRUD operations
     getAll: (key) => {
         return Promise.resolve(getItems(key));
     },

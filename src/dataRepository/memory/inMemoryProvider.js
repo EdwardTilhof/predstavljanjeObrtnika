@@ -1,10 +1,7 @@
-// src/dataRepository/memory/inMemoryProvider.js
 
-// A simple in-memory store
 const inMemoryStore = {};
 
 const inMemoryProvider = {
-    // Generic CRUD operations
     getAll: (key) => {
         inMemoryStore[key] = inMemoryStore[key] || [];
         return Promise.resolve([...inMemoryStore[key]]);

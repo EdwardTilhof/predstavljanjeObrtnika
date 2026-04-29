@@ -14,7 +14,6 @@ const EditPartnerPage = () => {
     const [error, setError] = useState("");
     const [formData, setFormData] = useState(null);
 
-    // Dynamic Lists for the Form Dropdowns
     const [dynamicCategories, setDynamicCategories] = useState([]);
     const [dynamicRegions, setDynamicRegions] = useState([]);
 

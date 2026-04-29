@@ -22,14 +22,12 @@ const RichTextEditorQuill = ({ value, onChange, placeholder }) => {
         }
       });
 
-      // Update parent state when text changes
       quillRef.current.on('text-change', () => {
         const html = quillRef.current.root.innerHTML;
         onChange(html);
       });
     }
 
-    // Set initial content if provided
     if (quillRef.current && value !== quillRef.current.root.innerHTML) {
       quillRef.current.root.innerHTML = value || '';
     }

@@ -1,9 +1,7 @@
 import { ROLE_RANKS } from './PermissonsConst';
-import dataFacade from '../services/dataFacade'; // Import dataFacade
+import dataFacade from '../services/dataFacade'; 
 
-// Basic client-side password hashing (for demonstration, NOT for production)
-// In a real application, passwords should be hashed and verified on a secure backend.
-const hashPassword = (password) => btoa(password); // Simple base64 encoding
+const hashPassword = (password) => btoa(password); 
 
 export const loginUser = (username, password) => {
   const trimmedUser = username.trim();
@@ -18,7 +16,7 @@ export const loginUser = (username, password) => {
       localStorage.setItem('user_name', user.username);
       return true;
     } else {
-      return false; // No matching user found
+      return false; 
     }
   }).catch(error => {
     console.error("Login failed:", error);
@@ -27,15 +25,13 @@ export const loginUser = (username, password) => {
 };
 
 export const registerUser = (userData) => {
-  // Trim all string inputs
+  
   const cleanData = Object.keys(userData).reduce((acc, key) => {
     acc[key] = typeof userData[key] === 'string' ? userData[key].trim() : userData[key];
     return acc;
   }, {});
 
-  // Hash the password before storing
   cleanData.password = hashPassword(cleanData.password);
-  // Assign a default role for new registrations
   cleanData.role = 'USER';
 
   return dataFacade.addUser(cleanData).then(() => {

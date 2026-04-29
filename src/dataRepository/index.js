@@ -2,8 +2,8 @@
 
 import localStorageProvider from './localStorage/localStorageProvider';
 import inMemoryProvider from './memory/inMemoryProvider';
-// import firebaseProvider from './firebase/firebaseProvider'; // Future
-// import customMapProvider from './customMap/customMapProvider'; // Future
+// import firebaseProvider from './firebase/firebaseProvider'; 
+// import customMapProvider from './customMap/customMapProvider';
 
 import { DATA_SOURCE } from '../constants';
 

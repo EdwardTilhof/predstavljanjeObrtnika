@@ -74,7 +74,7 @@ export default function OurProjectsMain() {
   );
   const handleSearchChange = (value) => {
     setSearchTerm(value);
-    setCurrentPage(1); // Reset to first page on search
+    setCurrentPage(1); 
   };
 
   if (loading) {
@@ -126,8 +126,6 @@ export default function OurProjectsMain() {
             const leftSide = 1;
             const rightSide = totalPages;
 
-            // Determine the range of pages to show around the current page
-            // Show 1 neighbor on each side of the current page
             let startPage = Math.max(1, currentPage - 1);
             let endPage = Math.min(totalPages, currentPage + 1);
 
@@ -138,12 +136,10 @@ export default function OurProjectsMain() {
               </Pagination.Item>
             );
 
-            // Add ellipsis if current range is far from the start
             if (startPage > 2) {
               items.push(<Pagination.Ellipsis key="start-ellipsis" disabled />);
             }
 
-            // Add pages in the middle range
             for (let i = startPage; i <= endPage; i++) {
               if (i !== 1 && i !== totalPages) {
                 items.push(
@@ -154,12 +150,10 @@ export default function OurProjectsMain() {
               }
             }
 
-            // Add ellipsis if current range is far from the end
             if (endPage < totalPages - 1) {
               items.push(<Pagination.Ellipsis key="end-ellipsis" disabled />);
             }
 
-            // Always show the last page
             if (totalPages > 1) {
               items.push(
                 <Pagination.Item key={totalPages} active={totalPages === currentPage} onClick={() => setCurrentPage(totalPages)}>

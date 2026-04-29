@@ -6,7 +6,7 @@ const DeleteConfirmationModal = ({
     onHide, 
     onConfirm, 
     itemName, 
-    usageList = [], // Pass the list of items using this category/region
+    usageList = [], 
     title = "Confirm Delete" 
 }) => {
   const isInUse = usageList.length > 0;
