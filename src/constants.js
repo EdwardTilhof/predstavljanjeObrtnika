@@ -49,5 +49,5 @@ export const NAV_LINKS = [
     { name: "Login", path: ROUTES.LOGIN },
     { name: "Registration", path: ROUTES.REGISTRATION }
 ];
-export const DATA_SOURCE = 'localStorage';
-// export const DATA_SOURCE = 'memory';
+export const DATA_SOURCE = 'localStorage'; // Change to 'localStorage' or 'memory'
+// export const DATA_SOURCE = 'memory'; 

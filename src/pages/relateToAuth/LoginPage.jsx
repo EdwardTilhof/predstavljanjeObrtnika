@@ -5,13 +5,16 @@ import { loginUser } from '../../Permissions/AuthService';
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (loginUser(username.trim(), password)) {
+    setLoginError(''); // Clear previous errors
+    const success = await loginUser(username.trim(), password);
+    if (success) {
       window.location.href = "/"; 
     } else {
-      alert("Invalid credentials");
+      setLoginError("Invalid username or password.");
     }
   };
 
@@ -46,9 +49,9 @@ const LoginPage = () => {
             Login
           </Button>
         </Form>
-        <div className="text-center mt-3">
-          <small>Admin: admin / 0000</small>
-        </div>
+        {loginError && (
+          <p className="text-danger text-center mt-3">{loginError}</p>
+        )}
       </Card>
     </Container>
   );

@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Container, Row, Col, Card, Button, Pagination } from 'react-bootstrap';
-import { createUniqueId } from '../../../dataRepository/UUIDGenerator';
+import { Container, Row, Col, Card, Button, Pagination, Spinner } from 'react-bootstrap';
 import DeleteConfirmationModal from '../../crossPageComponents/modal/DeleteConfirmationModal';
 import { PLACEHOLDER_IMAGE } from '../../Constants';
-import AddEditModalProjectGallery from '../../components/services/OurProjects/AddEditModalProjectGallery';
-import { PROJECT_CARD_DATA } from '../../../dataRepository/serviceData/ProjectCardData';
+import AddEditModalProjectGallery from '../../components/OurProjects/AddEditModalProjectGallery';
 import { ROLE_RANKS } from '../../Permissions/PermissonsConst';
-
-import { MOCK_GALLERY_DATA } from '../../../dataRepository/serviceData/ProjectGalleryDataGen';
+import dataFacade from '../../services/dataFacade';
 
 
 const ExpandableDescription = ({ text }) => {
@@ -21,7 +18,7 @@ const ExpandableDescription = ({ text }) => {
             <Card.Text className="text-muted mb-1" 
             style={{ fontSize: '0.75rem', lineHeight: '1.1rem' }}>
                 <span
-                    style={isExpanded ? {} : { /* ... clipping styles */ }}
+                    style={isExpanded ? {} : { display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
                     dangerouslySetInnerHTML={{ __html: text || "No description" }}
                 />
             </Card.Text>
@@ -46,72 +43,57 @@ const ProjectGallery = () => {
     const [targetId, setTargetId] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const imagesPerPage = 8;
+    const [loading, setLoading] = useState(true);
 
     const currentRole = localStorage.getItem('user_role') || 'GUEST';
-    const userRank = ROLE_RANKS[currentRole];
-    const storageKey = `gallery_images_${id}`;
+    const userRank = ROLE_RANKS[currentRole] || 0;
 
-    useEffect(() => {
-        // 1. Load Images
-        const rawSavedGallery = localStorage.getItem(storageKey);
-        let galleryData = null;
-        try {
-            galleryData = (rawSavedGallery && typeof rawSavedGallery === 'string') ? JSON.parse(rawSavedGallery) : null;
-        } catch (e) { console.error("Error parsing gallery", e); }
+    const loadData = async () => {
+        // 1. Load Images via Facade
+        const galleryData = await dataFacade.getGallery(id);
+        setImages(galleryData);
 
-        if (galleryData && Array.isArray(galleryData)) {
-            setImages(galleryData);
-        } else {
-            const mockData = MOCK_GALLERY_DATA[id] || MOCK_GALLERY_DATA["default"] || [];
-            setImages(mockData);
-            if (mockData.length > 0) localStorage.setItem(storageKey, JSON.stringify(mockData));
-        }
-
-        // 2. Load Project Title
-        const projectStorageKey = 'main_projects_data';
-        const rawSavedProjects = localStorage.getItem(projectStorageKey);
-        let allProjects = PROJECT_CARD_DATA;
-
-        if (rawSavedProjects) {
-            try {
-                const parsed = JSON.parse(rawSavedProjects);
-                if (Array.isArray(parsed)) allProjects = parsed;
-            } catch (e) { console.error("Error parsing projects", e); }
-        }
-
+        // 2. Load Project Title via Facade
+        const allProjects = await dataFacade.getProjects();
         const foundProject = allProjects.find(p => String(p.id) === String(id));
         setProjectTitle(foundProject ? foundProject.title : "Project Gallery");
-
-    }, [id, storageKey]);
-
-    const saveAndPersist = (newList) => {
-        setImages(newList);
-        localStorage.setItem(storageKey, JSON.stringify(newList));
     };
 
-    const handleSave = () => {
+    useEffect(() => {
+        const initLoad = async () => {
+            await loadData();
+            setLoading(false);
+        };
+        initLoad();
+    }, [id]);
+
+    const handleSave = async () => {
         if (editMode) {
-            saveAndPersist(images.map(img => img.id === currentImage.id ? currentImage : img));
+            await dataFacade.updateGalleryImage(id, currentImage.id, currentImage);
         } else {
-            const newImg = { ...currentImage, id: createUniqueId('galleryitem') };
-            saveAndPersist([newImg, ...images]);
+            await dataFacade.addGalleryImage(id, currentImage);
         }
+        await loadData();
         setShowFormModal(false);
     };
 
-    const confirmDelete = () => {
-        const updatedImages = images.filter(img => img.id !== targetId);
-        setImages(updatedImages);
-        const allGalleries = JSON.parse(localStorage.getItem('project_galleries') || '{}');
-        allGalleries[id] = updatedImages;
-        localStorage.setItem('project_galleries', JSON.stringify(allGalleries));
-
+    const confirmDelete = async () => {
+        await dataFacade.deleteGalleryImage(id, targetId);
+        await loadData();
         setShowDeleteModal(false);
         setTargetId(null);
     };
 
     const totalPages = Math.ceil(images.length / imagesPerPage);
     const currentImages = images.slice((currentPage - 1) * imagesPerPage, currentPage * imagesPerPage);
+
+    if (loading) {
+        return (
+            <Container className="py-5 text-center">
+                <Spinner animation="border" variant="primary" />
+            </Container>
+        );
+    }
 
     return (
         <Container className="py-5">
@@ -125,7 +107,7 @@ const ProjectGallery = () => {
             </div>
 
             <Row className="g-4">
-                {images.map((img) => (
+                {currentImages.map((img) => (
                     <Col key={img.id} xs={12} sm={6} md={4} lg={3}>
                         <Card className="h-100 shadow-sm border-0 position-relative gallery-card">
                             {userRank >= ROLE_RANKS.MODERATOR && (

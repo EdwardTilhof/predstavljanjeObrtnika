@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Form, InputGroup } from 'react-bootstrap';
-import { createUniqueId } from "../UUIDGenerator";
-import { regions as defaultRegions } from "./RegionsData";
 // Path updated as per your instruction
 import DeleteConfirmationModal from "../../src/crossPageComponents/modal/DeleteConfirmationModal";
+import dataFacade from "../../src/services/dataFacade";
 
 const RegionManager = () => {
     const [regions, setRegions] = useState([]);
@@ -18,21 +17,20 @@ const RegionManager = () => {
     const [itemToDelete, setItemToDelete] = useState(null);
     const [usageList, setUsageList] = useState([]);
 
-    useEffect(() => {
-        const saved = localStorage.getItem('globalRegions');
-        setRegions(saved ? JSON.parse(saved) : defaultRegions);
-    }, []);
-
-    const saveAndPersist = (updatedList) => {
-        setRegions(updatedList);
-        localStorage.setItem('globalRegions', JSON.stringify(updatedList));
+    const loadData = async () => {
+        const data = await dataFacade.getRegions();
+        setRegions(data);
     };
 
-    const handleAdd = () => {
+    useEffect(() => {
+        loadData();
+    }, []);
+
+    const handleAdd = async () => {
         if (!newName.trim()) return;
-        const newRegion = { id: createUniqueId('region'), name: newName.trim() };
-        saveAndPersist([...regions, newRegion]);
+        await dataFacade.addRegion({ name: newName.trim() });
         setNewName("");
+        await loadData();
     };
 
     const startEdit = (region) => {

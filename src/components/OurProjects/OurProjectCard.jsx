@@ -2,7 +2,7 @@ import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { ROLE_RANKS } from "../../../Permissions/PermissonsConst";
+import { ROLE_RANKS } from "../../Permissions/PermissonsConst";
 
 function OurProjectCardStyle01({ title, text, location, date, investment, image, link, onEdit, onDelete }) {
   const [isExpanded, setIsExpanded] = useState(false);

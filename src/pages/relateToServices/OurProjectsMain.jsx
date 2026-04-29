@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Col, Container, Row, Button, Pagination } from "react-bootstrap";
-import OurProjectCardStyle01 from "../../components/services/OurProjects/OurProjectCard";
-import { PROJECT_CARD_DATA } from "../../../dataRepository/serviceData/ProjectCardData";
-import AddEditModalProjectsMain from '../../components/services/OurProjects/AddEditModalProjectsMain';
+import { Col, Container, Row, Button, Pagination, Spinner } from "react-bootstrap";
+import OurProjectCardStyle01 from "../../components/OurProjects/OurProjectCard";
+import AddEditModalProjectsMain from '../../components/OurProjects/AddEditModalProjectsMain';
 import DeleteConfirmationModal from '../../crossPageComponents/modal/DeleteConfirmationModal';
 import { ROLE_RANKS } from '../../Permissions/PermissonsConst';
 import SearchBox from "../../crossPageComponents/search/SearchBox";
-
+import dataFacade from '../../services/dataFacade';
 
 export default function OurProjectsMain() {
   const [projects, setProjects] = useState([]);
@@ -18,32 +17,23 @@ export default function OurProjectsMain() {
   const [currentPage, setCurrentPage] = useState(1);
   const projectsPerPage = 6;
   const currentRole = localStorage.getItem('user_role') || 'GUEST';
-  const userRank = ROLE_RANKS[currentRole];
+  const userRank = ROLE_RANKS[currentRole] || 0;
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  const storageKey = 'main_projects_data';
-
-  useEffect(() => {
-    const saved = localStorage.getItem(storageKey);
-    let data = [];
-
-    if (saved) {
-      data = JSON.parse(saved);
-    } else {
-      data = PROJECT_CARD_DATA;
-      localStorage.setItem(storageKey, JSON.stringify(data));
-    }
-
-    // Sort by date: Newest first
+  const loadProjects = async () => {
+    const data = await dataFacade.getProjects();
     const sortedData = [...data].sort((a, b) => new Date(b.date) - new Date(a.date));
     setProjects(sortedData);
-  }, []);
-
-  const saveAndPersist = (newList) => {
-    const sorted = [...newList].sort((a, b) => new Date(b.date) - new Date(a.date));
-    setProjects(sorted);
-    localStorage.setItem(storageKey, JSON.stringify(sorted));
   };
+
+  useEffect(() => {
+    const initLoad = async () => {
+      await loadProjects();
+      setLoading(false);
+    };
+    initLoad();
+  }, []);
 
   const handleOpenAdd = () => {
     setEditMode(false);
@@ -57,23 +47,24 @@ export default function OurProjectsMain() {
     setShowFormModal(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (editMode) {
-      saveAndPersist(projects.map(p => p.id === currentProject.id ? currentProject : p));
+      await dataFacade.updateProject(currentProject.id, currentProject);
     } else {
-      const newProject = { ...currentProject, id: Date.now().toString() };
-      saveAndPersist([newProject, ...projects]);
+      await dataFacade.addProject(currentProject);
     }
+    await loadProjects();
     setShowFormModal(false);
   };
 
-  const confirmDelete = () => {
-    saveAndPersist(projects.filter(p => p.id !== targetId));
+  const confirmDelete = async () => {
+    await dataFacade.deleteProject(targetId);
+    await loadProjects();
     setShowDeleteModal(false);
   };
-  
-    const filteredProjects = projects.filter((project) =>
-    project.title.toLowerCase().includes(searchTerm.toLowerCase())
+
+  const filteredProjects = projects.filter((project) =>
+    (project.title || '').toLowerCase().includes((searchTerm || '').toLowerCase())
   );
 
   const totalPages = Math.ceil(filteredProjects.length / projectsPerPage);
@@ -85,6 +76,14 @@ export default function OurProjectsMain() {
     setSearchTerm(value);
     setCurrentPage(1); // Reset to first page on search
   };
+
+  if (loading) {
+    return (
+      <Container className="py-5 text-center">
+        <Spinner animation="border" variant="primary" />
+      </Container>
+    );
+  }
 
   return (
     <Container className="py-5">
@@ -103,7 +102,7 @@ export default function OurProjectsMain() {
             <Col key={item.id} xs={12} md={6} lg={4}>
               <OurProjectCardStyle01
                 {...item}
-                link={item.link || `/ourProjects/gallery/${item.id}`} 
+                link={item.link || `/ourProjects/gallery/${item.id}`}
                 onEdit={() => handleOpenEdit(item)}
                 onDelete={() => { setTargetId(item.id); setShowDeleteModal(true); }}
               />

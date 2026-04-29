@@ -1,19 +1,29 @@
 import { ROLE_RANKS } from './PermissonsConst';
+import dataFacade from '../services/dataFacade'; // Import dataFacade
+
+// Basic client-side password hashing (for demonstration, NOT for production)
+// In a real application, passwords should be hashed and verified on a secure backend.
+const hashPassword = (password) => btoa(password); // Simple base64 encoding
 
 export const loginUser = (username, password) => {
   const trimmedUser = username.trim();
+  const hashedPassword = hashPassword(password);
   
-  // Default Admin Check
-  if (trimmedUser === 'admin' && password === '0000') {
-    localStorage.setItem('user_role', 'ADMIN');
-    localStorage.setItem('user_name', 'Admin');
-    return true;
-  }
-  
-  // For learning: any other login defaults to 'USER'
-  localStorage.setItem('user_role', 'USER');
-  localStorage.setItem('user_name', trimmedUser);
-  return true;
+  // Fetch all users and find a match
+  return dataFacade.getUsers().then(users => {
+    const user = users.find(u => u.username.toLowerCase() === trimmedUser.toLowerCase() && u.password === hashedPassword);
+
+    if (user) {
+      localStorage.setItem('user_role', user.role);
+      localStorage.setItem('user_name', user.username);
+      return true;
+    } else {
+      return false; // No matching user found
+    }
+  }).catch(error => {
+    console.error("Login failed:", error);
+    return false;
+  });
 };
 
 export const registerUser = (userData) => {
@@ -23,10 +33,19 @@ export const registerUser = (userData) => {
     return acc;
   }, {});
 
-  console.log("Registered User:", cleanData);
-  localStorage.setItem('user_role', 'USER');
-  localStorage.setItem('user_name', cleanData.username);
-  return true;
+  // Hash the password before storing
+  cleanData.password = hashPassword(cleanData.password);
+  // Assign a default role for new registrations
+  cleanData.role = 'USER';
+
+  return dataFacade.addUser(cleanData).then(() => {
+    localStorage.setItem('user_role', cleanData.role);
+    localStorage.setItem('user_name', cleanData.username);
+    return true;
+  }).catch(error => {
+    console.error("Registration failed:", error);
+    return false;
+  });
 };
 
 export const logout = () => {

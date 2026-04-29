@@ -4,10 +4,17 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import './colorsAndDesign/OurProjects.css';
 import './colorsAndDesign/ColorsStyle.css';
 import './crossPageComponents/datePicker/DatePickerStyle.css'
+import dataFacade, { DATA_KEYS } from './services/dataFacade';
 
-import { Container } from "react-bootstrap";
+// --- DATA GENERATOR IMPORTS ---
+import { PROJECT_CARD_DATA } from "../dataRepository/serviceData/ProjectCardData";
+import { MOCK_GALLERY_DATA } from "../dataRepository/serviceData/ProjectGalleryDataGen";
+import { mainCategories } from "../dataRepository/partnersData/PartnersData"; 
+import { MOCK_PARTNERS_DATA } from "../dataRepository/partnersData/PartnersDataGen"; 
+import { regions as defaultRegions } from "../dataRepository/locations/RegionsData";
+
+import { Container, Spinner } from "react-bootstrap";
 import { Route, Routes } from "react-router-dom";
-import { DataSourceProvider } from "./dataSource/DataSourceContext";
 import NavBarMain from './crossPageComponents/navBar/NavBarMain';
 import AboutUsFooter from "./crossPageComponents/footers/AboutUsFooter";
 import { ROUTES } from "./constants";
@@ -31,7 +38,7 @@ import IndividualPartnerAdv from "./pages/relateToAdv/IndividualPartnerAdv"
 // Data editor imports
 import DataEditor from "./pages/DataEditor";
 import RegionManager from "../dataRepository/locations/RegionManager";
-import CategoryManager from "../src/components/partners/CategoryManager";
+import CategoryManager from "./components/partners/CategoryManager";
 import AdminPage from "./pages/relateToAuth/AdminPage";
 import LoginPage from "./pages/relateToAuth/LoginPage";
 import RegistrationPage from "./pages/relateToAuth/RegisterPage";
@@ -47,6 +54,7 @@ function App() {
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("theme") || "light";
   });
+  const [isInitializing, setIsInitializing] = useState(true);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-bs-theme", theme);
@@ -58,34 +66,100 @@ function App() {
   };
 
   const userRole = localStorage.getItem('user_role') || 'GUEST';
-  const isAdmin = ROLE_RANKS[userRole] >= ROLE_RANKS.ADMIN;
+  const isAdmin = (ROLE_RANKS[userRole] || 0) >= (ROLE_RANKS.ADMIN || 3);
+
+  // Database Seeder
+  useEffect(() => {
+    const initializeData = async () => {
+      // 1. Seed Categories so dropdowns aren't empty
+      const categories = await dataFacade.getCategories();
+      if (categories.length === 0) {
+        for (const cat of mainCategories) {
+          await dataFacade.addCategory(cat);
+        }
+      }
+
+      // 2. Seed Regions so dropdowns aren't empty
+      const regions = await dataFacade.getRegions();
+      if (regions.length === 0) {
+        for (const reg of defaultRegions) {
+          await dataFacade.addRegion(reg);
+        }
+      }
+
+      // 3. Seed Users (including default admin)
+      const users = await dataFacade.getUsers();
+      if (users.length === 0) {
+        // Add default admin
+        await dataFacade.addUser({
+          id: 'admin-user',
+          username: 'admin',
+          password: btoa('0000'), // Hash the password
+          role: 'ADMIN',
+        });
+      }
+
+      // 3. Seed Partners
+      const partners = await dataFacade.getPartners();
+      if (partners.length === 0) {
+        // Seed your 300 generated partners!
+        const generatedPartners = MOCK_PARTNERS_DATA.default;
+        if (typeof generatedPartners !== 'undefined') {
+          for (const partner of generatedPartners) {
+            await dataFacade.addPartner(partner);
+          }
+        }
+      }
+
+      // 4. Seed Projects
+      const projects = await dataFacade.getProjects();
+      if (projects.length === 0) {
+        for (const project of PROJECT_CARD_DATA) {
+          await dataFacade.addProject(project);
+          
+          // 5. Seed Gallery Images for this project (50 per project)
+          const images = MOCK_GALLERY_DATA[project.id] || MOCK_GALLERY_DATA["default"] || [];
+          for (const image of images) {
+            await dataFacade.addGalleryImage(project.id, image);
+          }
+        }
+      }
+      setIsInitializing(false);
+    };
+    initializeData();
+  }, []);
 
   return (
-    <DataSourceProvider>
+    <>
       <Container className={`MainContainer ${isDevelopment ? 'dev-mode' : ''}`} fluid>
         <NavBarMain theme={theme} toggleTheme={toggleTheme} />
 
         <main>
-          <Suspense fallback={<div className="text-center mt-5">Loading...</div>}>
+          {isInitializing ? (
+            <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
+              <Spinner animation="border" variant="primary" />
+            </div>
+          ) : (
+          <Suspense fallback={<div className="text-center mt-5"><Spinner animation="border" variant="primary" /></div>}>
             <Routes>
               {/* Public Routes ("GUEST") */}
               <Route path={ROUTES.HOME} element={<Home />} />
             <Route path={ROUTES.PartnerDetailsAdv} element={<IndividualPartnerAdv />} />
-              // Our projects
+              {/* Our projects */}
               <Route path={ROUTES.OUR_PROJECTS} element={<OurProjectsMain />} />
               <Route path={ROUTES.PROJECT_GALLERY} element={<ProjectGallery />} />
               
-              // Partners
+              {/* Partners */}
               <Route path={ROUTES.CooperatingPartners} element={<CooperatingPartnersMain />} />
               <Route path= {ROUTES.PartnersAdv} element={<PartnersAdv/>}/>
 
-              // Authentication 
+              {/* Authentication */}
               <Route path={ROUTES.LOGIN} element={<LoginPage />} />
               <Route path={ROUTES.REGISTRATION} element={<RegistrationPage />} />
 
               {/* Moderator Routes */}
               
-              // Partner editors
+              {/* Partner editors */}
               <Route
                 path={ROUTES.newCooperatingPartner}
                 element={<RoleCheck minRole="MODERATOR"><AddPartnerPage /></RoleCheck>}
@@ -95,7 +169,7 @@ function App() {
                 element={<RoleCheck minRole="MODERATOR"><EditPartnerPage /></RoleCheck>}
               />
              
-              // Data editors
+              {/* Data editors */}
               <Route
                 path={ROUTES.dataEditor}
                 element={<RoleCheck minRole="MODERATOR"><DataEditor /></RoleCheck>}
@@ -116,12 +190,13 @@ function App() {
               />
             </Routes>
           </Suspense>
+          )}
         </main>
 
         <hr />
         <AboutUsFooter />
       </Container>
-    </DataSourceProvider>
+    </>
   );
 }
 

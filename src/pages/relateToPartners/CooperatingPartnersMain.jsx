@@ -1,15 +1,11 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { Table, Badge, Button, Stack, Pagination, Form, Row, Col } from "react-bootstrap";
+import { Table, Badge, Button, Stack, Pagination, Form, Row, Col, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants";
 import CooperatingPartnerLogic from "../../components/partners/CooperatingPartnersLogic";
-import { useDataSource } from "../../dataSource/DataSourceContext";
 import DeleteConfirmationModal from "../../crossPageComponents/modal/DeleteConfirmationModal";
 import { ROLE_RANKS } from "../../Permissions/PermissonsConst";
-
-// Data Defaults
-import { mainCategories } from "../../../dataRepository/partnersData/PartnersData";
-import { regions as defaultRegions } from "../../../dataRepository/locations/RegionsData";
+import dataFacade from "../../services/dataFacade";
 
 // PDF Imports
 import { PDFDownloadLink } from "@react-pdf/renderer";
@@ -19,7 +15,7 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [targetPartner, setTargetPartner] = useState(null);
-  const { partners, setPartners } = useDataSource();
+  const [ partners, setPartners ] = useState([]);
 
   // Data States
   const [allCategories, setAllCategories] = useState([]);
@@ -30,29 +26,28 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
   const [sortConfig, setSortConfig] = useState({ key: 'original', direction: 'asc' });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [loading, setLoading] = useState(true);
 
   const userRole = localStorage.getItem('user_role') || 'GUEST';
-  const userRank = ROLE_RANKS[userRole];
+  const userRank = ROLE_RANKS[userRole] || 0;
 
   const loadData = useCallback(async () => {
-    const result = await CooperatingPartnerLogic.getAll('localStorage');
-    if (result.success) {
-      setPartners(result.data);
-    }
+    const partnerData = await dataFacade.getPartners();
+    setPartners(partnerData);
 
-    // Fetch and Merge Categories
-    const savedCats = JSON.parse(localStorage.getItem('globalCategories') || "[]");
-    const mergedCats = [...new Map([...mainCategories, ...savedCats].map(item => [item.id, item])).values()];
+    const mergedCats = await dataFacade.getCategories();
     setAllCategories(mergedCats);
 
-    // Fetch and Merge Regions
-    const savedRegs = JSON.parse(localStorage.getItem('globalRegions') || "[]");
-    const mergedRegs = [...new Map([...defaultRegions, ...savedRegs].map(item => [item.id, item])).values()];
+    const mergedRegs = await dataFacade.getRegions();
     setAllRegions(mergedRegs);
   }, [setPartners]);
 
   useEffect(() => {
-    loadData();
+    const initLoad = async () => {
+      await loadData();
+      setLoading(false);
+    };
+    initLoad();
     window.addEventListener("partnersUpdated", loadData);
     return () => window.removeEventListener("partnersUpdated", loadData);
   }, [loadData]);
@@ -64,15 +59,6 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
   };
 
   // --- Filtering & Sorting Logic ---
-
-  const filteredPartners = useMemo(() => {
-    return partners.filter(p => {
-      const categoryMatch = selectedCategory === "All" || String(p.category) === String(selectedCategory);
-      const regionMatch = selectedRegion === "All" || p.regions?.some(rId => String(rId) === String(selectedRegion));
-      return categoryMatch && regionMatch;
-    });
-  }, [partners, selectedCategory, selectedRegion]);
-
 
   const processedData = useMemo(() => {
     let filtered = Array.isArray(partners) ? [...partners] : [];
@@ -119,13 +105,21 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
 
   const confirmDelete = async () => {
     if (targetPartner) {
-      const result = await CooperatingPartnerLogic.remove(targetPartner.id, 'localStorage');
-      if (result.success) {
+      try {
+        await dataFacade.deletePartner(targetPartner.id); // Centralized
         setPartners(prev => prev.filter(p => p.id !== targetPartner.id));
         setShowModal(false);
-      }
+      } catch (error) {
+        console.error("Failed to delete partner:", error);
+      } 
     }
   };
+
+  if (loading) {
+    return (
+      <div className="text-center mt-5"><Spinner animation="border" variant="primary" /></div>
+    );
+  }
 
   return (
     <>

@@ -4,7 +4,10 @@ import { ROLE_RANKS } from './PermissonsConst';
 const RoleCheck = ({ children, minRole }) => {
   const userRole = localStorage.getItem('user_role') || 'GUEST';
   
-  if (ROLE_RANKS[userRole] >= ROLE_RANKS[minRole]) {
+  const userRank = ROLE_RANKS[userRole] || 0;
+  const requiredRank = ROLE_RANKS[minRole] || 0;
+
+  if (userRank >= requiredRank) {
     return <>{children}</>;
   }
 

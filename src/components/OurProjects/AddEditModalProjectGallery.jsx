@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { PLACEHOLDER_IMAGE } from "../../../Constants";
-import RichTextEditorQuill from "../../../crossPageComponents/txtEditors/txtEditorQuill/EditorQuill";
+import { PLACEHOLDER_IMAGE } from "../../Constants";
+import RichTextEditorQuill from "../../crossPageComponents/txtEditors/txtEditorQuill/EditorQuill";
 
 const AddEditModalProjectGallery = ({ show, onHide, onSave, data, setData, editMode, title }) => {
     return (
@@ -25,7 +25,7 @@ const AddEditModalProjectGallery = ({ show, onHide, onSave, data, setData, editM
                         <Form.Control
                             type="text"
                             value={data.url || ''}
-                            onChange={(e) => setData({ ...data, url: e.target.value })}
+                            onChange={(e) => setData(prev => ({ ...prev, url: e.target.value }))}
                             placeholder={PLACEHOLDER_IMAGE}
                         />
                     </Form.Group>
@@ -34,7 +34,7 @@ const AddEditModalProjectGallery = ({ show, onHide, onSave, data, setData, editM
                         <Form.Control
                             type="text"
                             value={data.title || ''}
-                            onChange={(e) => setData({ ...data, title: e.target.value })}
+                            onChange={(e) => setData(prev => ({ ...prev, title: e.target.value }))}
                             placeholder="Enter image title"
                         />
                     </Form.Group>
@@ -43,7 +43,7 @@ const AddEditModalProjectGallery = ({ show, onHide, onSave, data, setData, editM
                         <RichTextEditorQuill
                             rows={3}
                             value={data.description || ''}
-                            onChange={(html) => setData({ ...data, description: html })}
+                            onChange={(html) => setData(prev => ({ ...prev, description: html }))}
                             placeholder="Enter image description"
                         />
                     </Form.Group>

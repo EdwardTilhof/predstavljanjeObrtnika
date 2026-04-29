@@ -22,30 +22,34 @@ const PartnerFormUI = ({
 
         const generatedUrl = `https://placehold.co/600x400?text=${company.replace(/\s/g, '+')}+|+${categoryName.replace(/\s/g, '+')}`;
 
-        setFormData({ ...formData, companyImage: generatedUrl });
+        setFormData(prev => ({ ...prev, companyImage: generatedUrl }));
     };
 
     /* Update array section */
     const updateArray = (key, index, value) => {
-        if (key === 'regions') {
-            const isDuplicate = formData[key].some((item, i) => i !== index && item === value);
-            if (isDuplicate && value !== "") {
-                alert("This region has already been added.");
-                return;
+        setFormData(prev => {
+            if (key === 'regions') {
+                const isDuplicate = prev[key].some((item, i) => i !== index && item === value);
+                if (isDuplicate && value !== "") {
+                    alert("This region has already been added.");
+                    return prev;
+                }
             }
-        }
-        const newArray = [...formData[key]];
-        newArray[index] = value;
-        setFormData({ ...formData, [key]: newArray });
+            const newArray = [...prev[key]];
+            newArray[index] = value;
+            return { ...prev, [key]: newArray };
+        });
     };
 
     const addField = (key) => {
-        setFormData({ ...formData, [key]: [...formData[key], ""] });
+        setFormData(prev => ({ ...prev, [key]: [...prev[key], ""] }));
     };
 
     const removeField = (key, index) => {
-        const newArray = formData[key].filter((_, i) => i !== index);
-        setFormData({ ...formData, [key]: newArray.length ? newArray : [""] });
+        setFormData(prev => {
+            const newArray = prev[key].filter((_, i) => i !== index);
+            return { ...prev, [key]: newArray.length ? newArray : [""] };
+        });
     };
 
     return (
@@ -64,7 +68,7 @@ const PartnerFormUI = ({
                                 type="text"
                                 placeholder="https://example.com/image.png"
                                 value={formData.companyImage || ''}
-                                onChange={(e) => setFormData({ ...formData, companyImage: e.target.value })}
+                                onChange={(e) => setFormData(prev => ({ ...prev, companyImage: e.target.value }))}
                             />
                             <Button
                                 variant="outline-secondary"
@@ -120,7 +124,7 @@ const PartnerFormUI = ({
                         <Form.Label className="fw-bold">Main Category</Form.Label>
                         <Form.Select
                             value={formData.category}
-                            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                            onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
                             required
                         >
                             <option value="">Select Category...</option>
@@ -137,7 +141,7 @@ const PartnerFormUI = ({
                             type="text"
                             placeholder="e.g. Tech Solutions Ltd."
                             value={formData.company}
-                            onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                            onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
                             required
                         />
                     </Form.Group>
@@ -182,7 +186,7 @@ const PartnerFormUI = ({
                         type="number"
                         placeholder="3000"
                         value={formData.cost}
-                        onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
+                        onChange={(e) => setFormData(prev => ({ ...prev, cost: e.target.value }))}
                     />
                 </Col>
                 <Col md={3}>
@@ -191,7 +195,7 @@ const PartnerFormUI = ({
                         type="number"
                         placeholder="30"
                         value={formData.duration}
-                        onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                        onChange={(e) => setFormData(prev => ({ ...prev, duration: e.target.value }))}
                     />
                 </Col>
                 <Col md={3}>
@@ -200,7 +204,7 @@ const PartnerFormUI = ({
                         type="text"
                         placeholder="email or phone"
                         value={formData.contact}
-                        onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+                        onChange={(e) => setFormData(prev => ({ ...prev, contact: e.target.value }))}
                     />
                 </Col>
                 <Col md={3}>
@@ -210,7 +214,7 @@ const PartnerFormUI = ({
                         min="1"
                         placeholder="1 (Lowest)"
                         value={formData.importanceValue}
-                        onChange={(e) => setFormData({ ...formData, importanceValue: Number(e.target.value) })}
+                        onChange={(e) => setFormData(prev => ({ ...prev, importanceValue: Number(e.target.value) }))}
                     />
                 </Col>
             </Row>
@@ -219,7 +223,7 @@ const PartnerFormUI = ({
                 <Form.Label className="fw-bold">Project Description</Form.Label>
                 <RichTextEditorQuill
                     value={formData.description}
-                    onChange={(html) => setFormData({ ...formData, description: html })}
+                    onChange={(html) => setFormData(prev => ({ ...prev, description: html }))}
                     rows={4}
                 />
             </Form.Group>

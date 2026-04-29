@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Form, InputGroup } from 'react-bootstrap';
-import { createUniqueId } from "../../../dataRepository/UUIDGenerator";
-import { mainCategories as defaultCategories } from "../../../dataRepository/partnersData/PartnersData";
 import DeleteConfirmationModal from "../../crossPageComponents/modal/DeleteConfirmationModal";
+import dataFacade from "../../services/dataFacade";
 
 const CategoryManager = () => {
     const [categories, setCategories] = useState([]);
@@ -14,21 +13,20 @@ const CategoryManager = () => {
     const [targetItem, setTargetItem] = useState(null);
     const [usageList, setUsageList] = useState([]);
 
-    useEffect(() => {
-        const saved = localStorage.getItem('globalCategories');
-        setCategories(saved ? JSON.parse(saved) : defaultCategories);
-    }, []);
-
-    const saveToStorage = (updatedList) => {
-        setCategories(updatedList);
-        localStorage.setItem('globalCategories', JSON.stringify(updatedList));
+    const loadData = async () => {
+        const data = await dataFacade.getCategories();
+        setCategories(data);
     };
 
-    const handleAdd = () => {
+    useEffect(() => {
+        loadData();
+    }, []);
+
+    const handleAdd = async () => {
         if (!newName.trim()) return;
-        const updated = [...categories, { id: createUniqueId('category'), name: newName.trim() }];
-        saveToStorage(updated);
+        await dataFacade.addCategory({ name: newName.trim() });
         setNewName("");
+        await loadData();
     };
 
     const startEdit = (cat) => {

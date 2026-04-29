@@ -1,22 +1,29 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
-import { regions } from "../../../../dataRepository/locations/RegionsData";
-import RichTextEditorQuill from "../../../crossPageComponents/txtEditors/txtEditorQuill/EditorQuill";
+import RichTextEditorQuill from "../../crossPageComponents/txtEditors/txtEditorQuill/EditorQuill";
 // date picker and calendar
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import dataFacade from "../../services/dataFacade";
 
 
 
 const AddEditModalProjectsMain = ({ show, onHide, onSave, data, setData, editMode }) => {
     
 const dateInputRef = useRef(null);
+const [regions, setRegions] = useState([]);
 
 const handleInputClick = () => {
     if (dateInputRef.current) {
         dateInputRef.current.showPicker();
     }
 };
+
+useEffect(() => {
+    if (show) {
+        dataFacade.getRegions().then(setRegions);
+    }
+}, [show]);
 
     return (
         <Modal show={show} onHide={onHide} centered size="lg">
@@ -32,7 +39,7 @@ const handleInputClick = () => {
                                 <Form.Control
                                     type="text"
                                     value={data.title || ''}
-                                    onChange={(e) => setData({ ...data, title: e.target.value })}
+                                    onChange={(e) => setData(prev => ({ ...prev, title: e.target.value }))}
                                     placeholder="e.g. Apartment building 205"
                                 />
                             </Form.Group>
@@ -43,7 +50,7 @@ const handleInputClick = () => {
                                 <Form.Control
                                     type="text"
                                     value={data.image || ''}
-                                    onChange={(e) => setData({ ...data, image: e.target.value })}
+                                    onChange={(e) => setData(prev => ({ ...prev, image: e.target.value }))}
                                     placeholder="https://placehold.co/600x400"
                                 />
                             </Form.Group>
@@ -55,7 +62,7 @@ const handleInputClick = () => {
                         <RichTextEditorQuill
                             rows={2}
                             value={data.text || ''}
-                            onChange={(html) => setData({ ...data, text: html })}
+                            onChange={(html) => setData(prev => ({ ...prev, text: html }))}
                             placeholder="Briefly describe the project..."
                         />
                     </Form.Group>
@@ -66,7 +73,7 @@ const handleInputClick = () => {
                                 <Form.Label>Location</Form.Label>
                                 <Form.Select
                                     value={data.location || ''}
-                                    onChange={(e) => setData({ ...data, location: e.target.value })}
+                                    onChange={(e) => setData(prev => ({ ...prev, location: e.target.value }))}
                                 >
                                     <option value="">Select a region...</option>
                                     {regions.map((region) => (
@@ -83,7 +90,7 @@ const handleInputClick = () => {
                                 <Form.Label>Date</Form.Label>
                                 <DatePicker
                                     selected={data.date ? new Date(data.date) : null}
-                                    onChange={(date) => setData({ ...data, date: date.toISOString().split('T')[0] })}
+                                    onChange={(date) => setData(prev => ({ ...prev, date: date.toISOString().split('T')[0] }))}
                                     className="form-control" 
                                     dateFormat="yyyy-MM-dd"
                                     placeholderText="Select a date"
@@ -97,7 +104,7 @@ const handleInputClick = () => {
                                 <Form.Control
                                     type="number"
                                     value={data.investment || ''}
-                                    onChange={(e) => setData({ ...data, investment: e.target.value })}
+                                    onChange={(e) => setData(prev => ({ ...prev, investment: e.target.value }))}
                                     placeholder="3000"
                                 />
                             </Form.Group>
