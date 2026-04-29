@@ -11,6 +11,12 @@ import dataFacade from "../../services/dataFacade";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import PartnerPdfTemplate from "../../crossPageComponents/pdfRenderer/PartnerPdfTemplate";
 
+const stripHtmlTags = (html) => {
+  if (!html) return "";
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  return doc.body.textContent || "";
+};
+
 const CooperatingPartnersMain = ({ selectedCategory }) => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
@@ -218,7 +224,10 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
                       <PDFDownloadLink
                         document={
                           <PartnerPdfTemplate
-                            partner={partner}
+                            partner={{
+                              ...partner,
+                              description: stripHtmlTags(partner.description)
+                            }}
                             categoryName={categoryName}
                             regionNames={regionNames}
                           />
