@@ -14,7 +14,7 @@ export const PLACEHOLDER_IMAGE = "https://placehold.co/120x240";
 
 export const ROUTES = {
     HOME: "/",
-    ABOUT: "/about",
+    ABOUT: "/aboutUs",
     // routes related to services
     OUR_PROJECTS: "/ourProjects",
     PROJECT_GALLERY: "/ourProjects/gallery/:id",
@@ -40,7 +40,7 @@ export const ROUTES = {
 
 export const NAV_LINKS = [
     { name: "Home", path: ROUTES.HOME },
-    { name: "About", path: ROUTES.ABOUT },
+    { name: "aboutUs", path: ROUTES.ABOUTUS },
     { name: "Our Projects", path: ROUTES.OUR_PROJECTS },
     { name: "Partners", path: ROUTES.CooperatingPartners },
     { name: "PartnersAdvertisement", path: ROUTES.PartnersAdv },

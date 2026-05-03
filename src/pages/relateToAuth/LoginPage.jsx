@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Container, Form, Button, Card } from 'react-bootstrap';
+import { Container, Form, Button, Card, Nav } from 'react-bootstrap';
 import { loginUser } from '../../Permissions/AuthService';
+import { ROUTES } from '../../constants';
+import { Link } from 'react-router-dom';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -9,10 +11,10 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoginError(''); 
+    setLoginError('');
     const success = await loginUser(username.trim(), password);
     if (success) {
-      window.location.href = "/"; 
+      window.location.href = "/";
     } else {
       setLoginError("Invalid username or password.");
     }
@@ -25,29 +27,34 @@ const LoginPage = () => {
         <Form onSubmit={handleLogin}>
           <Form.Group className="mb-3">
             <Form.Label>Username</Form.Label>
-            <Form.Control 
-              type="text" 
-              value={username} 
-              onChange={(e) => setUsername(e.target.value)} 
-              placeholder="admin"
-              required 
+            <Form.Control
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Username"
+              required
             />
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label>Password</Form.Label>
-            <Form.Control 
-              type="password" 
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
-              placeholder="0000"
-              required 
+            <Form.Control
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              required
             />
           </Form.Group>
 
           <Button variant="primary" type="submit" className="w-100">
             Login
           </Button>
+          <Button as={Link} to={ROUTES.REGISTRATION} variant="primary" className="w-100 mt-2">
+            Sign up
+          </Button>
+          <div>Admin log in information:</div>
+          <div> username- admin / password- 0000</div>
         </Form>
         {loginError && (
           <p className="text-danger text-center mt-3">{loginError}</p>

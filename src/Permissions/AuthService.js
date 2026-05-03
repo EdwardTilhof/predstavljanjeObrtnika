@@ -7,11 +7,9 @@ export const loginUser = (username, password) => {
   const trimmedUser = username.trim();
   const hashedPassword = hashPassword(password);
   
-  // Fetch all users and find a match
-  return dataFacade.getUsers().then(users => {
-    const user = users.find(u => u.username.toLowerCase() === trimmedUser.toLowerCase() && u.password === hashedPassword);
-
-    if (user) {
+  return dataFacade.getUserByUsername(trimmedUser).then(user => {
+    
+    if (user && user.password === hashedPassword) {
       localStorage.setItem('user_role', user.role);
       localStorage.setItem('user_name', user.username);
       return true;
@@ -25,19 +23,26 @@ export const loginUser = (username, password) => {
 };
 
 export const registerUser = (userData) => {
-  
   const cleanData = Object.keys(userData).reduce((acc, key) => {
     acc[key] = typeof userData[key] === 'string' ? userData[key].trim() : userData[key];
     return acc;
   }, {});
 
-  cleanData.password = hashPassword(cleanData.password);
-  cleanData.role = 'USER';
+  return dataFacade.getUserByUsername(cleanData.username).then(existingUser => {
+    
+    if (existingUser) {
+        console.error("Registration failed: Username is already taken.");
+        return false; 
+    }
 
-  return dataFacade.addUser(cleanData).then(() => {
-    localStorage.setItem('user_role', cleanData.role);
-    localStorage.setItem('user_name', cleanData.username);
-    return true;
+    cleanData.password = hashPassword(cleanData.password);
+    cleanData.role = 'USER';
+
+    return dataFacade.addUser(cleanData).then(() => {
+      localStorage.setItem('user_role', cleanData.role);
+      localStorage.setItem('user_name', cleanData.username);
+      return true;
+    });
   }).catch(error => {
     console.error("Registration failed:", error);
     return false;
@@ -45,6 +50,7 @@ export const registerUser = (userData) => {
 };
 
 export const logout = () => {
-  localStorage.clear();
+  localStorage.removeItem('user_role');
+  localStorage.removeItem('user_name')
   window.location.href = '/login';
 };

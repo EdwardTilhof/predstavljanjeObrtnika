@@ -74,6 +74,14 @@ body {
   min-height: 100vh;
 }
 
+.MainContainerAboutUs {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  border-radius: 20px;
+  margin: 20px;
+  padding: 25px;
+}
+
 .dynamic-heading {
   color: var(--heading-color);
 }
@@ -84,6 +92,8 @@ body {
 
 .custom-card {
   background-color: var(--feature-card-bg) !important;
+  border-radius: 25px !important;
+  border: 1px solid var(--feature-border) !important;
   border-color: var(--feature-border) !important;
   color: var(--text-color) !important;
 }

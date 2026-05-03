@@ -19,8 +19,9 @@ import NavBarMain from './crossPageComponents/navBar/NavBarMain';
 import AboutUsFooter from "./crossPageComponents/footers/AboutUsFooter";
 import { ROUTES } from "./constants";
 
-//Home page
+//Home page and about us
 import Home from "./pages/Home";
+import AboutUs from "./pages/aboutUs/AboutUs";
 
 // Our Projects imports
 import OurProjectsMain from "./pages/relateToServices/OurProjectsMain";
@@ -71,7 +72,6 @@ function App() {
   // Database Seeder
   useEffect(() => {
     const initializeData = async () => {
-      // 1. Seed Categories so dropdowns aren't empty
       const categories = await dataFacade.getCategories();
       if (categories.length === 0) {
         for (const cat of mainCategories) {
@@ -79,7 +79,6 @@ function App() {
         }
       }
 
-      // 2. Seed Regions so dropdowns aren't empty
       const regions = await dataFacade.getRegions();
       if (regions.length === 0) {
         for (const reg of defaultRegions) {
@@ -87,10 +86,8 @@ function App() {
         }
       }
 
-      // 3. Seed Users (including default admin)
       const users = await dataFacade.getUsers();
       if (users.length === 0) {
-        // Add default admin
         await dataFacade.addUser({
           id: 'admin-user',
           username: 'admin',
@@ -99,10 +96,8 @@ function App() {
         });
       }
 
-      // 3. Seed Partners
       const partners = await dataFacade.getPartners();
       if (partners.length === 0) {
-        // Seed your 300 generated partners!
         const generatedPartners = MOCK_PARTNERS_DATA.default;
         if (typeof generatedPartners !== 'undefined') {
           for (const partner of generatedPartners) {
@@ -144,6 +139,7 @@ function App() {
             <Routes>
               {/* Public Routes ("GUEST") */}
               <Route path={ROUTES.HOME} element={<Home />} />
+              <Route path={ROUTES.ABOUT} element={<AboutUs />} />
             <Route path={ROUTES.PartnerDetailsAdv} element={<IndividualPartnerAdv />} />
               {/* Our projects */}
               <Route path={ROUTES.OUR_PROJECTS} element={<OurProjectsMain />} />

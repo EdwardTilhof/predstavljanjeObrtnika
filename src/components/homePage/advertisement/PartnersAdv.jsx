@@ -49,7 +49,7 @@ const PartnersAdv = () => {
 
   return (
     <section className="my-5">
-      <h2 className="text-center mb-0">Our Partners:</h2>
+      <h2 className="text-center mb-0" style={{ color: 'var(--heading-color)' }}>Our Partners:</h2>
       <h6 className="text-centered mb-8"> If you wish to learn more about a partner click on the image</h6>
       
       {/* Cards Row */}

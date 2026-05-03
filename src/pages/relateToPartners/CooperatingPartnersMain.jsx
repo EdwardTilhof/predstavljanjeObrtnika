@@ -145,7 +145,7 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
       </Row>
 
       <Table hover responsive className="shadow-sm border">
-        <thead className="table-light">
+        <thead className="custom-card">
           <tr>
 
             <th title={
