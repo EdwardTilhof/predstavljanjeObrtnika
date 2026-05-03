@@ -22,6 +22,7 @@ import { ROUTES } from "./constants";
 //Home page and about us
 import Home from "./pages/Home";
 import AboutUs from "./pages/aboutUs/AboutUs";
+import ContactUs from "./pages/contactUs/ContactUs";
 
 // Our Projects imports
 import OurProjectsMain from "./pages/relateToServices/OurProjectsMain";
@@ -139,7 +140,8 @@ function App() {
             <Routes>
               {/* Public Routes ("GUEST") */}
               <Route path={ROUTES.HOME} element={<Home />} />
-              <Route path={ROUTES.ABOUT} element={<AboutUs />} />
+              <Route path={ROUTES.ABOUTUS} element={<AboutUs />} />
+              <Route path={ROUTES.CONTACT_US} element={<ContactUs />} />
             <Route path={ROUTES.PartnerDetailsAdv} element={<IndividualPartnerAdv />} />
               {/* Our projects */}
               <Route path={ROUTES.OUR_PROJECTS} element={<OurProjectsMain />} />

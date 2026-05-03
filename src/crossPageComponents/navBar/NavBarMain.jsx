@@ -54,6 +54,7 @@ function NavBarMain({ theme, toggleTheme }) {
           <Nav className="me-auto align-items-center">
             <Nav.Link as={Link} to={ROUTES.HOME}>Home</Nav.Link>
             <Nav.Link as={Link} to={ROUTES.OUR_PROJECTS}>Our Projects</Nav.Link>
+            <Nav.Link as={Link} to={ROUTES.CONTACT_US}>Contact Us</Nav.Link>
 
             {/* PROTECTED LINK: Only Moderator (4) and Admin (5) */}
             {userRank >= ROLE_RANKS.MODERATOR && (
