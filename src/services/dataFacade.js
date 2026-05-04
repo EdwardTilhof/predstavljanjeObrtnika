@@ -6,7 +6,8 @@ export const DATA_KEYS = {
     REGIONS: 'regions',
     CATEGORIES: 'categories',
     PROJECTS: 'projects',
-    USERS: 'users', 
+    USERS: 'users',
+    QUESTIONS: 'questions', 
 };
 
 const dataFacade = {
@@ -48,6 +49,12 @@ const dataFacade = {
     addUser: (user) => dataProvider.add(DATA_KEYS.USERS, user),
     updateUser: (id, user) => dataProvider.update(DATA_KEYS.USERS, id, user),
     deleteUser: (id) => dataProvider.remove(DATA_KEYS.USERS, id),
+
+    // Contact Us
+    getQuestions: () => dataProvider.getAll(DATA_KEYS.QUESTIONS),
+    addQuestion: (question) => dataProvider.add(DATA_KEYS.QUESTIONS, question),
+    updateQuestion: (id, question) => dataProvider.update(DATA_KEYS.QUESTIONS, id, question),
+    deleteQuestion: (id) => dataProvider.remove(DATA_KEYS.QUESTIONS, id),
 };
 
 export default dataFacade;
