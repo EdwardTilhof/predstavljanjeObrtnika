@@ -185,8 +185,8 @@ const ContactUs = () => {
                                     </Button>
                                 </Form>
                             ) : (
-                                <div className="text-center py-4 bg-light rounded border">
-                                    <p className="mb-0 text-muted">Guests can view questions, but you must be logged in to ask one.</p>
+                                <div className="text-center py-4 --feature-card-bg rounded border">
+                                    <p className="mb-0 dynamic-text fw-medium text-muted">Guests can view questions, but you must be logged in to ask one.</p>
                                 </div>
                             )}
                         </div>
@@ -224,7 +224,7 @@ const ContactUs = () => {
                                         <Card.Text className="fs-5">{q.text}</Card.Text>
 
                                         {q.reply ? (
-                                            <div className="mt-3 p-3 bg-light rounded border-start border-4 border-success">
+                                            <div className="mt-3 p-3 --feature-card-bg rounded border-top border-bottom border-4 border-success">
                                                 <strong className="text-success"><i className="bi bi-shield-check me-1"></i> {q.replyAuthor} (Staff):</strong>
                                                 <p className="mb-0 mt-1">{q.reply}</p>
                                             </div>
