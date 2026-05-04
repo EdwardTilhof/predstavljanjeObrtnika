@@ -37,6 +37,9 @@ export const ROUTES = {
     LOGIN: "/login",
     REGISTRATION: "/register",
     ADMIN: "/admin",
+
+    //User profile and user related routes
+    USER_PROFILE: "/userProfile"
 };
 
 export const NAV_LINKS = [
@@ -49,7 +52,8 @@ export const NAV_LINKS = [
     { name: "Data Editor", path: ROUTES.dataEditor },
     { name: "Admin", path: ROUTES.ADMIN },
     { name: "Login", path: ROUTES.LOGIN },
-    { name: "Registration", path: ROUTES.REGISTRATION }
+    { name: "Registration", path: ROUTES.REGISTRATION },
+    { name: "User Profile", path: ROUTES.USER_PROFILE }
 ];
 export const DATA_SOURCE = 'localStorage'; // Change to 'localStorage' or 'memory'
 // export const DATA_SOURCE = 'memory'; 

@@ -46,6 +46,8 @@ import LoginPage from "./pages/relateToAuth/LoginPage";
 import RegistrationPage from "./pages/relateToAuth/RegisterPage";
 import { ROLE_RANKS } from "./Permissions/PermissonsConst";
 import RoleCheck from "./Permissions/RoleCheck";
+// User profile import
+import UserProfile from "./pages/usersPages/UserProfile";
 
 
 function App() {
@@ -70,7 +72,6 @@ function App() {
   const userRole = localStorage.getItem('user_role') || 'GUEST';
   const isAdmin = (ROLE_RANKS[userRole] || 0) >= (ROLE_RANKS.ADMIN || 3);
 
-  // Database Seeder
   useEffect(() => {
     const initializeData = async () => {
       const categories = await dataFacade.getCategories();
@@ -107,13 +108,11 @@ function App() {
         }
       }
 
-      // 4. Seed Projects
       const projects = await dataFacade.getProjects();
       if (projects.length === 0) {
         for (const project of PROJECT_CARD_DATA) {
           await dataFacade.addProject(project);
           
-          // 5. Seed Gallery Images for this project (50 per project)
           const images = MOCK_GALLERY_DATA[project.id] || MOCK_GALLERY_DATA["default"] || [];
           for (const image of images) {
             await dataFacade.addGalleryImage(project.id, image);
@@ -154,6 +153,12 @@ function App() {
               {/* Authentication */}
               <Route path={ROUTES.LOGIN} element={<LoginPage />} />
               <Route path={ROUTES.REGISTRATION} element={<RegistrationPage />} />
+
+{/* User Routes */}
+<Route
+                path={ROUTES.USER_PROFILE}
+                element={<RoleCheck minRole="USER"><UserProfile /></RoleCheck>}
+              />
 
               {/* Moderator Routes */}
               

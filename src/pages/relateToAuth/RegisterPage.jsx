@@ -22,7 +22,7 @@ const RegisterPage = () => {
     const success = await registerUser(form);
 
     if (success) {
-      navigate('/');
+      window.location.href = '/';
     } else {
       setError("Registration failed. That username might be taken.");
     }
@@ -47,7 +47,6 @@ const RegisterPage = () => {
             />
           </Form.Group>
 
-          {/* Group First Name and Last Name side-by-side using a Row */}
           <Row className="mb-3">
             <Form.Group as={Col} sm={6}>
               <Form.Label>First Name</Form.Label>
