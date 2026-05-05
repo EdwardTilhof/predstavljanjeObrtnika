@@ -55,14 +55,9 @@ function NavBarMain({ theme, toggleTheme }) {
         </div>
 
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav
-            className="me-auto mt-3 mt-lg-0 gap-4"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, max-content)",
-              alignItems: "center"
-            }}
-          >
+          <Nav className="d-flex flex-column flex-md-row flex-wrap
+           flex-lg-nowrap align-items-center gap-2 ms-auto order-lg-2">
+
             <Nav.Link as={Link} to={ROUTES.HOME} title="Home">
               <i className="bi bi-house-door fs-5"></i>
             </Nav.Link>
