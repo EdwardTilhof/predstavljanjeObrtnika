@@ -56,7 +56,7 @@ function NavBarMain({ theme, toggleTheme }) {
 
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="d-flex flex-column flex-md-row flex-wrap
-           flex-lg-nowrap align-items-center gap-2 ms-auto order-lg-2">
+           flex-lg-nowrap align-items-center gap-3 ms-auto order-lg-2">
 
             <Nav.Link as={Link} to={ROUTES.HOME} title="Home">
               <i className="bi bi-house-door fs-5"></i>
