@@ -83,7 +83,7 @@ body {
 }
 
 .dynamic-heading {
-  color: var(--heading-color);
+  color: var(--heading-color) !important;
 }
 
 .dynamic-text {

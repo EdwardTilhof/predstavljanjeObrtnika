@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { 
   COMPANY_NAME, 
   COMPANY_ADDRESS, 
@@ -5,8 +6,11 @@ import {
   COMPANY_CID, 
   COMPANY_PHONE, 
   COMPANY_EMAIL, 
-  CURRENT_YEAR 
+  CURRENT_YEAR, 
+  ROUTES
 } from "../../Constants";
+import { Nav } from "react-bootstrap";
+import "../../pages/aboutUs/AboutUs"
 
 export default function AboutUsFooter() {
   return (
@@ -20,7 +24,11 @@ export default function AboutUsFooter() {
         </div>
 
         <div className="footer-right text-md-end">
-          <h5>Contact</h5>
+          <h5><Nav.Link as={Link} to={ROUTES.CONTACT_US} 
+          title="Contact us"
+          className="dynamic-heading fw-bold mb-1">
+            Contact
+          </Nav.Link></h5>
           <p className="mb-1">Phone: {COMPANY_PHONE}</p>
           <p>
             Email: <a href={`mailto:${COMPANY_EMAIL}`}>{COMPANY_EMAIL}</a>
