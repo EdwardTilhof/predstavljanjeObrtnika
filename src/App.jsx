@@ -49,6 +49,9 @@ import RoleCheck from "./Permissions/RoleCheck";
 // User profile import
 import UserProfile from "./pages/usersPages/UserProfile";
 
+// Charts using high charts imports
+import Highcharts from 'highcharts'
+import HighchartsReact from 'highcharts-react-official'
 
 function App() {
   const isDevelopment =

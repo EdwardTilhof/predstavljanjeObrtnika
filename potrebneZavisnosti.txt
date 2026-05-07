@@ -23,3 +23,8 @@ npm install @react-pdf/renderer --save
 
 // text editor
 npm install quill@2.0.3
+
+// charts using high charts
+npm install highcharts --save
+npm install highcharts-react-official
+npm install @highcharts/react

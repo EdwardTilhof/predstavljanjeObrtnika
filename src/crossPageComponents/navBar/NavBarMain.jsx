@@ -74,7 +74,7 @@ function NavBarMain({ theme, toggleTheme }) {
               title={<i className="bi bi-people fs-5" title="Partners"></i>}
               id="partners-nav-dropdown"
             >
-              <NavDropdown.Item as={Link} to={ROUTES.CooperatingPartners} className="text-center">
+              <NavDropdown.Item as={Link} to={ROUTES.CooperatingPartners} className="text-center" title="Overview">
                 Overview
               </NavDropdown.Item>
             </NavDropdown>
