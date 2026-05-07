@@ -189,6 +189,10 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
     <>
       <Row className="mb-4 align-items-center">
         <Col md={4}>
+        
+          {/* The highcharts bubble chart */}
+          <RegionsChart partners={partners} allRegions={allRegions} />
+
           <Form.Group>
             <Form.Label className="small fw-bold">Filter by Region</Form.Label>
             <Form.Select
@@ -199,8 +203,6 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
               {allRegions.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
             </Form.Select>
           </Form.Group>
-          {/* The highcharts bubble chart */}
-          <RegionsChart partners={partners} allRegions={allRegions} />
         </Col>
         
         {/* The Highcharts Pie Chart */}

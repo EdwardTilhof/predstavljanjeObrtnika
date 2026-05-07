@@ -4,10 +4,17 @@ import { loginUser } from '../../Permissions/AuthService';
 import { ROUTES } from '../../constants';
 import { Link } from 'react-router-dom';
 
+
+
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
+
+  const handleAdminAutofill = () => {
+  setUsername('admin');
+  setPassword('0000');
+};
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -53,8 +60,21 @@ const LoginPage = () => {
           <Button as={Link} to={ROUTES.REGISTRATION} variant="primary" className="w-100 mt-2">
             Sign up
           </Button>
-          <div>Admin log in information:</div>
-          <div> username- admin / password- 0000</div>
+
+          <div className="mt-3">
+            <div>Admin log in information:</div>
+            <div> 
+              username-{' '}
+              <Button 
+                variant="link" 
+                className="p-0 m-0 align-baseline text-decoration-underline" 
+                onClick={handleAdminAutofill}
+              >
+                admin
+              </Button>
+              {' '}/ password- 0000
+            </div>
+          </div>
         </Form>
         {loginError && (
           <p className="text-danger text-center mt-3">{loginError}</p>

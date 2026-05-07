@@ -115,7 +115,7 @@ const RegionsChart = ({ partners, allRegions }) => {
     }, [partners, allRegions]);
 
     return (
-        <div className="mt-4">
+        <div className="mt-0">
             {allRegions.length > 0 ? (
                 <HighchartsReact
                     highcharts={Highcharts}
