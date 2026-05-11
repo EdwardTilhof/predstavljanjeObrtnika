@@ -2,10 +2,10 @@
 import { dataProvider } from '../dataRepository';
 
 export const DATA_KEYS = {
-    PARTNERS: 'partners',
-    REGIONS: 'regions',
-    CATEGORIES: 'categories',
-    PROJECTS: 'projects',
+    PARTNERS: 'e.13partners',
+    REGIONS: 'e.13regions',
+    CATEGORIES: 'e.13categories',
+    PROJECTS: 'e.13projects',
     USERS: 'e.13users',
     QUESTIONS: 'questions', 
 };

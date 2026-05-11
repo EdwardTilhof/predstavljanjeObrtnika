@@ -3,7 +3,7 @@ import { DATA_SOURCE } from "../../Constants";
 import { MOCK_PARTNERS_DATA } from "../../../dataRepository/partnersData/PartnersDataGen";
 import { CooperatingPartnersData } from "../../../dataRepository/partnersData/PartnersData"; // Imported static data
 
-const STORAGE_KEY = 'my_app_CooperatingPartners';
+const STORAGE_KEY = 'e.13CooperatingPartners';
 
 const _getLocalData = () => {
     const saved = localStorage.getItem(STORAGE_KEY);

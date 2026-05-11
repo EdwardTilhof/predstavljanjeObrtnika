@@ -5,6 +5,7 @@ import './colorsAndDesign/OurProjects.css';
 import './colorsAndDesign/ColorsStyle.css';
 import './crossPageComponents/datePicker/DatePickerStyle.css'
 import dataFacade, { DATA_KEYS } from './services/dataFacade';
+import bcrypt from 'bcryptjs';
 
 // --- DATA GENERATOR IMPORTS ---
 import { PROJECT_CARD_DATA } from "../dataRepository/serviceData/ProjectCardData";
@@ -91,7 +92,6 @@ function App() {
         }
       }
 
-      const bcrypt = require('bcrypt');
       const users = await dataFacade.getUsers();
       if (users.length === 0) {
         await dataFacade.addUser({
