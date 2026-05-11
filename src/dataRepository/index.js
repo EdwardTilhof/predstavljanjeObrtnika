@@ -2,9 +2,7 @@
 
 import localStorageProvider from './localStorage/localStorageProvider';
 import inMemoryProvider from './memory/inMemoryProvider';
-// import firebaseProvider from './firebase/firebaseProvider'; 
-// import customMapProvider from './customMap/customMapProvider';
-
+import firebaseProvider from './firebase/firebaseProvider';
 import { DATA_SOURCE } from '../constants';
 
 const getDataProvider = () => {
@@ -13,8 +11,10 @@ const getDataProvider = () => {
             return localStorageProvider;
         case 'memory':
             return inMemoryProvider;
+            case 'firebase':
+                return firebaseProvider;
         default:
-            return localStorageProvider; // Default to localStorage
+            return localStorageProvider; // Default to ""
     }
 };
 

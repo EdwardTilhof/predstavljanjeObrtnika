@@ -9,8 +9,8 @@ import dataFacade, { DATA_KEYS } from './services/dataFacade';
 // --- DATA GENERATOR IMPORTS ---
 import { PROJECT_CARD_DATA } from "../dataRepository/serviceData/ProjectCardData";
 import { MOCK_GALLERY_DATA } from "../dataRepository/serviceData/ProjectGalleryDataGen";
-import { mainCategories } from "../dataRepository/partnersData/PartnersData"; 
-import { MOCK_PARTNERS_DATA } from "../dataRepository/partnersData/PartnersDataGen"; 
+import { mainCategories } from "../dataRepository/partnersData/PartnersData";
+import { MOCK_PARTNERS_DATA } from "../dataRepository/partnersData/PartnersDataGen";
 import { regions as defaultRegions } from "../dataRepository/locations/RegionsData";
 
 import { Container, Spinner } from "react-bootstrap";
@@ -91,12 +91,13 @@ function App() {
         }
       }
 
+      const bcrypt = require('bcrypt');
       const users = await dataFacade.getUsers();
       if (users.length === 0) {
         await dataFacade.addUser({
           id: 'admin-user',
           username: 'admin',
-          password: btoa('0000'), // Hash the password
+          password: bcrypt.hashSync('0000', 10), // Hash the password
           role: 'ADMIN',
         });
       }
@@ -115,7 +116,7 @@ function App() {
       if (projects.length === 0) {
         for (const project of PROJECT_CARD_DATA) {
           await dataFacade.addProject(project);
-          
+
           const images = MOCK_GALLERY_DATA[project.id] || MOCK_GALLERY_DATA["default"] || [];
           for (const image of images) {
             await dataFacade.addGalleryImage(project.id, image);
@@ -138,64 +139,64 @@ function App() {
               <Spinner animation="border" variant="primary" />
             </div>
           ) : (
-          <Suspense fallback={<div className="text-center mt-5"><Spinner animation="border" variant="primary" /></div>}>
-            <Routes>
-              {/* Public Routes ("GUEST") */}
-              <Route path={ROUTES.HOME} element={<Home />} />
-              <Route path={ROUTES.ABOUTUS} element={<AboutUs />} />
-              <Route path={ROUTES.CONTACT_US} element={<ContactUs />} />
-            <Route path={ROUTES.PartnerDetailsAdv} element={<IndividualPartnerAdv />} />
-              {/* Our projects */}
-              <Route path={ROUTES.OUR_PROJECTS} element={<OurProjectsMain />} />
-              <Route path={ROUTES.PROJECT_GALLERY} element={<ProjectGallery />} />
-              
-              {/* Partners */}
-              <Route path={ROUTES.CooperatingPartners} element={<CooperatingPartnersMain />} />
-              <Route path= {ROUTES.PartnersAdv} element={<PartnersAdv/>}/>
+            <Suspense fallback={<div className="text-center mt-5"><Spinner animation="border" variant="primary" /></div>}>
+              <Routes>
+                {/* Public Routes ("GUEST") */}
+                <Route path={ROUTES.HOME} element={<Home />} />
+                <Route path={ROUTES.ABOUTUS} element={<AboutUs />} />
+                <Route path={ROUTES.CONTACT_US} element={<ContactUs />} />
+                <Route path={ROUTES.PartnerDetailsAdv} element={<IndividualPartnerAdv />} />
+                {/* Our projects */}
+                <Route path={ROUTES.OUR_PROJECTS} element={<OurProjectsMain />} />
+                <Route path={ROUTES.PROJECT_GALLERY} element={<ProjectGallery />} />
 
-              {/* Authentication */}
-              <Route path={ROUTES.LOGIN} element={<LoginPage />} />
-              <Route path={ROUTES.REGISTRATION} element={<RegistrationPage />} />
+                {/* Partners */}
+                <Route path={ROUTES.CooperatingPartners} element={<CooperatingPartnersMain />} />
+                <Route path={ROUTES.PartnersAdv} element={<PartnersAdv />} />
 
-{/* User Routes */}
-<Route
-                path={ROUTES.USER_PROFILE}
-                element={<RoleCheck minRole="USER"><UserProfile /></RoleCheck>}
-              />
+                {/* Authentication */}
+                <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+                <Route path={ROUTES.REGISTRATION} element={<RegistrationPage />} />
 
-              {/* Moderator Routes */}
-              
-              {/* Partner editors */}
-              <Route
-                path={ROUTES.newCooperatingPartner}
-                element={<RoleCheck minRole="MODERATOR"><AddPartnerPage /></RoleCheck>}
-              />
-              <Route
-                path={ROUTES.EditPartner}
-                element={<RoleCheck minRole="MODERATOR"><EditPartnerPage /></RoleCheck>}
-              />
-             
-              {/* Data editors */}
-              <Route
-                path={ROUTES.dataEditor}
-                element={<RoleCheck minRole="MODERATOR"><DataEditor /></RoleCheck>}
-              />
-              <Route
-                path={ROUTES.regionEditor}
-                element={<RoleCheck minRole="MODERATOR"><RegionManager /></RoleCheck>}
-              />
-              <Route
-                path={ROUTES.categoryEditor}
-                element={<RoleCheck minRole="MODERATOR"><CategoryManager /></RoleCheck>}
-              />
+                {/* User Routes */}
+                <Route
+                  path={ROUTES.USER_PROFILE}
+                  element={<RoleCheck minRole="USER"><UserProfile /></RoleCheck>}
+                />
 
-              {/* Admin Route (Strict ADMIN rank) */}
-              <Route
-                path={ROUTES.ADMIN}
-                element={isAdmin ? <AdminPage /> : <LoginPage />}
-              />
-            </Routes>
-          </Suspense>
+                {/* Moderator Routes */}
+
+                {/* Partner editors */}
+                <Route
+                  path={ROUTES.newCooperatingPartner}
+                  element={<RoleCheck minRole="MODERATOR"><AddPartnerPage /></RoleCheck>}
+                />
+                <Route
+                  path={ROUTES.EditPartner}
+                  element={<RoleCheck minRole="MODERATOR"><EditPartnerPage /></RoleCheck>}
+                />
+
+                {/* Data editors */}
+                <Route
+                  path={ROUTES.dataEditor}
+                  element={<RoleCheck minRole="MODERATOR"><DataEditor /></RoleCheck>}
+                />
+                <Route
+                  path={ROUTES.regionEditor}
+                  element={<RoleCheck minRole="MODERATOR"><RegionManager /></RoleCheck>}
+                />
+                <Route
+                  path={ROUTES.categoryEditor}
+                  element={<RoleCheck minRole="MODERATOR"><CategoryManager /></RoleCheck>}
+                />
+
+                {/* Admin Route (Strict ADMIN rank) */}
+                <Route
+                  path={ROUTES.ADMIN}
+                  element={isAdmin ? <AdminPage /> : <LoginPage />}
+                />
+              </Routes>
+            </Suspense>
           )}
         </main>
 

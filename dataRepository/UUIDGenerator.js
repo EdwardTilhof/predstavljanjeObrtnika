@@ -5,11 +5,12 @@ const existingIds = new Set();
 const PREFIX_MAP = {
 
     // Main categories for partner types
-    worksector: 'wsector',
+    worksector: 'e.13wsector',
 
     // Specific Data Types
-    region: 'region',
-    ourprojectscard: 'oPCard',
+    region: 'e.13region',
+    ourprojectscard: 'e.13oPCard',
+    GalleryItem: 'e.13galleryitem',
 };
 
 

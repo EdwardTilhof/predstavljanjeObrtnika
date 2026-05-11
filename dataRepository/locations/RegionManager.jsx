@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Form, InputGroup } from 'react-bootstrap';
-// Path updated as per your instruction
 import DeleteConfirmationModal from "../../src/crossPageComponents/modal/DeleteConfirmationModal";
 import dataFacade from "../../src/services/dataFacade";
 

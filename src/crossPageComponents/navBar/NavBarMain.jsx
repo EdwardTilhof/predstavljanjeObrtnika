@@ -1,8 +1,9 @@
 import { Container, Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { COMPANY_NAME, ROUTES } from '../../Constants';
+import { COMPANY_NAME, ROUTES } from '../../constants';
 import { logout } from "../../Permissions/AuthService";
 import { ROLE_RANKS } from "../../Permissions/PermissonsConst";
+import { DataSourceButton } from "../Buttons/DataSourceButton";
 
 function NavBarMain({ theme, toggleTheme }) {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ function NavBarMain({ theme, toggleTheme }) {
     <Navbar expand="lg" className="bg-body-tertiary custom-navbar-padding">
       <Container className="bg-body-tertiary custom-navbar-container py-2">
         <Navbar.Brand as={Link} to={ROUTES.HOME} style={{ cursor: "pointer" }}>
-          {COMPANY_NAME}
+          {COMPANY_NAME} <DataSourceButton/>
         </Navbar.Brand>
 
         <div className="d-flex align-items-center order-lg-3">

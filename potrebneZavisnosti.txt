@@ -28,3 +28,7 @@ npm install quill@2.0.3
 npm install highcharts --save
 npm install highcharts-react-official
 npm install @highcharts/react
+
+
+// firebase 
+npm install firebase

@@ -1,7 +1,7 @@
 import { ROLE_RANKS } from './PermissonsConst';
 import dataFacade from '../services/dataFacade'; 
 
-const hashPassword = (password) => btoa(password); 
+const hashPassword = (password) => bcrypt.hashSync(password, 10); 
 
 export const loginUser = (username, password) => {
   const trimmedUser = username.trim();

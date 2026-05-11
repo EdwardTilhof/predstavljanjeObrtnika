@@ -15,15 +15,15 @@ const generateGalleryItems = (count) => {
   const details = [
     "Close-up of the reinforced steel bars before pouring concrete.",
     "Checking the alignment of the primary support beams.",
-    "Final inspection of the plumbing system in the main bathroom.Final inspection of the plumbing system in the main bathroom.Final inspection of the plumbing system in the main bathroom.Final inspection of the plumbing system in the main bathroom.Final inspection of the plumbing system in the main bathroom.",
-    "A wide-angle shot of the living area after the first coat of paint.Final inspection of the plumbing system in the main bathroom.Final inspection of the plumbing system in the main bathroom.Final inspection of the plumbing system in the main bathroom.Final inspection of the plumbing system in the main bathroom.",
-    "Installation of the double-glazed windows completed ahead of schedule.Final inspection of the plumbing system in the main bathroom.Final inspection of the plumbing system in the main bathroom.Final inspection of the plumbing system in the main bathroom.",
+    "Final inspection of the plumbing system in the main bathroom.",
+    "A wide-angle shot of the living area after the first coat of paint.",
+    "Installation of the double-glazed windows completed ahead of schedule.",
     "View from the rooftop showing the newly installed solar panel array."
   ];
 
   const data = Array.from({ length: count }, (_, i) => {
     const category = categories[Math.floor(Math.random() * categories.length)];
-    const hasDescription = Math.random() > 0.2; // 80% chance to have a description
+    const hasDescription = Math.random() > 0.2; 
 
     return {
       id: createUniqueId('galleryitem'),
@@ -37,6 +37,9 @@ const generateGalleryItems = (count) => {
   return data;
 };
 
+// 1. Define your constant map name here
+export const GALLERY_MAP_NAME = "e.13GalleryItems";
+
 export const MOCK_GALLERY_DATA = {
-  "default": generateGalleryItems(50)
+  [GALLERY_MAP_NAME]: generateGalleryItems(50)
 };
