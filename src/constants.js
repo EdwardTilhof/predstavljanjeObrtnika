@@ -1,3 +1,5 @@
+import firebase from "firebase/compat/app";
+
 // company information
 export const COMPANY_NAME = "Real estate for real";
 export const COMPANY_PHONE = "+385 99 245 406";
@@ -55,7 +57,6 @@ export const NAV_LINKS = [
     { name: "Registration", path: ROUTES.REGISTRATION },
     { name: "User Profile", path: ROUTES.USER_PROFILE }
 ];
-export const DATA_SOURCE = localStorage.getItem('APP_DATA_SOURCE') || 'localStorage'; // Change to 'localStorage' or 'memory'
-// export const DATA_SOURCE = 'memory'; 
+export const DATA_SOURCE = localStorage.getItem('APP_DATA_SOURCE') || 'firebase';// export const DATA_SOURCE = 'memory'; 
 // export const DATA_SOURCE = 'firebase';
 

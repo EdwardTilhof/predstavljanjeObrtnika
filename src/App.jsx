@@ -9,7 +9,8 @@ import bcrypt from 'bcryptjs';
 
 // --- DATA GENERATOR IMPORTS ---
 import { PROJECT_CARD_DATA } from "../dataRepository/serviceData/ProjectCardData";
-import { MOCK_GALLERY_DATA } from "../dataRepository/serviceData/ProjectGalleryDataGen";
+import { MOCK_GALLERY_DATA, GALLERY_MAP_NAME } from "../dataRepository/serviceData/ProjectGalleryDataGen";
+import { generateGalleryItems } from "../dataRepository/serviceData/ProjectGalleryDataGen"
 import { mainCategories } from "../dataRepository/partnersData/PartnersData";
 import { MOCK_PARTNERS_DATA } from "../dataRepository/partnersData/PartnersDataGen";
 import { regions as defaultRegions } from "../dataRepository/locations/RegionsData";
@@ -117,7 +118,8 @@ function App() {
         for (const project of PROJECT_CARD_DATA) {
           await dataFacade.addProject(project);
 
-          const images = MOCK_GALLERY_DATA[project.id] || MOCK_GALLERY_DATA["default"] || [];
+          const images = generateGalleryItems(10); 
+          
           for (const image of images) {
             await dataFacade.addGalleryImage(project.id, image);
           }

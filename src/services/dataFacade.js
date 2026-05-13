@@ -2,12 +2,13 @@
 import { dataProvider } from '../dataRepository';
 
 export const DATA_KEYS = {
-    PARTNERS: 'e.13partners',
-    REGIONS: 'e.13regions',
-    CATEGORIES: 'e.13categories',
-    PROJECTS: 'e.13projects',
-    USERS: 'e.13users',
-    QUESTIONS: 'questions', 
+    PARTNERS: 'e13.partners',
+    REGIONS: 'e13.regions',
+    CATEGORIES: 'e13.categories',
+    PROJECTS: 'e13.projects',
+    USERS: 'e13.users',
+    QUESTIONS: 'e13.questions',
+    GALLERY: 'e13.galleryItems',
 };
 
 const dataFacade = {
@@ -38,10 +39,21 @@ const dataFacade = {
     deleteProject: (id) => dataProvider.remove(DATA_KEYS.PROJECTS, id),
 
     // Gallery (dynamic key per project)
-    getGallery: (projectId) => dataProvider.getAll(`gallery_${projectId}`),
-    addGalleryImage: (projectId, image) => dataProvider.add(`gallery_${projectId}`, image),
-    updateGalleryImage: (projectId, imageId, image) => dataProvider.update(`gallery_${projectId}`, imageId, image),
-    deleteGalleryImage: (projectId, imageId) => dataProvider.remove(`gallery_${projectId}`, imageId),
+    getGallery: async (projectId) => {
+        const allImages = await dataProvider.getAll(DATA_KEYS.GALLERY);
+        return allImages.filter(img => String(img.projectId) === String(projectId));
+    },
+    addGalleryImage: async (projectId, image) => {
+        const imageWithProjectId = { ...image, projectId: String(projectId) };
+        return dataProvider.add(DATA_KEYS.GALLERY, imageWithProjectId);
+    },
+    updateGalleryImage: async (projectId, imageId, image) => {
+        const imageWithProjectId = { ...image, projectId: String(projectId) };
+        return dataProvider.update(DATA_KEYS.GALLERY, imageId, imageWithProjectId);
+    },
+    deleteGalleryImage: (projectId, imageId) => {
+        return dataProvider.remove(DATA_KEYS.GALLERY, imageId);
+    },
 
     // Users
     getUsers: () => dataProvider.getAll(DATA_KEYS.USERS),

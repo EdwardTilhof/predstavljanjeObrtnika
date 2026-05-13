@@ -48,7 +48,7 @@ const RegionManager = () => {
    const handleDeleteClick = (reg) => {
     setItemToDelete(reg);
     
-    const savedPartners = JSON.parse(localStorage.getItem('e.13CooperatingPartners') || '[]');
+    const savedPartners = JSON.parse(localStorage.getItem('e13.CooperatingPartners') || '[]');
     const savedProjects = JSON.parse(localStorage.getItem('projects') || '[]');
 
     const partnersUsing = savedPartners

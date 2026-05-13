@@ -45,7 +45,7 @@ const CategoryManager = () => {
     const handleDeleteClick = (cat) => {
     setTargetItem(cat);
     
-    const savedPartners = JSON.parse(localStorage.getItem('e.13CooperatingPartners') || '[]');
+    const savedPartners = JSON.parse(localStorage.getItem('e13.CooperatingPartners') || '[]');
     
     const usingItems = savedPartners
         .filter(p => p.category === cat.id)

@@ -22,7 +22,7 @@ const ExpandableDescription = ({ text }) => {
                     dangerouslySetInnerHTML={{ __html: text || "No description" }}
                 />
             </Card.Text>
-            {text.length > 60 && (
+            {text.length > 70 && (
                 <Button variant="link" className="p-0 m-0 text-decoration-none extra-small-btn" onClick={() => setIsExpanded(!isExpanded)}>
                     {isExpanded ? 'Show less' : 'Read more'}
                 </Button>

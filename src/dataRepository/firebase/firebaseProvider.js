@@ -1,5 +1,5 @@
 import { db } from "./firebaseConfig";
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc } from "firebase/firestore";
+import { collection, getDocs, getDoc, addDoc, updateDoc, deleteDoc, doc, setDoc } from "firebase/firestore";
 
 const firebaseProvider = {
     getAll: async (key) => {
@@ -11,10 +11,11 @@ const firebaseProvider = {
             return [];
         }
     },
-    getById: async (key, id) => {
+    getById: async (key, id, data) => {
         try {
             const docRef = doc(db, key, id);
-            const docSnap = await getDocs(docRef);
+            // Change getDocs to getDoc here
+            const docSnap = await getDoc(docRef); 
             return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
         } catch (error) {
             console.error(`Error fetching ${key} with ID ${id}:`, error);

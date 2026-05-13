@@ -1,6 +1,6 @@
 import { createUniqueId } from "../UUIDGenerator";
 
-const generateGalleryItems = (count) => {
+export const generateGalleryItems = (count) => {
   console.log(`[ProjectGalleryData] Generating ${count} randomized gallery items...`);
   
   const categories = [
@@ -38,7 +38,7 @@ const generateGalleryItems = (count) => {
 };
 
 // 1. Define your constant map name here
-export const GALLERY_MAP_NAME = "e.13GalleryItems";
+export const GALLERY_MAP_NAME = "e13.GalleryItems";
 
 export const MOCK_GALLERY_DATA = {
   [GALLERY_MAP_NAME]: generateGalleryItems(50)

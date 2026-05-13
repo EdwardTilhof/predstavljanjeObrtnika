@@ -1,15 +1,16 @@
 import { ROLE_RANKS } from './PermissonsConst';
 import dataFacade from '../services/dataFacade'; 
+import bcrypt from 'bcryptjs';
 
 const hashPassword = (password) => bcrypt.hashSync(password, 10); 
 
 export const loginUser = (username, password) => {
   const trimmedUser = username.trim();
-  const hashedPassword = hashPassword(password);
   
   return dataFacade.getUserByUsername(trimmedUser).then(user => {
     
-    if (user && user.password === hashedPassword) {
+    // Use bcrypt.compareSync to check the plain text password against the hashed DB password
+    if (user && bcrypt.compareSync(password, user.password)) {
       localStorage.setItem('user_role', user.role);
       localStorage.setItem('user_name', user.username);
       return true;
