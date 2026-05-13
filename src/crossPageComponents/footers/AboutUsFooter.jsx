@@ -8,7 +8,7 @@ import {
   COMPANY_EMAIL, 
   CURRENT_YEAR, 
   ROUTES
-} from "../../Constants";
+} from "../../constants";
 import { Nav } from "react-bootstrap";
 import "../../pages/aboutUs/AboutUs"
 
