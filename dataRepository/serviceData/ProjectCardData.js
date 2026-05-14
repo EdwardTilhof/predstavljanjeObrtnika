@@ -41,4 +41,4 @@ const generateMockProjects = (count) => {
   return data;
 };
 
-export const PROJECT_CARD_DATA = generateMockProjects(40);
+export const PROJECT_CARD_DATA = generateMockProjects(15);

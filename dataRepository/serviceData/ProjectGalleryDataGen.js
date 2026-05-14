@@ -41,5 +41,5 @@ export const generateGalleryItems = (count) => {
 export const GALLERY_MAP_NAME = "e13.GalleryItems";
 
 export const MOCK_GALLERY_DATA = {
-  [GALLERY_MAP_NAME]: generateGalleryItems(50)
+  [GALLERY_MAP_NAME]: generateGalleryItems(10)
 };

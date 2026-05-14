@@ -38,5 +38,5 @@ export const generatePartnerItems = (count) => {
 };
 
 export const MOCK_PARTNERS_DATA = {
-  default: generatePartnerItems(300)
+  default: generatePartnerItems(30)
 };

@@ -296,7 +296,7 @@ const CooperatingPartnersMain = ({ selectedCategory }) => {
       {/* Pagination Controls remain unchanged */}
       {totalPages > 1 && (
           <Pagination className="justify-content-center mt-4">
-             {/* Pagination logic left intact */}
+             {/* Pagination logic */}
           </Pagination>
         )}
 
