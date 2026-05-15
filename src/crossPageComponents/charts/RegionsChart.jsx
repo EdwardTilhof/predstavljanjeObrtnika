@@ -1,11 +1,10 @@
 import React, { useMemo } from 'react';
-import Highcharts from 'highcharts';
-import HighchartsReactModule from 'highcharts-react-official';
+import LazyHighcharts from './LazyHighcharts';
 
-const HighchartsReact = HighchartsReactModule.default || HighchartsReactModule;
-
+// Lazy load Highcharts modules (only loaded when this component is used)
 import HC_heatmap from 'highcharts/modules/heatmap';
 import HC_tilemap from 'highcharts/modules/tilemap';
+import Highcharts from 'highcharts';
 
 if (typeof Highcharts === 'object') {
     if (typeof HC_heatmap === 'function') {
@@ -92,7 +91,7 @@ const RegionsChart = ({ partners, allRegions }) => {
                         enabled: true,
                         formatter: function () {
                             const name = this.point.name || '';
-                            if (name === 'Unassigned') return 'Un'; // Optional custom override
+                            if (name === 'Unassigned') return 'Un';
                             if (name.length < 2) return name.toUpperCase();
                             
                             return name.charAt(0).toUpperCase() + name.charAt(1).toLowerCase();
@@ -117,8 +116,7 @@ const RegionsChart = ({ partners, allRegions }) => {
     return (
         <div className="mt-0">
             {allRegions.length > 0 ? (
-                <HighchartsReact
-                    highcharts={Highcharts}
+                <LazyHighcharts
                     options={chartOptions}
                 />
             ) : (

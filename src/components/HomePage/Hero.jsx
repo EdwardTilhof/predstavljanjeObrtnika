@@ -6,6 +6,9 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import HomeAnimation from '../../assets/Home element.lottie';
 
 export default function Hero() {
+  // Check if user prefers reduced motion
+  const prefersReducedMotion = window.matchMedia('(prefers-reduce-motion: reduce)').matches;
+
   return (
     <Row className="align-items-center py-5 my-5">
       <Col lg={6} className="text-center text-lg-start mb-4 mb-lg-0">
@@ -23,17 +26,18 @@ export default function Hero() {
           variant="primary" 
           size="lg" 
           className="px-4 py-2 shadow"
+          aria-label={`Navigate to ${HERO_CONTENT.buttonText} page`}
         >
           {HERO_CONTENT.buttonText}
         </Button>
       </Col>
       
       <Col lg={6}>
-        <div className="rounded-4 shadow-lg overflow-hidden">
+        <div className="rounded-4 shadow-lg overflow-hidden" role="img" aria-label="Home page animation">
           <DotLottieReact
             src={HomeAnimation}
-            loop
-            autoplay
+            loop={!prefersReducedMotion}
+            autoplay={!prefersReducedMotion}
           />
         </div>
       </Col>

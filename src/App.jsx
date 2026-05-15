@@ -1,9 +1,4 @@
 import React, { useState, Suspense, useEffect } from "react";
-import './App.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
-import './colorsAndDesign/OurProjects.css';
-import './colorsAndDesign/ColorsStyle.css';
-import './crossPageComponents/datePicker/DatePickerStyle.css'
 import dataFacade, { DATA_KEYS } from './services/dataFacade';
 import bcrypt from 'bcryptjs';
 
@@ -15,45 +10,33 @@ import { mainCategories } from "../dataRepository/partnersData/PartnersData";
 import { MOCK_PARTNERS_DATA } from "../dataRepository/partnersData/PartnersDataGen";
 import { regions as defaultRegions } from "../dataRepository/locations/RegionsData";
 
-import { Container, Spinner } from "react-bootstrap";
+import { Container, Spinner, Alert } from "react-bootstrap";
 import { Route, Routes } from "react-router-dom";
 import NavBarMain from './crossPageComponents/navBar/NavBarMain';
 import AboutUsFooter from "./crossPageComponents/footers/AboutUsFooter";
 import { ROUTES } from "./constants";
 
-//Home page and about us
-import Home from "./pages/Home";
-import AboutUs from "./pages/aboutUs/AboutUs";
-import ContactUs from "./pages/contactUs/ContactUs";
+// Lazy load all pages for code splitting (Performance optimization)
+const Home = React.lazy(() => import("./pages/Home"));
+const AboutUs = React.lazy(() => import("./pages/aboutUs/AboutUs"));
+const ContactUs = React.lazy(() => import("./pages/contactUs/ContactUs"));
+const OurProjectsMain = React.lazy(() => import("./pages/relateToServices/OurProjectsMain"));
+const ProjectGallery = React.lazy(() => import("./pages/relateToServices/ProjectGallery"));
+const CooperatingPartnersMain = React.lazy(() => import("./pages/relateToPartners/CooperatingPartnersMain"));
+const AddPartnerPage = React.lazy(() => import("./pages/relateToPartners/addPartnerPage"));
+const EditPartnerPage = React.lazy(() => import("./pages/relateToPartners/editPartnerPage"));
+const PartnersAdv = React.lazy(() => import("./components/homePage/advertisement/PartnersAdv"));
+const IndividualPartnerAdv = React.lazy(() => import("./pages/relateToAdv/IndividualPartnerAdv"));
+const DataEditor = React.lazy(() => import("./pages/DataEditor"));
+const RegionManager = React.lazy(() => import("../dataRepository/locations/RegionManager"));
+const CategoryManager = React.lazy(() => import("./components/partners/CategoryManager"));
+const AdminPage = React.lazy(() => import("./pages/relateToAuth/AdminPage"));
+const LoginPage = React.lazy(() => import("./pages/relateToAuth/LoginPage"));
+const RegistrationPage = React.lazy(() => import("./pages/relateToAuth/RegisterPage"));
+const UserProfile = React.lazy(() => import("./pages/usersPages/UserProfile"));
 
-// Our Projects imports
-import OurProjectsMain from "./pages/relateToServices/OurProjectsMain";
-import ProjectGallery from "./pages/relateToServices/ProjectGallery";
-
-// Partner related imports
-import CooperatingPartnersMain from "./pages/relateToPartners/CooperatingPartnersMain";
-import AddPartnerPage from "./pages/relateToPartners/addPartnerPage";
-import EditPartnerPage from "./pages/relateToPartners/editPartnerPage";
-
-// Advertisements
-import PartnersAdv from "./components/homePage/advertisement/PartnersAdv";
-import IndividualPartnerAdv from "./pages/relateToAdv/IndividualPartnerAdv"
-
-// Data editor imports
-import DataEditor from "./pages/DataEditor";
-import RegionManager from "../dataRepository/locations/RegionManager";
-import CategoryManager from "./components/partners/CategoryManager";
-import AdminPage from "./pages/relateToAuth/AdminPage";
-import LoginPage from "./pages/relateToAuth/LoginPage";
-import RegistrationPage from "./pages/relateToAuth/RegisterPage";
 import { ROLE_RANKS } from "./Permissions/PermissonsConst";
 import RoleCheck from "./Permissions/RoleCheck";
-// User profile import
-import UserProfile from "./pages/usersPages/UserProfile";
-
-// Charts using high charts imports
-import Highcharts from 'highcharts'
-import HighchartsReact from 'highcharts-react-official'
 
 function App() {
   const isDevelopment =
@@ -64,11 +47,19 @@ function App() {
     return localStorage.getItem("theme") || "light";
   });
   const [isInitializing, setIsInitializing] = useState(true);
+  const [initError, setInitError] = useState(null);
 
   useEffect(() => {
-    document.documentElement.setAttribute("data-bs-theme", theme);
-    localStorage.setItem("theme", theme);
-  }, [theme]);
+    try {
+      document.documentElement.setAttribute("data-bs-theme", theme);
+      localStorage.setItem("theme", theme);
+    } catch (error) {
+      console.error("Error setting theme:", error);
+      if (isDevelopment) {
+        setInitError("Failed to set theme. localStorage may be unavailable.");
+      }
+    }
+  }, [theme, isDevelopment]);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
@@ -79,53 +70,61 @@ function App() {
 
   useEffect(() => {
     const initializeData = async () => {
-      const categories = await dataFacade.getCategories();
-      if (categories.length === 0) {
-        for (const cat of mainCategories) {
-          await dataFacade.addCategory(cat);
-        }
-      }
-
-      const regions = await dataFacade.getRegions();
-      if (regions.length === 0) {
-        for (const reg of defaultRegions) {
-          await dataFacade.addRegion(reg);
-        }
-      }
-
-      const users = await dataFacade.getUsers();
-      if (users.length === 0) {
-        await dataFacade.addUser({
-          id: 'admin-user',
-          username: 'admin',
-          password: bcrypt.hashSync('0000', 10), // Hash the password
-          role: 'ADMIN',
-        });
-      }
-
-      const partners = await dataFacade.getPartners();
-      if (partners.length === 0) {
-        const generatedPartners = MOCK_PARTNERS_DATA.default;
-        if (typeof generatedPartners !== 'undefined') {
-          for (const partner of generatedPartners) {
-            await dataFacade.addPartner(partner);
+      try {
+        const categories = await dataFacade.getCategories();
+        if (categories.length === 0) {
+          for (const cat of mainCategories) {
+            await dataFacade.addCategory(cat);
           }
         }
-      }
 
-      const projects = await dataFacade.getProjects();
-      if (projects.length === 0) {
-        for (const project of PROJECT_CARD_DATA) {
-          await dataFacade.addProject(project);
-
-          const images = generateGalleryItems(10); 
-          
-          for (const image of images) {
-            await dataFacade.addGalleryImage(project.id, image);
+        const regions = await dataFacade.getRegions();
+        if (regions.length === 0) {
+          for (const reg of defaultRegions) {
+            await dataFacade.addRegion(reg);
           }
         }
+
+        const users = await dataFacade.getUsers();
+        if (users.length === 0) {
+          await dataFacade.addUser({
+            id: 'admin-user',
+            username: 'admin',
+            password: bcrypt.hashSync('0000', 10),
+            role: 'ADMIN',
+          });
+        }
+
+        const partners = await dataFacade.getPartners();
+        if (partners.length === 0) {
+          const generatedPartners = MOCK_PARTNERS_DATA.default;
+          if (typeof generatedPartners !== 'undefined') {
+            for (const partner of generatedPartners) {
+              await dataFacade.addPartner(partner);
+            }
+          }
+        }
+
+        const projects = await dataFacade.getProjects();
+        if (projects.length === 0) {
+          for (const project of PROJECT_CARD_DATA) {
+            await dataFacade.addProject(project);
+
+            const images = generateGalleryItems(10); 
+            
+            for (const image of images) {
+              await dataFacade.addGalleryImage(project.id, image);
+            }
+          }
+        }
+        setIsInitializing(false);
+      } catch (error) {
+        console.error("Failed to initialize application data:", error);
+        setInitError(
+          `Application initialization failed: ${error.message || 'Unknown error'}. Please refresh the page.`
+        );
+        setIsInitializing(false);
       }
-      setIsInitializing(false);
     };
     initializeData();
   }, []);
@@ -135,13 +134,32 @@ function App() {
       <Container className={`MainContainer ${isDevelopment ? 'dev-mode' : ''}`} fluid>
         <NavBarMain theme={theme} toggleTheme={toggleTheme} />
 
-        <main>
+        <main role="main">
+          {initError && (
+            <Alert variant="danger" onClose={() => setInitError(null)} dismissible>
+              <Alert.Heading>Error Loading Application</Alert.Heading>
+              <p>{initError}</p>
+            </Alert>
+          )}
+          
           {isInitializing ? (
             <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
-              <Spinner animation="border" variant="primary" />
+              <div className="text-center">
+                <Spinner animation="border" variant="primary" role="status" aria-live="polite">
+                  <span className="visually-hidden">Initializing application...</span>
+                </Spinner>
+                <p className="mt-3">Loading application...</p>
+              </div>
             </div>
           ) : (
-            <Suspense fallback={<div className="text-center mt-5"><Spinner animation="border" variant="primary" /></div>}>
+            <Suspense fallback={
+              <div className="text-center mt-5">
+                <Spinner animation="border" variant="primary" role="status" aria-live="polite">
+                  <span className="visually-hidden">Loading page...</span>
+                </Spinner>
+                <p className="mt-3">Loading page...</p>
+              </div>
+            }>
               <Routes>
                 {/* Public Routes ("GUEST") */}
                 <Route path={ROUTES.HOME} element={<Home />} />

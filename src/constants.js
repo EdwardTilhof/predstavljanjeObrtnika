@@ -57,6 +57,6 @@ export const NAV_LINKS = [
     { name: "Registration", path: ROUTES.REGISTRATION },
     { name: "User Profile", path: ROUTES.USER_PROFILE }
 ];
-export const DATA_SOURCE = localStorage.getItem('APP_DATA_SOURCE') || 'firebase';// export const DATA_SOURCE = 'memory'; 
+export const DATA_SOURCE = localStorage.getItem('APP_DATA_SOURCE') || 'localStorage';// export const DATA_SOURCE = 'memory'; 
 // export const DATA_SOURCE = 'firebase';
 
