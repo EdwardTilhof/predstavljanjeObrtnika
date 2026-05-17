@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Row, Col, Pagination } from 'react-bootstrap';
-import CooperatingPartnerLogic from '../../partners/CooperatingPartnersLogic';
-import PardnerAdvCard from './PardnerAdvCard';
+import PartnerAdvCard from './PartnerAdvCard';
+import dataFacade from '../../../services/dataFacade';
 
 const PartnersAdv = () => {
   const [partners, setPartners] = useState([]);
@@ -9,9 +9,9 @@ const PartnersAdv = () => {
   const itemsPerPage = 3; // Show 3 cards per row
 
   const fetchPartners = async () => {
-    const res = await CooperatingPartnerLogic.getAll('localStorage');
-    if (res.success) {
-      setPartners(res.data);
+    const data = await dataFacade.getPartners();
+    if (data) {
+      setPartners(data);
     }
   };
 
@@ -23,6 +23,7 @@ const PartnersAdv = () => {
 
   // Sort and paginate data
   const processedPartners = useMemo(() => {
+    console.log("Raw Partners Data:", partners);
     const sorted = [...partners].sort((a, b) => {
       const impA = Number(a.importanceValue) || 1;
       const impB = Number(b.importanceValue) || 1;
@@ -56,7 +57,7 @@ const PartnersAdv = () => {
       <Row className="g-4 justify-content-center">
         {currentPartners.map((partner) => (
           <Col key={partner.id} xs={12} sm={6} md={4}>
-            <PardnerAdvCard partner={partner} />
+            <PartnerAdvCard partner={partner} />
           </Col>
         ))}
       </Row>

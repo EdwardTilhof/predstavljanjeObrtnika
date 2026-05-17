@@ -3,7 +3,7 @@ import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../../constants';
 
-const PardnerAdvCard = ({ partner }) => {
+const PartnerAdvCard = ({ partner }) => {
   return (
     <Link to={ROUTES.PartnerDetailsAdv.replace(':id', partner.id)} className="text-decoration-none">
       <Card className="h-100 shadow-sm border-0">
@@ -26,4 +26,4 @@ const PardnerAdvCard = ({ partner }) => {
   );
 };
 
-export default PardnerAdvCard;
+export default PartnerAdvCard;
